@@ -1,11 +1,10 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Calendar, Clock, Users } from 'lucide-react';
+import { Calendar, Clock } from 'lucide-react';
 import Link from 'next/link';
-import { formatDate, formatTime } from '@/lib/utils';
 
 export function ScheduleSection() {
   const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth());
