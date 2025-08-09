@@ -1,0 +1,95 @@
+import Link from 'next/link';
+import { SITE_CONFIG } from '@/lib/constants';
+import { Phone, Mail, MapPin } from 'lucide-react';
+
+export function Footer() {
+  return (
+    <footer className="bg-gray-900 text-white">
+      <div className="container mx-auto px-4 py-12">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+          <div>
+            <h3 className="text-2xl font-bold mb-4">
+              <span className="text-accent">明</span>勝丸
+            </h3>
+            <p className="text-gray-400">
+              鳥取県の白いか遊漁船
+              <br />
+              初心者からベテランまで
+              <br />
+              安心してお楽しみいただけます
+            </p>
+          </div>
+
+          <div>
+            <h4 className="text-lg font-semibold mb-4">メニュー</h4>
+            <ul className="space-y-2">
+              <li>
+                <Link href="/#schedule" className="text-gray-400 hover:text-white transition-colors">
+                  運航スケジュール
+                </Link>
+              </li>
+              <li>
+                <Link href="/#info" className="text-gray-400 hover:text-white transition-colors">
+                  料金・設備
+                </Link>
+              </li>
+              <li>
+                <Link href="/#access" className="text-gray-400 hover:text-white transition-colors">
+                  アクセス
+                </Link>
+              </li>
+              <li>
+                <Link href="/reservation" className="text-gray-400 hover:text-white transition-colors">
+                  ご予約
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          <div>
+            <h4 className="text-lg font-semibold mb-4">お問い合わせ</h4>
+            <ul className="space-y-3">
+              <li className="flex items-start space-x-3">
+                <Phone className="h-5 w-5 mt-0.5 text-accent" />
+                <div>
+                  <a href={`tel:${SITE_CONFIG.contact.phone}`} className="text-gray-400 hover:text-white transition-colors">
+                    {SITE_CONFIG.contact.phone}
+                  </a>
+                </div>
+              </li>
+              <li className="flex items-start space-x-3">
+                <Mail className="h-5 w-5 mt-0.5 text-accent" />
+                <div>
+                  <a href={`mailto:${SITE_CONFIG.contact.email}`} className="text-gray-400 hover:text-white transition-colors">
+                    {SITE_CONFIG.contact.email}
+                  </a>
+                </div>
+              </li>
+              <li className="flex items-start space-x-3">
+                <MapPin className="h-5 w-5 mt-0.5 text-accent" />
+                <div className="text-gray-400">
+                  {SITE_CONFIG.contact.address}
+                </div>
+              </li>
+            </ul>
+          </div>
+
+          <div>
+            <h4 className="text-lg font-semibold mb-4">営業時間</h4>
+            <ul className="space-y-2 text-gray-400">
+              <li>午前便: 6:00～12:00</li>
+              <li>午後便: 13:00～19:00</li>
+              <li className="pt-2">
+                <span className="text-accent">※</span> 天候により欠航の場合があります
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div className="mt-8 pt-8 border-t border-gray-800 text-center text-gray-400">
+          <p>&copy; 2024 明勝丸. All rights reserved.</p>
+        </div>
+      </div>
+    </footer>
+  );
+}
