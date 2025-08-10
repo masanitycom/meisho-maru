@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { AdminAuth } from '@/components/auth/AdminAuth';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -187,7 +188,8 @@ export default function ScheduleManagePage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 pt-24">
+    <AdminAuth>
+      <div className="min-h-screen bg-gray-50 pt-24">
       <div className="container mx-auto px-4 py-8">
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-3xl font-bold flex items-center">
@@ -427,5 +429,6 @@ export default function ScheduleManagePage() {
         </Card>
       </div>
     </div>
+    </AdminAuth>
   );
 }
