@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
+import { usePathname } from 'next/navigation';
 import { Menu, X, Phone, Calendar, Anchor } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { SITE_CONFIG } from '@/lib/constants';
@@ -9,6 +10,10 @@ import { SITE_CONFIG } from '@/lib/constants';
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const pathname = usePathname();
+  
+  // 管理画面では常にスクロール状態として扱う
+  const isAdminPage = pathname.startsWith('/admin');
 
   useEffect(() => {
     const handleScroll = () => {
@@ -18,9 +23,12 @@ export function Header() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // スクロール状態またはテキスト表示判定
+  const shouldShowDarkText = isScrolled || isAdminPage;
+
   return (
     <header className={`fixed top-0 w-full z-50 transition-all duration-300 ${
-      isScrolled 
+      shouldShowDarkText 
         ? 'bg-white/95 backdrop-blur-md shadow-lg' 
         : 'bg-transparent'
     }`}>
@@ -38,7 +46,7 @@ export function Header() {
                 }}
               />
               <Anchor className={`h-12 w-12 transition-colors hidden ${
-                isScrolled ? 'text-blue-600' : 'text-white'
+                shouldShowDarkText ? 'text-blue-600' : 'text-white'
               } group-hover:rotate-12 transition-transform duration-300 drop-shadow-lg`} />
             </div>
           </Link>
@@ -54,7 +62,7 @@ export function Header() {
                 key={item.href}
                 href={item.href}
                 className={`font-medium transition-all duration-300 hover:scale-105 ${
-                  isScrolled 
+                  shouldShowDarkText 
                     ? 'text-gray-700 hover:text-blue-600' 
                     : 'text-white hover:text-yellow-300'
                 }`}
@@ -68,7 +76,7 @@ export function Header() {
             <a
               href={`tel:${SITE_CONFIG.contact.phone}`}
               className={`inline-flex items-center space-x-2 font-medium transition-colors ${
-                isScrolled 
+                shouldShowDarkText 
                   ? 'text-blue-600 hover:text-blue-700' 
                   : 'text-white hover:text-yellow-300'
               }`}
@@ -92,9 +100,9 @@ export function Header() {
             onClick={() => setIsMenuOpen(!isMenuOpen)}
           >
             {isMenuOpen ? (
-              <X className={`h-6 w-6 ${isScrolled ? 'text-gray-700' : 'text-white'}`} />
+              <X className={`h-6 w-6 ${shouldShowDarkText ? 'text-gray-700' : 'text-white'}`} />
             ) : (
-              <Menu className={`h-6 w-6 ${isScrolled ? 'text-gray-700' : 'text-white'}`} />
+              <Menu className={`h-6 w-6 ${shouldShowDarkText ? 'text-gray-700' : 'text-white'}`} />
             )}
           </button>
         </div>
