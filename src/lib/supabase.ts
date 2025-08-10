@@ -183,3 +183,36 @@ export const setBulkHoliday = async (startDate: string, endDate: string, tripNum
   if (error) throw error
   return data
 }
+
+// 予約を削除
+export const deleteReservation = async (reservationId: string) => {
+  const { error } = await supabase
+    .from('reservations')
+    .delete()
+    .eq('id', reservationId)
+    
+  if (error) throw error
+}
+
+// 予約を更新
+export const updateReservation = async (reservationId: string, updates: {
+  date?: string;
+  trip_number?: number;
+  people_count?: number;
+  name?: string;
+  name_kana?: string;
+  phone?: string;
+  email?: string;
+  rod_rental?: boolean;
+  notes?: string;
+  status?: string;
+}) => {
+  const { data, error } = await supabase
+    .from('reservations')
+    .update(updates)
+    .eq('id', reservationId)
+    .select()
+    
+  if (error) throw error
+  return data
+}

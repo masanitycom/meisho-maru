@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { createReservation, upsertCustomer, getReservations, getCustomers } from '@/lib/supabase';
+import { createReservation, upsertCustomer, getReservations, getCustomers, deleteReservation, updateReservation } from '@/lib/supabase';
 import { AdminAuth } from '@/components/auth/AdminAuth';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -320,6 +320,7 @@ export default function AdminPage() {
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [loading, setLoading] = useState(true);
   const [mounted, setMounted] = useState(false);
+  const [editingReservation, setEditingReservation] = useState<Reservation | null>(null);
 
   // データを読み込み
   const loadData = async () => {
@@ -377,6 +378,78 @@ export default function AdminPage() {
     }, 0);
     
     return { trip1Count, trip2Count, todayRevenue, totalReservations: todayReservations.length };
+  };
+
+  // 予約削除
+  const handleDeleteReservation = async (reservationId: string, customerName: string) => {
+    if (!confirm(`${customerName}様の予約を削除しますか？\nこの操作は取り消せません。`)) {
+      return;
+    }
+    
+    try {
+      await deleteReservation(reservationId);
+      alert('予約を削除しました');
+      await loadData(); // データを再読み込み
+    } catch (error) {
+      console.error('予約削除エラー:', error);
+      alert('予約の削除に失敗しました');
+    }
+  };
+
+  // 予約ステータス変更
+  const handleUpdateReservationStatus = async (reservationId: string, newStatus: string, customerName: string) => {
+    try {
+      await updateReservation(reservationId, { status: newStatus });
+      alert(`${customerName}様の予約ステータスを「${newStatus}」に変更しました`);
+      await loadData(); // データを再読み込み
+    } catch (error) {
+      console.error('ステータス更新エラー:', error);
+      alert('ステータスの更新に失敗しました');
+    }
+  };
+
+  // 確認メール送信
+  const handleSendConfirmationEmail = async (reservation: Reservation) => {
+    if (!reservation.email) {
+      alert('メールアドレスが登録されていません');
+      return;
+    }
+    
+    try {
+      const response = await fetch('/api/send-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          to: reservation.email,
+          subject: '【明勝丸】ご予約確認のお知らせ',
+          reservationData: {
+            name: reservation.name,
+            date: reservation.date,
+            trip_number: reservation.trip_number,
+            people_count: reservation.people_count,
+            phone: reservation.phone,
+            email: reservation.email,
+            rod_rental: reservation.rod_rental,
+            notes: ''
+          }
+        })
+      });
+      
+      const result = await response.json();
+      
+      if (result.success) {
+        alert(`${reservation.name}様に確認メールを送信しました`);
+        // 開発環境ではメール内容をコンソールに表示
+        if (result.emailPreview) {
+          console.log('📧 送信予定メール内容:\n', result.emailPreview);
+        }
+      } else {
+        alert('メール送信に失敗しました');
+      }
+    } catch (error) {
+      console.error('メール送信エラー:', error);
+      alert('メール送信に失敗しました');
+    }
   };
 
   const stats = getTodayStats();
@@ -498,11 +571,49 @@ export default function AdminPage() {
                               <td className="p-4">¥{amount.toLocaleString()}</td>
                               <td className="p-4">{getStatusBadge(reservation.status || 'confirmed')}</td>
                               <td className="p-4">
-                                <div className="flex gap-2">
-                                  <Button size="sm" variant="outline">
-                                    <Edit className="h-3 w-3" />
-                                  </Button>
-                                  <Button size="sm" variant="outline">
+                                <div className="flex gap-1 flex-wrap">
+                                  {reservation.email && (
+                                    <Button 
+                                      size="sm" 
+                                      variant="outline"
+                                      onClick={() => handleSendConfirmationEmail(reservation)}
+                                      title="確認メール送信"
+                                    >
+                                      <Mail className="h-3 w-3" />
+                                    </Button>
+                                  )}
+                                  
+                                  {reservation.status !== 'confirmed' && (
+                                    <Button 
+                                      size="sm" 
+                                      variant="outline"
+                                      onClick={() => handleUpdateReservationStatus(reservation.id, 'confirmed', reservation.name)}
+                                      title="予約確定"
+                                      className="text-green-600 hover:text-green-700"
+                                    >
+                                      <CheckCircle className="h-3 w-3" />
+                                    </Button>
+                                  )}
+                                  
+                                  {reservation.status !== 'cancelled' && (
+                                    <Button 
+                                      size="sm" 
+                                      variant="outline"
+                                      onClick={() => handleUpdateReservationStatus(reservation.id, 'cancelled', reservation.name)}
+                                      title="キャンセル"
+                                      className="text-orange-600 hover:text-orange-700"
+                                    >
+                                      <XCircle className="h-3 w-3" />
+                                    </Button>
+                                  )}
+                                  
+                                  <Button 
+                                    size="sm" 
+                                    variant="outline"
+                                    onClick={() => handleDeleteReservation(reservation.id, reservation.name)}
+                                    title="削除"
+                                    className="text-red-600 hover:text-red-700"
+                                  >
                                     <Trash2 className="h-3 w-3" />
                                   </Button>
                                 </div>
