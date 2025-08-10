@@ -66,27 +66,29 @@ export function AccessSection() {
 
             <div className="h-full min-h-[400px]">
               <Card className="h-full">
-                <CardContent className="p-0 h-full">
-                  <div className="w-full h-full bg-gray-200 rounded-lg flex items-center justify-center">
-                    <div className="text-center p-8">
-                      <MapPin className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                      <p className="text-gray-600 mb-4">
-                        赤碕港
-                        <br />
-                        <span className="text-sm">
-                          {SITE_CONFIG.contact.address}
-                        </span>
-                      </p>
-                      <a
-                        href="https://maps.app.goo.gl/RrNkBLXPYakqmU6n8"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-                      >
-                        <MapPin className="h-4 w-4 mr-2" />
-                        Google Mapsで開く
-                      </a>
-                    </div>
+                <CardContent className="p-0 h-full relative">
+                  <div className="w-full h-full rounded-lg overflow-hidden">
+                    <iframe
+                      src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3254.6789012345678!2d133.67543999999999!3d35.463999999999996!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x355519e7c8c8c8c8%3A0x1234567890123456!2z6LW16Kqs56eBIOmdosOcgOaagw!5e0!3m2!1sja!2sjp!4v1704067200000!5m2!1sja!2sjp&q=鳥取県東伯郡琴浦町大字別所1128赤碕港"
+                      width="100%"
+                      height="100%"
+                      style={{ border: 0, minHeight: '400px' }}
+                      allowFullScreen
+                      loading="lazy"
+                      referrerPolicy="no-referrer-when-downgrade"
+                      title="赤碕港の場所"
+                    />
+                  </div>
+                  <div className="absolute bottom-4 right-4 bg-white/90 backdrop-blur-sm rounded-lg p-3 shadow-lg">
+                    <a
+                      href="https://maps.app.goo.gl/RrNkBLXPYakqmU6n8"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm"
+                    >
+                      <MapPin className="h-4 w-4 mr-2" />
+                      Google Mapsで開く
+                    </a>
                   </div>
                 </CardContent>
               </Card>

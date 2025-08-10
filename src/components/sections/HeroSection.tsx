@@ -102,8 +102,8 @@ export function HeroSection() {
 
             <div className="bg-white/10 backdrop-blur-md rounded-xl p-6 transform hover:scale-105 transition-all duration-300 border border-white/20">
               <MapPin className="h-10 w-10 mb-3 text-yellow-300 mx-auto" />
-              <h3 className="text-xl font-bold mb-2">好アクセス</h3>
-              <p className="text-sm text-blue-100">鳥取駅から車で15分</p>
+              <h3 className="text-xl font-bold mb-2">赤碕港出港</h3>
+              <p className="text-sm text-blue-100">琴浦町から日本海へ</p>
             </div>
 
             <div className="bg-white/10 backdrop-blur-md rounded-xl p-6 transform hover:scale-105 transition-all duration-300 border border-white/20">
