@@ -320,7 +320,6 @@ export default function AdminPage() {
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [loading, setLoading] = useState(true);
   const [mounted, setMounted] = useState(false);
-  const [editingReservation, setEditingReservation] = useState<Reservation | null>(null);
 
   // データを読み込み
   const loadData = async () => {

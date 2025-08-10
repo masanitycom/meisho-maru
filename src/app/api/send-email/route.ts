@@ -33,7 +33,18 @@ export async function POST(request: NextRequest) {
   }
 }
 
-function createReservationEmailContent(reservationData: any) {
+interface ReservationEmailData {
+  name: string;
+  date: string;
+  trip_number: number;
+  people_count: number;
+  phone: string;
+  email?: string;
+  rod_rental: boolean;
+  notes?: string;
+}
+
+function createReservationEmailContent(reservationData: ReservationEmailData) {
   const {
     name,
     date,

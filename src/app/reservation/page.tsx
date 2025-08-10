@@ -69,7 +69,7 @@ function ReservationForm() {
         source: 'web',
       };
       
-      const createdReservation = await createReservation(reservationData);
+      await createReservation(reservationData);
       
       // メール送信
       if (formData.email) {
