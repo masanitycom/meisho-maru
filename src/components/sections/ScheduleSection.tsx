@@ -96,23 +96,23 @@ export function ScheduleSection() {
       weekDays.push(
         <div
           key={i}
-          className={`border rounded-lg p-3 ${
+          className={`border rounded-lg p-2 ${
             isPast ? 'bg-gray-100 opacity-50' : 'hover:bg-blue-50 cursor-pointer'
           } ${isToday ? 'ring-2 ring-primary' : ''}`}
         >
-          <div className="text-center mb-2">
-            <div className="text-xs text-gray-600">
+          <div className="text-center mb-1">
+            <div className="text-[10px] text-gray-600">
               {['日', '月', '火', '水', '木', '金', '土'][date.getDay()]}
             </div>
-            <div className="font-bold text-lg">{date.getDate()}</div>
+            <div className="font-bold text-sm">{date.getDate()}</div>
           </div>
           {!isPast && (
-            <div className="space-y-2">
-              <div className={`text-xs text-center p-2 rounded ${trip1Seats > 5 ? 'bg-green-100 text-green-800' : trip1Seats > 2 ? 'bg-orange-100 text-orange-800' : 'bg-red-100 text-red-800'}`}>
-                1便<br />残{trip1Seats}席
+            <div className="space-y-1">
+              <div className={`text-xs text-center p-1 rounded whitespace-nowrap ${trip1Seats > 5 ? 'bg-green-100 text-green-800' : trip1Seats > 2 ? 'bg-orange-100 text-orange-800' : 'bg-red-100 text-red-800'}`}>
+                1便 {trip1Seats}
               </div>
-              <div className={`text-xs text-center p-2 rounded ${trip2Seats > 5 ? 'bg-green-100 text-green-800' : trip2Seats > 2 ? 'bg-orange-100 text-orange-800' : 'bg-red-100 text-red-800'}`}>
-                2便<br />残{trip2Seats}席
+              <div className={`text-xs text-center p-1 rounded whitespace-nowrap ${trip2Seats > 5 ? 'bg-green-100 text-green-800' : trip2Seats > 2 ? 'bg-orange-100 text-orange-800' : 'bg-red-100 text-red-800'}`}>
+                2便 {trip2Seats}
               </div>
             </div>
           )}
