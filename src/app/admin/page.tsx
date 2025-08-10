@@ -1,6 +1,7 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { createReservation, upsertCustomer, getReservations, getCustomers } from '@/lib/supabase';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -26,7 +27,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
-function NewReservationForm() {
+function NewReservationForm({ onReservationCreated }: { onReservationCreated: () => Promise<void> }) {
   const [formData, setFormData] = useState({
     date: '',
     tripNumber: '',
@@ -46,12 +47,38 @@ function NewReservationForm() {
     e.preventDefault();
     setLoading(true);
     
-    // TODO: Supabaseに予約データを保存
-    console.log('管理者による予約登録:', formData);
-    
-    // 仮の成功処理
-    setTimeout(() => {
+    try {
+      // 顧客データを作成またはアップデート
+      const customerData = {
+        name: formData.name,
+        name_kana: formData.nameKana,
+        phone: formData.phone,
+        email: formData.email || undefined,
+      };
+      
+      await upsertCustomer(customerData);
+      
+      // 予約データを作成
+      const reservationData = {
+        date: formData.date,
+        trip_number: parseInt(formData.tripNumber),
+        people_count: parseInt(formData.peopleCount),
+        name: formData.name,
+        name_kana: formData.nameKana,
+        phone: formData.phone,
+        email: formData.email || undefined,
+        rod_rental: formData.rodRental === 'true',
+        notes: formData.notes || undefined,
+        source: formData.source,
+      };
+      
+      await createReservation(reservationData);
+      
       alert('予約を登録しました。');
+      
+      // データを再読み込み
+      await onReservationCreated();
+      
       // フォームをリセット
       setFormData({
         date: '',
@@ -65,8 +92,13 @@ function NewReservationForm() {
         notes: '',
         source: 'phone',
       });
+      
+    } catch (error) {
+      console.error('予約登録エラー:', error);
+      alert('予約の登録中にエラーが発生しました。もう一度お試しください。');
+    } finally {
       setLoading(false);
-    }, 1000);
+    }
   };
 
   const calculateTotal = () => {
@@ -262,70 +294,30 @@ function NewReservationForm() {
 }
 
 export default function AdminPage() {
-  const [reservations] = useState([
-    {
-      id: '1',
-      date: '2025-01-15',
-      tripNumber: 1,
-      customerName: '田中 一郎',
-      phone: '090-1234-5678',
-      email: 'tanaka@example.com',
-      peopleCount: 2,
-      status: 'confirmed',
-      rodRental: true,
-      amount: 26000,
-      createdAt: '2025-01-10',
-    },
-    {
-      id: '2',
-      date: '2025-01-15',
-      tripNumber: 2,
-      customerName: '佐藤 花子',
-      phone: '080-9876-5432',
-      email: 'sato@example.com',
-      peopleCount: 1,
-      status: 'confirmed',
-      rodRental: false,
-      amount: 11000,
-      createdAt: '2025-01-12',
-    },
-    {
-      id: '3',
-      date: '2025-01-16',
-      tripNumber: 1,
-      customerName: '鈴木 太郎',
-      phone: '070-5555-4444',
-      email: 'suzuki@example.com',
-      peopleCount: 3,
-      status: 'pending',
-      rodRental: true,
-      amount: 39000,
-      createdAt: '2025-01-13',
-    },
-  ]);
+  const [reservations, setReservations] = useState<any[]>([]);
+  const [customers, setCustomers] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const [customers] = useState([
-    {
-      id: '1',
-      name: '田中 一郎',
-      nameKana: 'タナカ イチロウ',
-      phone: '090-1234-5678',
-      email: 'tanaka@example.com',
-      visitCount: 5,
-      lastVisit: '2025-01-15',
-      totalAmount: 130000,
-    },
-    {
-      id: '2',
-      name: '佐藤 花子',
-      nameKana: 'サトウ ハナコ',
-      phone: '080-9876-5432',
-      email: 'sato@example.com',
-      visitCount: 2,
-      lastVisit: '2025-01-15',
-      totalAmount: 22000,
-    },
-  ]);
+  // データを読み込み
+  const loadData = async () => {
+    try {
+      setLoading(true);
+      const [reservationsData, customersData] = await Promise.all([
+        getReservations(),
+        getCustomers(),
+      ]);
+      setReservations(reservationsData || []);
+      setCustomers(customersData || []);
+    } catch (error) {
+      console.error('データの取得に失敗しました:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadData();
+  }, []);
 
   const getStatusBadge = (status: string) => {
     switch (status) {
@@ -343,9 +335,15 @@ export default function AdminPage() {
   const getTodayStats = () => {
     const today = new Date().toISOString().split('T')[0];
     const todayReservations = reservations.filter(r => r.date === today);
-    const trip1Count = todayReservations.filter(r => r.tripNumber === 1).reduce((sum, r) => sum + r.peopleCount, 0);
-    const trip2Count = todayReservations.filter(r => r.tripNumber === 2).reduce((sum, r) => sum + r.peopleCount, 0);
-    const todayRevenue = todayReservations.reduce((sum, r) => sum + r.amount, 0);
+    const trip1Count = todayReservations.filter(r => r.trip_number === 1).reduce((sum, r) => sum + r.people_count, 0);
+    const trip2Count = todayReservations.filter(r => r.trip_number === 2).reduce((sum, r) => sum + r.people_count, 0);
+    
+    // 料金を計算（11,000 + 竿レンタル2,000）
+    const todayRevenue = todayReservations.reduce((sum, r) => {
+      const basePrice = 11000 * r.people_count;
+      const rodPrice = r.rod_rental ? 2000 * r.people_count : 0;
+      return sum + basePrice + rodPrice;
+    }, 0);
     
     return { trip1Count, trip2Count, todayRevenue, totalReservations: todayReservations.length };
   };
@@ -435,34 +433,51 @@ export default function AdminPage() {
                       </tr>
                     </thead>
                     <tbody>
-                      {reservations.map((reservation) => (
-                        <tr key={reservation.id} className="border-b">
-                          <td className="p-4">{reservation.date}</td>
-                          <td className="p-4">{reservation.tripNumber}便</td>
-                          <td className="p-4">
-                            <div>
-                              <div className="font-medium">{reservation.customerName}</div>
-                              <div className="text-sm text-gray-600">
-                                <Phone className="inline h-3 w-3 mr-1" />
-                                {reservation.phone}
-                              </div>
-                            </div>
-                          </td>
-                          <td className="p-4">{reservation.peopleCount}名</td>
-                          <td className="p-4">¥{reservation.amount.toLocaleString()}</td>
-                          <td className="p-4">{getStatusBadge(reservation.status)}</td>
-                          <td className="p-4">
-                            <div className="flex gap-2">
-                              <Button size="sm" variant="outline">
-                                <Edit className="h-3 w-3" />
-                              </Button>
-                              <Button size="sm" variant="outline">
-                                <Trash2 className="h-3 w-3" />
-                              </Button>
-                            </div>
+                      {loading ? (
+                        <tr>
+                          <td colSpan={7} className="p-8 text-center">
+                            読み込み中...
                           </td>
                         </tr>
-                      ))}
+                      ) : reservations.length === 0 ? (
+                        <tr>
+                          <td colSpan={7} className="p-8 text-center text-gray-500">
+                            予約データがありません
+                          </td>
+                        </tr>
+                      ) : (
+                        reservations.map((reservation) => {
+                          const amount = 11000 * reservation.people_count + (reservation.rod_rental ? 2000 * reservation.people_count : 0);
+                          return (
+                            <tr key={reservation.id} className="border-b">
+                              <td className="p-4">{reservation.date}</td>
+                              <td className="p-4">{reservation.trip_number}便</td>
+                              <td className="p-4">
+                                <div>
+                                  <div className="font-medium">{reservation.name}</div>
+                                  <div className="text-sm text-gray-600">
+                                    <Phone className="inline h-3 w-3 mr-1" />
+                                    {reservation.phone}
+                                  </div>
+                                </div>
+                              </td>
+                              <td className="p-4">{reservation.people_count}名</td>
+                              <td className="p-4">¥{amount.toLocaleString()}</td>
+                              <td className="p-4">{getStatusBadge(reservation.status || 'confirmed')}</td>
+                              <td className="p-4">
+                                <div className="flex gap-2">
+                                  <Button size="sm" variant="outline">
+                                    <Edit className="h-3 w-3" />
+                                  </Button>
+                                  <Button size="sm" variant="outline">
+                                    <Trash2 className="h-3 w-3" />
+                                  </Button>
+                                </div>
+                              </td>
+                            </tr>
+                          );
+                        })
+                      )}
                     </tbody>
                   </table>
                 </div>
@@ -478,7 +493,7 @@ export default function AdminPage() {
                 <p className="text-sm text-gray-600">電話予約などの管理者による予約登録</p>
               </CardHeader>
               <CardContent>
-                <NewReservationForm />
+                <NewReservationForm onReservationCreated={loadData} />
               </CardContent>
             </Card>
           </TabsContent>
@@ -503,43 +518,59 @@ export default function AdminPage() {
                       </tr>
                     </thead>
                     <tbody>
-                      {customers.map((customer) => (
-                        <tr key={customer.id} className="border-b">
-                          <td className="p-4">
-                            <div>
-                              <div className="font-medium">{customer.name}</div>
-                              <div className="text-sm text-gray-600">{customer.nameKana}</div>
-                            </div>
-                          </td>
-                          <td className="p-4">
-                            <div className="text-sm">
-                              <div className="flex items-center gap-1 mb-1">
-                                <Phone className="h-3 w-3" />
-                                {customer.phone}
-                              </div>
-                              <div className="flex items-center gap-1">
-                                <Mail className="h-3 w-3" />
-                                {customer.email}
-                              </div>
-                            </div>
-                          </td>
-                          <td className="p-4">
-                            <Badge variant="secondary">{customer.visitCount}回</Badge>
-                          </td>
-                          <td className="p-4">{customer.lastVisit}</td>
-                          <td className="p-4">¥{customer.totalAmount.toLocaleString()}</td>
-                          <td className="p-4">
-                            <div className="flex gap-2">
-                              <Button size="sm" variant="outline">
-                                <Edit className="h-3 w-3" />
-                              </Button>
-                              <Button size="sm" variant="outline">
-                                <Trash2 className="h-3 w-3" />
-                              </Button>
-                            </div>
+                      {loading ? (
+                        <tr>
+                          <td colSpan={6} className="p-8 text-center">
+                            読み込み中...
                           </td>
                         </tr>
-                      ))}
+                      ) : customers.length === 0 ? (
+                        <tr>
+                          <td colSpan={6} className="p-8 text-center text-gray-500">
+                            顧客データがありません
+                          </td>
+                        </tr>
+                      ) : (
+                        customers.map((customer) => (
+                          <tr key={customer.id} className="border-b">
+                            <td className="p-4">
+                              <div>
+                                <div className="font-medium">{customer.name}</div>
+                                <div className="text-sm text-gray-600">{customer.name_kana}</div>
+                              </div>
+                            </td>
+                            <td className="p-4">
+                              <div className="text-sm">
+                                <div className="flex items-center gap-1 mb-1">
+                                  <Phone className="h-3 w-3" />
+                                  {customer.phone}
+                                </div>
+                                {customer.email && (
+                                  <div className="flex items-center gap-1">
+                                    <Mail className="h-3 w-3" />
+                                    {customer.email}
+                                  </div>
+                                )}
+                              </div>
+                            </td>
+                            <td className="p-4">
+                              <Badge variant="secondary">-回</Badge>
+                            </td>
+                            <td className="p-4">{customer.created_at ? new Date(customer.created_at).toLocaleDateString() : '-'}</td>
+                            <td className="p-4">-</td>
+                            <td className="p-4">
+                              <div className="flex gap-2">
+                                <Button size="sm" variant="outline">
+                                  <Edit className="h-3 w-3" />
+                                </Button>
+                                <Button size="sm" variant="outline">
+                                  <Trash2 className="h-3 w-3" />
+                                </Button>
+                              </div>
+                            </td>
+                          </tr>
+                        ))
+                      )}
                     </tbody>
                   </table>
                 </div>

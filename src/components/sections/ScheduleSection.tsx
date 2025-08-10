@@ -1,6 +1,7 @@
 'use client';
 
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
+import { getAvailableSeats } from '@/lib/supabase';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Calendar, Clock, ChevronLeft, ChevronRight, CheckCircle, AlertCircle, XCircle } from 'lucide-react';
@@ -9,17 +10,12 @@ import Link from 'next/link';
 export function ScheduleSection() {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
+  const [dates, setDates] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  // 残り人数のダミーデータ（実際にはSupabaseから取得）
-  const getAvailableSeats = (_date: string, _tripNumber: 1 | 2) => {
-    // ランダムな残り席数を生成（デモ用）
-    const randomSeats = Math.floor(Math.random() * 10);
-    return randomSeats;
-  };
-
-  // 今日から30日分のデータを生成
-  const generateDates = () => {
-    const dates = [];
+  // 今日から30日分のデータを生成（実際の空席数取得）
+  const generateDates = async () => {
+    const dateList = [];
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     
@@ -28,23 +24,46 @@ export function ScheduleSection() {
       date.setDate(today.getDate() + i);
       
       const dateStr = date.toISOString().split('T')[0];
-      const trip1Seats = getAvailableSeats(dateStr, 1);
-      const trip2Seats = getAvailableSeats(dateStr, 2);
       
-      dates.push({
-        date: date,
-        dateStr: dateStr,
-        trip1Seats: trip1Seats,
-        trip2Seats: trip2Seats,
-        dayOfWeek: ['日', '月', '火', '水', '木', '金', '土'][date.getDay()],
-        isToday: i === 0,
-      });
+      try {
+        const trip1Seats = await getAvailableSeats(dateStr, 1);
+        const trip2Seats = await getAvailableSeats(dateStr, 2);
+        
+        dateList.push({
+          date: date,
+          dateStr: dateStr,
+          trip1Seats: trip1Seats,
+          trip2Seats: trip2Seats,
+          dayOfWeek: ['日', '月', '火', '水', '木', '金', '土'][date.getDay()],
+          isToday: i === 0,
+        });
+      } catch (error) {
+        console.error(`Error fetching seats for ${dateStr}:`, error);
+        // エラーの場合はデフォルト値
+        dateList.push({
+          date: date,
+          dateStr: dateStr,
+          trip1Seats: 10,
+          trip2Seats: 10,
+          dayOfWeek: ['日', '月', '火', '水', '木', '金', '土'][date.getDay()],
+          isToday: i === 0,
+        });
+      }
     }
     
-    return dates;
+    return dateList;
   };
 
-  const dates = generateDates();
+  useEffect(() => {
+    const loadDates = async () => {
+      setLoading(true);
+      const dateData = await generateDates();
+      setDates(dateData);
+      setLoading(false);
+    };
+    
+    loadDates();
+  }, []);
 
   const getStatusIcon = (seats: number) => {
     if (seats === 0) return <XCircle className="h-5 w-5 text-red-500" />;
@@ -130,7 +149,9 @@ export function ScheduleSection() {
                 className="flex gap-4 overflow-x-auto pb-4 px-1 sm:px-10 scrollbar-hide"
                 style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
               >
-                {dates.map((dateInfo) => (
+                {loading ? (
+                  <div className="flex-shrink-0 w-72 sm:w-80 h-64 bg-gray-200 animate-pulse rounded-lg"></div>
+                ) : dates.map((dateInfo) => (
                   <div
                     key={dateInfo.dateStr}
                     className={`flex-shrink-0 w-72 sm:w-80 ${

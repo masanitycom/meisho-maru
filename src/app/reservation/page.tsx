@@ -2,6 +2,7 @@
 
 import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { createReservation, upsertCustomer } from '@/lib/supabase';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -43,14 +44,42 @@ function ReservationForm() {
     e.preventDefault();
     setLoading(true);
     
-    // TODO: Supabaseに予約データを保存
-    console.log('予約データ:', formData);
-    
-    // 仮の成功処理
-    setTimeout(() => {
+    try {
+      // 顧客データを作成またはアップデート
+      const customerData = {
+        name: formData.name,
+        name_kana: formData.nameKana,
+        phone: formData.phone,
+        email: formData.email || undefined,
+      };
+      
+      await upsertCustomer(customerData);
+      
+      // 予約データを作成
+      const reservationData = {
+        date: formData.date,
+        trip_number: parseInt(formData.tripNumber),
+        people_count: parseInt(formData.peopleCount),
+        name: formData.name,
+        name_kana: formData.nameKana,
+        phone: formData.phone,
+        email: formData.email || undefined,
+        rod_rental: formData.rodRental === 'true',
+        notes: formData.notes || undefined,
+        source: 'web',
+      };
+      
+      await createReservation(reservationData);
+      
       alert('予約を受け付けました。確認メールをお送りします。');
       router.push('/');
-    }, 1000);
+      
+    } catch (error) {
+      console.error('予約エラー:', error);
+      alert('予約の処理中にエラーが発生しました。もう一度お試しください。');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const calculateTotal = () => {

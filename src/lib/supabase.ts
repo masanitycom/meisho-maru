@@ -1,7 +1,117 @@
-import { createBrowserClient } from '@supabase/ssr';
-import { Database } from '@/types/database';
+import { createClient } from '@supabase/supabase-js'
+import { Database } from '@/types/database'
 
-export const supabase = createBrowserClient<Database>(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+
+export const supabase = createClient<Database>(supabaseUrl, supabaseAnonKey)
+
+// 予約を作成
+export const createReservation = async (reservationData: {
+  date: string;
+  trip_number: number;
+  people_count: number;
+  name: string;
+  name_kana: string;
+  phone: string;
+  email?: string;
+  rod_rental: boolean;
+  notes?: string;
+  source?: string;
+}) => {
+  const { data, error } = await supabase
+    .from('reservations')
+    .insert([reservationData])
+    .select()
+    
+  if (error) throw error
+  return data
+}
+
+// 顧客を作成または取得
+export const upsertCustomer = async (customerData: {
+  name: string;
+  name_kana: string;
+  phone: string;
+  email?: string;
+}) => {
+  const { data, error } = await supabase
+    .from('customers')
+    .upsert([customerData], { onConflict: 'phone' })
+    .select()
+    
+  if (error) throw error
+  return data
+}
+
+// 予約一覧取得
+export const getReservations = async () => {
+  const { data, error } = await supabase
+    .from('reservations')
+    .select(`
+      *,
+      customers (name, phone, email)
+    `)
+    .order('date', { ascending: true })
+    
+  if (error) throw error
+  return data
+}
+
+// 顧客一覧取得
+export const getCustomers = async () => {
+  const { data, error } = await supabase
+    .from('customers')
+    .select('*')
+    .order('created_at', { ascending: false })
+    
+  if (error) throw error
+  return data
+}
+
+// スケジュール取得
+export const getSchedules = async (startDate?: string, endDate?: string) => {
+  let query = supabase
+    .from('schedules')
+    .select('*')
+    .order('date', { ascending: true })
+    
+  if (startDate) query = query.gte('date', startDate)
+  if (endDate) query = query.lte('date', endDate)
+    
+  const { data, error } = await query
+    
+  if (error) throw error
+  return data
+}
+
+// 予約可能席数を計算
+export const getAvailableSeats = async (date: string, tripNumber: number) => {
+  // スケジュールから定員を取得
+  const { data: schedule, error: scheduleError } = await supabase
+    .from('schedules')
+    .select('max_capacity')
+    .eq('date', date)
+    .eq('trip_number', tripNumber)
+    .single()
+    
+  if (scheduleError) {
+    // スケジュールが存在しない場合はデフォルト値
+    return 10
+  }
+  
+  // 既存予約数を取得
+  const { data: reservations, error: reservationError } = await supabase
+    .from('reservations')
+    .select('people_count')
+    .eq('date', date)
+    .eq('trip_number', tripNumber)
+    .eq('status', 'confirmed')
+    
+  if (reservationError) throw reservationError
+  
+  const bookedSeats = reservations?.reduce((sum, r) => sum + r.people_count, 0) || 0
+  const availableSeats = schedule.max_capacity - bookedSeats
+  
+  return Math.max(0, availableSeats)
+}
