@@ -19,7 +19,6 @@ import {
   Edit,
   Trash2,
   Settings,
-  User,
   Plus,
   Ship
 } from 'lucide-react';
@@ -295,9 +294,29 @@ function NewReservationForm({ onReservationCreated }: { onReservationCreated: ()
   );
 }
 
+interface Reservation {
+  id: string;
+  date: string;
+  trip_number: number;
+  people_count: number;
+  name: string;
+  phone: string;
+  rod_rental: boolean;
+  status?: string;
+}
+
+interface Customer {
+  id: string;
+  name: string;
+  name_kana: string;
+  phone: string;
+  email?: string;
+  created_at: string;
+}
+
 export default function AdminPage() {
-  const [reservations, setReservations] = useState<any[]>([]);
-  const [customers, setCustomers] = useState<any[]>([]);
+  const [reservations, setReservations] = useState<Reservation[]>([]);
+  const [customers, setCustomers] = useState<Customer[]>([]);
   const [loading, setLoading] = useState(true);
   const [mounted, setMounted] = useState(false);
 

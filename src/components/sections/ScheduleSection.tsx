@@ -7,16 +7,25 @@ import { Button } from '@/components/ui/button';
 import { Calendar, Clock, ChevronLeft, ChevronRight, CheckCircle, AlertCircle, XCircle } from 'lucide-react';
 import Link from 'next/link';
 
+interface DateInfo {
+  date: Date;
+  dateStr: string;
+  trip1Seats: number;
+  trip2Seats: number;
+  dayOfWeek: string;
+  isToday: boolean;
+}
+
 export function ScheduleSection() {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
-  const [dates, setDates] = useState<any[]>([]);
+  const [dates, setDates] = useState<DateInfo[]>([]);
   const [loading, setLoading] = useState(true);
   const [mounted, setMounted] = useState(false);
 
   // 今日から30日分のデータを生成（実際の空席数取得）
-  const generateDates = async () => {
-    const dateList = [];
+  const generateDates = async (): Promise<DateInfo[]> => {
+    const dateList: DateInfo[] = [];
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     

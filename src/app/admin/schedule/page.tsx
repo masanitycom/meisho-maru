@@ -9,7 +9,6 @@ import { Label } from '@/components/ui/label';
 import { getSchedules, updateSchedule, setBulkHoliday, getAvailableSeats } from '@/lib/supabase';
 import { 
   Calendar, 
-  Settings, 
   Plus, 
   Minus, 
   X, 
