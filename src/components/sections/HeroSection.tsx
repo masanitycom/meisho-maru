@@ -36,13 +36,13 @@ export function HeroSection() {
                 <img 
                   src="/images/logo.png" 
                   alt="明勝丸ロゴ" 
-                  className="h-24 w-24 sm:h-32 w-32 md:h-36 md:w-36 lg:h-48 lg:w-48 mx-auto object-contain drop-shadow-2xl"
+                  className="h-48 w-48 sm:h-64 w-64 md:h-80 md:w-80 lg:h-96 lg:w-96 xl:h-[28rem] xl:w-[28rem] mx-auto object-contain drop-shadow-2xl"
                   style={{
                     filter: 'drop-shadow(0 0 30px rgba(255,255,255,0.9)) drop-shadow(0 0 60px rgba(255,255,255,0.5)) drop-shadow(0 0 90px rgba(255,255,255,0.3))'
                   }}
                 />
                 <div className="hidden">
-                  <Anchor className="h-24 w-24 sm:h-32 w-32 md:h-36 md:w-36 lg:h-48 lg:w-48 mx-auto text-white drop-shadow-2xl" />
+                  <Anchor className="h-48 w-48 sm:h-64 w-64 md:h-80 md:w-80 lg:h-96 lg:w-96 xl:h-[28rem] xl:w-[28rem] mx-auto text-white drop-shadow-2xl" />
                 </div>
               </div>
             </div>
@@ -76,8 +76,7 @@ export function HeroSection() {
             
             <Button 
               size="lg" 
-              variant="outline" 
-              className="border-2 border-white text-white hover:bg-white hover:text-blue-900 px-8 py-6 text-lg font-bold backdrop-blur-sm transform hover:scale-105 transition-all duration-300 inline-flex items-center"
+              className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white border-2 border-orange-400 px-8 py-6 text-lg font-bold transform hover:scale-105 transition-all duration-300 inline-flex items-center shadow-2xl"
               asChild
             >
               <a href={`tel:${SITE_CONFIG.contact.phone}`} className="inline-flex items-center justify-center w-full">
