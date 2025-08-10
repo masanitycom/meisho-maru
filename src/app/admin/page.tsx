@@ -741,7 +741,7 @@ export default function AdminPage() {
                       各日の定員数調整や運航状態の切り替えを大きなボタンで簡単操作
                     </p>
                     <Button asChild className="w-full h-12 text-lg">
-                      <Link href="/admin/schedule">
+                      <Link href="/admin/schedule" className="inline-flex items-center justify-center w-full">
                         <Calendar className="mr-2 h-5 w-5" />
                         運航管理画面へ
                       </Link>
