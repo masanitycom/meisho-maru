@@ -23,43 +23,50 @@ export function ScheduleSection() {
   const [loading, setLoading] = useState(true);
   const [mounted, setMounted] = useState(false);
 
-  // 今日から30日分のデータを生成（実際の空席数取得）
+  // 今日から30日分のデータを生成（並列処理で高速化）
   const generateDates = async (): Promise<DateInfo[]> => {
-    const dateList: DateInfo[] = [];
+    console.log('🚀 カレンダーデータ生成開始');
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     
-    for (let i = 0; i < 30; i++) {
+    // 全ての日付の空席数を並列で取得
+    const datePromises = Array.from({ length: 30 }, async (_, i) => {
       const date = new Date(today);
       date.setDate(today.getDate() + i);
-      
       const dateStr = date.toISOString().split('T')[0];
       
       try {
-        const trip1Seats = await getAvailableSeats(dateStr, 1);
-        const trip2Seats = await getAvailableSeats(dateStr, 2);
+        // 1便と2便を並列で取得
+        const [trip1Seats, trip2Seats] = await Promise.all([
+          getAvailableSeats(dateStr, 1),
+          getAvailableSeats(dateStr, 2)
+        ]);
         
-        dateList.push({
+        return {
           date: date,
           dateStr: dateStr,
           trip1Seats: trip1Seats,
           trip2Seats: trip2Seats,
           dayOfWeek: ['日', '月', '火', '水', '木', '金', '土'][date.getDay()],
           isToday: i === 0,
-        });
+        };
       } catch (error) {
         console.error(`Error fetching seats for ${dateStr}:`, error);
         // エラーの場合はデフォルト値
-        dateList.push({
+        return {
           date: date,
           dateStr: dateStr,
           trip1Seats: 10,
           trip2Seats: 10,
           dayOfWeek: ['日', '月', '火', '水', '木', '金', '土'][date.getDay()],
           isToday: i === 0,
-        });
+        };
       }
-    }
+    });
+    
+    // 全ての日付のデータを並列で待機
+    const dateList = await Promise.all(datePromises);
+    console.log('✅ カレンダーデータ生成完了:', dateList.length, '日分');
     
     return dateList;
   };

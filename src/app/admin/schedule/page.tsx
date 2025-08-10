@@ -37,37 +37,56 @@ export default function ScheduleManagePage() {
   const [holidayStart, setHolidayStart] = useState('');
   const [holidayEnd, setHolidayEnd] = useState('');
 
-  // 今日から14日分のスケジュールを表示
+  // 今日から14日分のスケジュールを表示（並列処理で高速化）
   const loadSchedules = async () => {
     setLoading(true);
     try {
-      const scheduleData: ScheduleData[] = [];
+      console.log('🚀 運航管理データ読み込み開始');
       const today = new Date();
       
-      for (let i = 0; i < 14; i++) {
+      // 全ての日付のデータを並列で取得
+      const schedulePromises = Array.from({ length: 14 }, async (_, i) => {
         const date = new Date(today);
         date.setDate(today.getDate() + i);
         const dateStr = date.toISOString().split('T')[0];
         
-        // スケジュール取得
-        const schedulesFromDB = await getSchedules(dateStr, dateStr);
-        const trip1Schedule = schedulesFromDB?.find(s => s.trip_number === 1);
-        const trip2Schedule = schedulesFromDB?.find(s => s.trip_number === 2);
-        
-        // 空席数取得
-        const trip1Seats = await getAvailableSeats(dateStr, 1);
-        const trip2Seats = await getAvailableSeats(dateStr, 2);
-        
-        scheduleData.push({
-          date: dateStr,
-          trip1Available: trip1Schedule?.is_available ?? true,
-          trip2Available: trip2Schedule?.is_available ?? true,
-          trip1Capacity: trip1Schedule?.max_capacity ?? 10,
-          trip2Capacity: trip2Schedule?.max_capacity ?? 10,
-          trip1Seats,
-          trip2Seats,
-        });
-      }
+        try {
+          // スケジュール取得と空席数取得を並列実行
+          const [schedulesFromDB, trip1Seats, trip2Seats] = await Promise.all([
+            getSchedules(dateStr, dateStr),
+            getAvailableSeats(dateStr, 1),
+            getAvailableSeats(dateStr, 2)
+          ]);
+          
+          const trip1Schedule = schedulesFromDB?.find(s => s.trip_number === 1);
+          const trip2Schedule = schedulesFromDB?.find(s => s.trip_number === 2);
+          
+          return {
+            date: dateStr,
+            trip1Available: trip1Schedule?.is_available ?? true,
+            trip2Available: trip2Schedule?.is_available ?? true,
+            trip1Capacity: trip1Schedule?.max_capacity ?? 10,
+            trip2Capacity: trip2Schedule?.max_capacity ?? 10,
+            trip1Seats,
+            trip2Seats,
+          };
+        } catch (error) {
+          console.error(`Error loading schedule for ${dateStr}:`, error);
+          // エラーの場合はデフォルト値
+          return {
+            date: dateStr,
+            trip1Available: true,
+            trip2Available: true,
+            trip1Capacity: 10,
+            trip2Capacity: 10,
+            trip1Seats: 10,
+            trip2Seats: 10,
+          };
+        }
+      });
+      
+      const scheduleData = await Promise.all(schedulePromises);
+      console.log('✅ 運航管理データ読み込み完了:', scheduleData.length, '日分');
       
       setSchedules(scheduleData);
     } catch (error) {

@@ -87,38 +87,54 @@ export const getSchedules = async (startDate?: string, endDate?: string) => {
 
 // 予約可能席数を計算
 export const getAvailableSeats = async (date: string, tripNumber: number) => {
-  // スケジュールから定員と運航状態を取得
-  const { data: schedule, error: scheduleError } = await supabase
-    .from('schedules')
-    .select('max_capacity, is_available')
-    .eq('date', date)
-    .eq('trip_number', tripNumber)
-    .single()
+  try {
+    console.log(`🔍 空席確認開始: ${date}, 便${tripNumber}`);
     
-  if (scheduleError) {
-    // スケジュールが存在しない場合はデフォルト値
-    return 10
-  }
-  
-  // 運航停止の場合は0を返す
-  if (!schedule.is_available) {
-    return 0
-  }
-  
-  // 既存予約数を取得
-  const { data: reservations, error: reservationError } = await supabase
-    .from('reservations')
-    .select('people_count')
-    .eq('date', date)
-    .eq('trip_number', tripNumber)
-    .eq('status', 'confirmed')
+    // スケジュールから定員と運航状態を取得
+    const { data: schedule, error: scheduleError } = await supabase
+      .from('schedules')
+      .select('max_capacity, is_available')
+      .eq('date', date)
+      .eq('trip_number', tripNumber)
+      .single()
+      
+    if (scheduleError) {
+      console.log(`⚠️ スケジュールエラー ${date}-${tripNumber}:`, scheduleError.message);
+      // スケジュールが存在しない場合はデフォルト値
+      return 10
+    }
     
-  if (reservationError) throw reservationError
-  
-  const bookedSeats = reservations?.reduce((sum, r) => sum + r.people_count, 0) || 0
-  const availableSeats = schedule.max_capacity - bookedSeats
-  
-  return Math.max(0, availableSeats)
+    console.log(`📅 スケジュール取得 ${date}-${tripNumber}:`, schedule);
+    
+    // 運航停止の場合は0を返す
+    if (!schedule.is_available) {
+      console.log(`❌ 運航停止 ${date}-${tripNumber}`);
+      return 0
+    }
+    
+    // 既存予約数を取得
+    const { data: reservations, error: reservationError } = await supabase
+      .from('reservations')
+      .select('people_count')
+      .eq('date', date)
+      .eq('trip_number', tripNumber)
+      .eq('status', 'confirmed')
+      
+    if (reservationError) {
+      console.error(`❌ 予約取得エラー ${date}-${tripNumber}:`, reservationError);
+      throw reservationError
+    }
+    
+    const bookedSeats = reservations?.reduce((sum, r) => sum + r.people_count, 0) || 0
+    const availableSeats = schedule.max_capacity - bookedSeats
+    
+    console.log(`✅ 空席計算完了 ${date}-${tripNumber}: 定員${schedule.max_capacity} - 予約${bookedSeats} = 空席${availableSeats}`);
+    
+    return Math.max(0, availableSeats)
+  } catch (error) {
+    console.error(`💥 getAvailableSeats エラー ${date}-${tripNumber}:`, error);
+    return 10; // エラーの場合はデフォルト値
+  }
 }
 
 // スケジュール更新（残席調整・休業設定）
