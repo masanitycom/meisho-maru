@@ -9,7 +9,6 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Calendar, Clock, Users, Phone, Mail, User, AlertCircle } from 'lucide-react';
-import Link from 'next/link';
 
 export default function ReservationPage() {
   const router = useRouter();
