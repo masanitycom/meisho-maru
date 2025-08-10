@@ -26,19 +26,19 @@ export function HeroSection() {
 
       <div className="container mx-auto px-4 relative z-10">
         <div className="text-center text-white">
-          {/* ロゴとタイトル */}
+          {/* ロゴ */}
           <div className="mb-6 md:mb-8 animate-fade-in-down">
             <div className="inline-block relative">
-              <div className="absolute -inset-4 bg-white/20 blur-2xl rounded-full hidden md:block"></div>
+              <div className="absolute -inset-8 bg-white/20 blur-3xl rounded-full hidden md:block"></div>
               
               {/* ロゴ画像 */}
-              <div className="mb-4 md:mb-6">
+              <div>
                 <img 
                   src="/images/logo.png" 
                   alt="明勝丸ロゴ" 
-                  className="h-32 w-32 md:h-48 md:w-48 mx-auto object-contain drop-shadow-2xl"
+                  className="h-24 w-24 sm:h-32 w-32 md:h-36 md:w-36 lg:h-48 lg:w-48 mx-auto object-contain drop-shadow-2xl"
                   style={{
-                    filter: 'drop-shadow(0 0 20px rgba(255,255,255,0.8)) drop-shadow(0 0 40px rgba(255,255,255,0.4))'
+                    filter: 'drop-shadow(0 0 30px rgba(255,255,255,0.9)) drop-shadow(0 0 60px rgba(255,255,255,0.5)) drop-shadow(0 0 90px rgba(255,255,255,0.3))'
                   }}
                   onError={(e) => {
                     // ロゴがない場合はアンカーアイコンを表示
@@ -47,17 +47,8 @@ export function HeroSection() {
                   }}
                 />
                 <div className="hidden">
-                  <Anchor className="h-32 w-32 md:h-48 md:w-48 mx-auto text-white drop-shadow-2xl" />
+                  <Anchor className="h-24 w-24 sm:h-32 w-32 md:h-36 md:w-36 lg:h-48 lg:w-48 mx-auto text-white drop-shadow-2xl" />
                 </div>
-              </div>
-              
-              <h1 className="relative text-5xl sm:text-7xl md:text-9xl font-black tracking-wider">
-                <span className="bg-gradient-to-r from-yellow-300 via-yellow-400 to-orange-400 bg-clip-text text-transparent drop-shadow-2xl">
-                  明勝丸
-                </span>
-              </h1>
-              <div className="text-sm sm:text-lg md:text-xl mt-2 tracking-[0.3em] text-yellow-300">
-                MEISHO-MARU
               </div>
             </div>
           </div>
@@ -82,7 +73,7 @@ export function HeroSection() {
               className="bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white px-8 py-6 text-lg font-bold shadow-2xl transform hover:scale-105 transition-all duration-300 inline-flex items-center"
               asChild
             >
-              <Link href="/reservation">
+              <Link href="/reservation" className="inline-flex items-center justify-center w-full">
                 <Calendar className="mr-2 h-6 w-6 flex-shrink-0" />
                 <span>予約はこちら</span>
               </Link>
@@ -94,7 +85,7 @@ export function HeroSection() {
               className="border-2 border-white text-white hover:bg-white hover:text-blue-900 px-8 py-6 text-lg font-bold backdrop-blur-sm transform hover:scale-105 transition-all duration-300 inline-flex items-center"
               asChild
             >
-              <a href={`tel:${SITE_CONFIG.contact.phone}`}>
+              <a href={`tel:${SITE_CONFIG.contact.phone}`} className="inline-flex items-center justify-center w-full">
                 <Phone className="mr-2 h-6 w-6 flex-shrink-0" />
                 <span>今すぐ電話</span>
               </a>
