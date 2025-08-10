@@ -26,8 +26,8 @@ export function HeroSection() {
 
       <div className="container mx-auto px-4 relative z-10">
         <div className="text-center text-white">
-          {/* ロゴ */}
-          <div className="mb-6 md:mb-8 animate-fade-in-down">
+          {/* ロゴ - スマホでは非表示 */}
+          <div className="hidden md:block mb-6 md:mb-8 animate-fade-in-down">
             <div className="inline-block relative">
               <div className="absolute -inset-8 bg-white/20 blur-3xl rounded-full hidden md:block"></div>
               
@@ -36,13 +36,13 @@ export function HeroSection() {
                 <img 
                   src="/images/logo.png" 
                   alt="明勝丸ロゴ" 
-                  className="h-48 w-48 sm:h-64 w-64 md:h-80 md:w-80 lg:h-96 lg:w-96 xl:h-[28rem] xl:w-[28rem] mx-auto object-contain drop-shadow-2xl"
+                  className="md:h-80 md:w-80 lg:h-96 lg:w-96 xl:h-[28rem] xl:w-[28rem] mx-auto object-contain drop-shadow-2xl"
                   style={{
                     filter: 'drop-shadow(0 0 30px rgba(255,255,255,0.9)) drop-shadow(0 0 60px rgba(255,255,255,0.5)) drop-shadow(0 0 90px rgba(255,255,255,0.3))'
                   }}
                 />
                 <div className="hidden">
-                  <Anchor className="h-48 w-48 sm:h-64 w-64 md:h-80 md:w-80 lg:h-96 lg:w-96 xl:h-[28rem] xl:w-[28rem] mx-auto text-white drop-shadow-2xl" />
+                  <Anchor className="md:h-80 md:w-80 lg:h-96 lg:w-96 xl:h-[28rem] xl:w-[28rem] mx-auto text-white drop-shadow-2xl" />
                 </div>
               </div>
             </div>
