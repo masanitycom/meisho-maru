@@ -12,6 +12,7 @@ export function ScheduleSection() {
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [dates, setDates] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [mounted, setMounted] = useState(false);
 
   // 今日から30日分のデータを生成（実際の空席数取得）
   const generateDates = async () => {
@@ -55,6 +56,12 @@ export function ScheduleSection() {
   };
 
   useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!mounted) return;
+    
     const loadDates = async () => {
       setLoading(true);
       const dateData = await generateDates();
@@ -63,7 +70,7 @@ export function ScheduleSection() {
     };
     
     loadDates();
-  }, []);
+  }, [mounted]);
 
   const getStatusIcon = (seats: number) => {
     if (seats === 0) return <XCircle className="h-5 w-5 text-red-500" />;
@@ -149,8 +156,10 @@ export function ScheduleSection() {
                 className="flex gap-4 overflow-x-auto pb-4 px-1 sm:px-10 scrollbar-hide"
                 style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
               >
-                {loading ? (
-                  <div className="flex-shrink-0 w-72 sm:w-80 h-64 bg-gray-200 animate-pulse rounded-lg"></div>
+                {!mounted || loading ? (
+                  Array.from({ length: 5 }, (_, i) => (
+                    <div key={i} className="flex-shrink-0 w-72 sm:w-80 h-64 bg-gray-200 animate-pulse rounded-lg"></div>
+                  ))
                 ) : dates.map((dateInfo) => (
                   <div
                     key={dateInfo.dateStr}

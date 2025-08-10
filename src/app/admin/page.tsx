@@ -297,6 +297,7 @@ export default function AdminPage() {
   const [reservations, setReservations] = useState<any[]>([]);
   const [customers, setCustomers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [mounted, setMounted] = useState(false);
 
   // データを読み込み
   const loadData = async () => {
@@ -316,8 +317,14 @@ export default function AdminPage() {
   };
 
   useEffect(() => {
-    loadData();
+    setMounted(true);
   }, []);
+
+  useEffect(() => {
+    if (mounted) {
+      loadData();
+    }
+  }, [mounted]);
 
   const getStatusBadge = (status: string) => {
     switch (status) {
@@ -333,6 +340,8 @@ export default function AdminPage() {
   };
 
   const getTodayStats = () => {
+    if (!mounted) return { trip1Count: 0, trip2Count: 0, todayRevenue: 0, totalReservations: 0 };
+    
     const today = new Date().toISOString().split('T')[0];
     const todayReservations = reservations.filter(r => r.date === today);
     const trip1Count = todayReservations.filter(r => r.trip_number === 1).reduce((sum, r) => sum + r.people_count, 0);
