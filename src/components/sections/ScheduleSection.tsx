@@ -1,126 +1,77 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Calendar, Clock } from 'lucide-react';
+import { Calendar, Clock, ChevronLeft, ChevronRight, CheckCircle, AlertCircle, XCircle } from 'lucide-react';
 import Link from 'next/link';
 
 export function ScheduleSection() {
-  const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth());
-  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
-  const [viewMode, setViewMode] = useState<'month' | 'week'>('month');
-  const [selectedWeek, setSelectedWeek] = useState(0);
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [selectedDate, setSelectedDate] = useState<string | null>(null);
 
   // 残り人数のダミーデータ（実際にはSupabaseから取得）
   const getAvailableSeats = (_date: string, _tripNumber: 1 | 2) => {
     // ランダムな残り席数を生成（デモ用）
-    const randomSeats = Math.floor(Math.random() * 10) + 1;
+    const randomSeats = Math.floor(Math.random() * 10);
     return randomSeats;
   };
 
-  const monthNames = [
-    '1月', '2月', '3月', '4月', '5月', '6月',
-    '7月', '8月', '9月', '10月', '11月', '12月'
-  ];
-
-  const getDaysInMonth = (year: number, month: number) => {
-    return new Date(year, month + 1, 0).getDate();
-  };
-
-  const getFirstDayOfMonth = (year: number, month: number) => {
-    return new Date(year, month, 1).getDay();
-  };
-
-  const renderCalendar = () => {
-    const daysInMonth = getDaysInMonth(selectedYear, selectedMonth);
-    const firstDay = getFirstDayOfMonth(selectedYear, selectedMonth);
-    const days = [];
-
-    for (let i = 0; i < firstDay; i++) {
-      days.push(<div key={`empty-${i}`} className="h-24" />);
-    }
-
-    for (let day = 1; day <= daysInMonth; day++) {
-      const date = new Date(selectedYear, selectedMonth, day);
-      const isToday = 
-        date.toDateString() === new Date().toDateString();
-      const isPast = date < new Date(new Date().setHours(0, 0, 0, 0));
-
-      const dateStr = `${selectedYear}-${(selectedMonth + 1).toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
-      const trip1Seats = getAvailableSeats(dateStr, 1);
-      const trip2Seats = getAvailableSeats(dateStr, 2);
-
-      days.push(
-        <div
-          key={day}
-          className={`border rounded-lg p-1 sm:p-2 min-h-[60px] sm:h-24 ${
-            isPast ? 'bg-gray-100 opacity-50' : 'hover:bg-blue-50 cursor-pointer'
-          } ${isToday ? 'ring-2 ring-primary' : ''}`}
-        >
-          <div className="font-semibold text-xs sm:text-sm mb-1">{day}</div>
-          {!isPast && (
-            <div className="space-y-0.5 sm:space-y-1">
-              <div className={`text-[10px] sm:text-xs ${trip1Seats > 5 ? 'text-green-600' : trip1Seats > 2 ? 'text-orange-600' : 'text-red-600'}`}>
-                1便 残{trip1Seats}
-              </div>
-              <div className={`text-[10px] sm:text-xs ${trip2Seats > 5 ? 'text-green-600' : trip2Seats > 2 ? 'text-orange-600' : 'text-red-600'}`}>
-                2便 残{trip2Seats}
-              </div>
-            </div>
-          )}
-        </div>
-      );
-    }
-
-    return days;
-  };
-
-  const renderWeekView = () => {
+  // 今日から30日分のデータを生成
+  const generateDates = () => {
+    const dates = [];
     const today = new Date();
-    const startOfWeek = new Date(today);
-    startOfWeek.setDate(today.getDate() - today.getDay() + (selectedWeek * 7));
+    today.setHours(0, 0, 0, 0);
     
-    const weekDays = [];
-    for (let i = 0; i < 7; i++) {
-      const date = new Date(startOfWeek);
-      date.setDate(startOfWeek.getDate() + i);
-      
-      const isToday = date.toDateString() === new Date().toDateString();
-      const isPast = date < new Date(new Date().setHours(0, 0, 0, 0));
+    for (let i = 0; i < 30; i++) {
+      const date = new Date(today);
+      date.setDate(today.getDate() + i);
       
       const dateStr = date.toISOString().split('T')[0];
       const trip1Seats = getAvailableSeats(dateStr, 1);
       const trip2Seats = getAvailableSeats(dateStr, 2);
       
-      weekDays.push(
-        <div
-          key={i}
-          className={`border rounded-lg p-2 ${
-            isPast ? 'bg-gray-100 opacity-50' : 'hover:bg-blue-50 cursor-pointer'
-          } ${isToday ? 'ring-2 ring-primary' : ''}`}
-        >
-          <div className="text-center mb-1">
-            <div className="text-[10px] text-gray-600">
-              {['日', '月', '火', '水', '木', '金', '土'][date.getDay()]}
-            </div>
-            <div className="font-bold text-sm">{date.getDate()}</div>
-          </div>
-          {!isPast && (
-            <div className="space-y-1">
-              <div className={`text-xs text-center p-1 rounded whitespace-nowrap ${trip1Seats > 5 ? 'bg-green-100 text-green-800' : trip1Seats > 2 ? 'bg-orange-100 text-orange-800' : 'bg-red-100 text-red-800'}`}>
-                1便 {trip1Seats}
-              </div>
-              <div className={`text-xs text-center p-1 rounded whitespace-nowrap ${trip2Seats > 5 ? 'bg-green-100 text-green-800' : trip2Seats > 2 ? 'bg-orange-100 text-orange-800' : 'bg-red-100 text-red-800'}`}>
-                2便 {trip2Seats}
-              </div>
-            </div>
-          )}
-        </div>
-      );
+      dates.push({
+        date: date,
+        dateStr: dateStr,
+        trip1Seats: trip1Seats,
+        trip2Seats: trip2Seats,
+        dayOfWeek: ['日', '月', '火', '水', '木', '金', '土'][date.getDay()],
+        isToday: i === 0,
+      });
     }
     
-    return weekDays;
+    return dates;
+  };
+
+  const dates = generateDates();
+
+  const getStatusIcon = (seats: number) => {
+    if (seats === 0) return <XCircle className="h-5 w-5 text-red-500" />;
+    if (seats <= 2) return <AlertCircle className="h-5 w-5 text-orange-500" />;
+    return <CheckCircle className="h-5 w-5 text-green-500" />;
+  };
+
+  const getStatusText = (seats: number) => {
+    if (seats === 0) return '満席';
+    if (seats <= 2) return `残${seats}席`;
+    return '予約可';
+  };
+
+  const getStatusColor = (seats: number) => {
+    if (seats === 0) return 'text-red-600 bg-red-50';
+    if (seats <= 2) return 'text-orange-600 bg-orange-50';
+    return 'text-green-600 bg-green-50';
+  };
+
+  const scroll = (direction: 'left' | 'right') => {
+    if (scrollRef.current) {
+      const scrollAmount = 320; // カード幅 + gap
+      scrollRef.current.scrollBy({
+        left: direction === 'left' ? -scrollAmount : scrollAmount,
+        behavior: 'smooth'
+      });
+    }
   };
 
   return (
@@ -134,105 +85,143 @@ export function ScheduleSection() {
         </div>
 
         <Card className="max-w-6xl mx-auto">
-          <CardHeader className="px-3 sm:px-6">
-            <div className="flex flex-col gap-3">
-              <div className="flex justify-between items-center">
-                <CardTitle className="text-xl sm:text-2xl">
-                  {viewMode === 'month' ? `${selectedYear}年 ${monthNames[selectedMonth]}` : '週間スケジュール'}
-                </CardTitle>
-                <div className="flex gap-2">
-                  <div className="md:hidden flex gap-1">
-                    <Button
-                      variant={viewMode === 'month' ? 'default' : 'outline'}
-                      size="sm"
-                      onClick={() => setViewMode('month')}
-                    >
-                      月
-                    </Button>
-                    <Button
-                      variant={viewMode === 'week' ? 'default' : 'outline'}
-                      size="sm"
-                      onClick={() => setViewMode('week')}
-                    >
-                      週
-                    </Button>
-                  </div>
-                </div>
+          <CardHeader>
+            <CardTitle className="text-xl sm:text-2xl flex items-center justify-between">
+              <span>予約状況</span>
+              <div className="flex gap-2 text-sm font-normal">
+                <span className="flex items-center gap-1">
+                  <CheckCircle className="h-4 w-4 text-green-500" />
+                  空席あり
+                </span>
+                <span className="flex items-center gap-1">
+                  <AlertCircle className="h-4 w-4 text-orange-500" />
+                  残りわずか
+                </span>
+                <span className="flex items-center gap-1">
+                  <XCircle className="h-4 w-4 text-red-500" />
+                  満席
+                </span>
               </div>
-              
-              <div className="flex gap-2 justify-center">
-                {viewMode === 'month' ? (
-                  <>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => {
-                        if (selectedMonth === 0) {
-                          setSelectedMonth(11);
-                          setSelectedYear(selectedYear - 1);
-                        } else {
-                          setSelectedMonth(selectedMonth - 1);
-                        }
-                      }}
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="px-3 sm:px-6">
+            <div className="relative">
+              {/* 左スクロールボタン */}
+              <button
+                onClick={() => scroll('left')}
+                className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white/90 backdrop-blur-sm rounded-full p-2 shadow-lg hover:bg-gray-100 transition-colors hidden sm:block"
+                aria-label="前へ"
+              >
+                <ChevronLeft className="h-6 w-6" />
+              </button>
+
+              {/* 右スクロールボタン */}
+              <button
+                onClick={() => scroll('right')}
+                className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white/90 backdrop-blur-sm rounded-full p-2 shadow-lg hover:bg-gray-100 transition-colors hidden sm:block"
+                aria-label="次へ"
+              >
+                <ChevronRight className="h-6 w-6" />
+              </button>
+
+              {/* カードスクロールエリア */}
+              <div 
+                ref={scrollRef}
+                className="flex gap-4 overflow-x-auto pb-4 px-1 sm:px-10 scrollbar-hide"
+                style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+              >
+                {dates.map((dateInfo) => (
+                  <div
+                    key={dateInfo.dateStr}
+                    className={`flex-shrink-0 w-72 sm:w-80 ${
+                      selectedDate === dateInfo.dateStr ? 'ring-2 ring-primary' : ''
+                    }`}
+                  >
+                    <Card 
+                      className={`h-full cursor-pointer hover:shadow-lg transition-shadow ${
+                        dateInfo.isToday ? 'border-primary border-2' : ''
+                      }`}
+                      onClick={() => setSelectedDate(dateInfo.dateStr)}
                     >
-                      前月
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => {
-                        if (selectedMonth === 11) {
-                          setSelectedMonth(0);
-                          setSelectedYear(selectedYear + 1);
-                        } else {
-                          setSelectedMonth(selectedMonth + 1);
-                        }
-                      }}
-                    >
-                      翌月
-                    </Button>
-                  </>
-                ) : (
-                  <>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => setSelectedWeek(selectedWeek - 1)}
-                    >
-                      前週
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => setSelectedWeek(selectedWeek + 1)}
-                    >
-                      翌週
-                    </Button>
-                  </>
-                )}
+                      <CardHeader className="pb-3">
+                        <div className="flex justify-between items-center">
+                          <div>
+                            <div className="text-2xl font-bold">
+                              {dateInfo.date.getMonth() + 1}月{dateInfo.date.getDate()}日
+                            </div>
+                            <div className="text-sm text-gray-600">
+                              {dateInfo.dayOfWeek}曜日
+                              {dateInfo.isToday && (
+                                <span className="ml-2 text-primary font-semibold">本日</span>
+                              )}
+                            </div>
+                          </div>
+                          <Calendar className="h-6 w-6 text-gray-400" />
+                        </div>
+                      </CardHeader>
+                      <CardContent className="space-y-3">
+                        {/* 1便 */}
+                        <div className={`rounded-lg p-3 ${getStatusColor(dateInfo.trip1Seats)}`}>
+                          <div className="flex justify-between items-center mb-2">
+                            <div className="font-semibold text-lg">1便</div>
+                            {getStatusIcon(dateInfo.trip1Seats)}
+                          </div>
+                          <div className="text-sm space-y-1">
+                            <div className="flex justify-between">
+                              <span>出港時間</span>
+                              <span className="font-medium">17:30過ぎ</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span>帰港時間</span>
+                              <span className="font-medium">23:30頃</span>
+                            </div>
+                            <div className="flex justify-between items-center mt-2 pt-2 border-t">
+                              <span className="font-bold text-base">
+                                {getStatusText(dateInfo.trip1Seats)}
+                              </span>
+                              {dateInfo.trip1Seats > 0 && (
+                                <Button size="sm" variant="outline">
+                                  予約する
+                                </Button>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* 2便 */}
+                        <div className={`rounded-lg p-3 ${getStatusColor(dateInfo.trip2Seats)}`}>
+                          <div className="flex justify-between items-center mb-2">
+                            <div className="font-semibold text-lg">2便</div>
+                            {getStatusIcon(dateInfo.trip2Seats)}
+                          </div>
+                          <div className="text-sm space-y-1">
+                            <div className="flex justify-between">
+                              <span>出港時間</span>
+                              <span className="font-medium">24:00頃</span>
+                            </div>
+                            <div className="flex justify-between">
+                              <span>帰港時間</span>
+                              <span className="font-medium">5:30頃</span>
+                            </div>
+                            <div className="flex justify-between items-center mt-2 pt-2 border-t">
+                              <span className="font-bold text-base">
+                                {getStatusText(dateInfo.trip2Seats)}
+                              </span>
+                              {dateInfo.trip2Seats > 0 && (
+                                <Button size="sm" variant="outline">
+                                  予約する
+                                </Button>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </div>
+                ))}
               </div>
             </div>
-          </CardHeader>
-          <CardContent className="px-2 sm:px-6">
-            {viewMode === 'month' ? (
-              <>
-                <div className="grid grid-cols-7 gap-1 sm:gap-2 mb-2 sm:mb-4">
-                  {['日', '月', '火', '水', '木', '金', '土'].map((day) => (
-                    <div key={day} className="text-center font-semibold text-xs sm:text-sm">
-                      {day}
-                    </div>
-                  ))}
-                </div>
-                <div className="grid grid-cols-7 gap-1 sm:gap-2">
-                  {renderCalendar()}
-                </div>
-              </>
-            ) : (
-              <div className="grid grid-cols-7 gap-2">
-                {renderWeekView()}
-              </div>
-            )}
-            
+
             <div className="mt-8 flex justify-center">
               <Button size="lg" className="inline-flex items-center" asChild>
                 <Link href="/reservation" className="inline-flex items-center">
