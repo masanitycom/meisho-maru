@@ -7,7 +7,7 @@ import { SITE_CONFIG } from '@/lib/constants';
 
 export function HeroSection() {
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-b from-slate-900 via-blue-900 to-blue-800">
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-b from-slate-900 via-blue-900 to-blue-800 pt-24 md:pt-20">
       {/* 波のアニメーション背景 */}
       <div className="absolute inset-0 opacity-30">
         <svg className="absolute bottom-0 w-full h-96" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">

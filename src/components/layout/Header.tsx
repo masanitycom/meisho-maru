@@ -25,14 +25,14 @@ export function Header() {
         : 'bg-transparent'
     }`}>
       <div className="container mx-auto px-4">
-        <div className="flex justify-between items-center h-20">
+        <div className="flex justify-between items-center h-20 md:h-24">
           <Link href="/" className="flex items-center group">
             {/* ロゴ画像 */}
             <div className="relative">
               <img 
                 src="/images/headlogo.png" 
                 alt="明勝丸ロゴ" 
-                className="h-64 w-64 object-contain group-hover:scale-110 transition-transform duration-300 drop-shadow-lg"
+                className="h-16 w-16 md:h-20 md:w-20 lg:h-24 lg:w-24 object-contain group-hover:scale-110 transition-transform duration-300 drop-shadow-lg"
                 style={{
                   filter: 'drop-shadow(0 0 8px rgba(255,255,255,0.8)) drop-shadow(0 0 16px rgba(255,255,255,0.4))'
                 }}
