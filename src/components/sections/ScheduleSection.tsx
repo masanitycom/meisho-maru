@@ -76,13 +76,21 @@ export function ScheduleSection() {
   }, []);
 
   useEffect(() => {
+    console.log('📊 ScheduleSection マウント状態:', mounted);
     if (!mounted) return;
     
     const loadDates = async () => {
+      console.log('🎯 お客様向けカレンダー: データ読み込み開始');
       setLoading(true);
-      const dateData = await generateDates();
-      setDates(dateData);
-      setLoading(false);
+      try {
+        const dateData = await generateDates();
+        console.log('🎯 お客様向けカレンダー: データ設定完了', dateData);
+        setDates(dateData);
+      } catch (error) {
+        console.error('🎯 お客様向けカレンダー: エラー', error);
+      } finally {
+        setLoading(false);
+      }
     };
     
     loadDates();
@@ -96,8 +104,7 @@ export function ScheduleSection() {
 
   const getStatusText = (seats: number) => {
     if (seats === 0) return '満席';
-    if (seats <= 2) return `残${seats}席`;
-    return '予約可';
+    return `空席${seats}席`;
   };
 
   const getStatusColor = (seats: number) => {
