@@ -25,7 +25,7 @@ export const TRIP_TIMES = {
 } as const;
 
 export const PRICES = {
-  adult: 10000,
+  adult: 11000,
   rodRental: 2000,
 } as const;
 

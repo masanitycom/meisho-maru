@@ -9,6 +9,15 @@ import Link from 'next/link';
 export function ScheduleSection() {
   const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth());
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
+  const [viewMode, setViewMode] = useState<'month' | 'week'>('month');
+  const [selectedWeek, setSelectedWeek] = useState(0);
+
+  // 残り人数のダミーデータ（実際にはSupabaseから取得）
+  const getAvailableSeats = (date: string, tripNumber: 1 | 2) => {
+    // ランダムな残り席数を生成（デモ用）
+    const randomSeats = Math.floor(Math.random() * 10) + 1;
+    return randomSeats;
+  };
 
   const monthNames = [
     '1月', '2月', '3月', '4月', '5月', '6月',
@@ -38,6 +47,10 @@ export function ScheduleSection() {
         date.toDateString() === new Date().toDateString();
       const isPast = date < new Date(new Date().setHours(0, 0, 0, 0));
 
+      const dateStr = `${selectedYear}-${(selectedMonth + 1).toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
+      const trip1Seats = getAvailableSeats(dateStr, 1);
+      const trip2Seats = getAvailableSeats(dateStr, 2);
+
       days.push(
         <div
           key={day}
@@ -48,8 +61,12 @@ export function ScheduleSection() {
           <div className="font-semibold text-xs sm:text-sm mb-1">{day}</div>
           {!isPast && (
             <div className="space-y-0.5 sm:space-y-1">
-              <div className="text-[10px] sm:text-xs text-green-600">1便○</div>
-              <div className="text-[10px] sm:text-xs text-green-600">2便○</div>
+              <div className={`text-[10px] sm:text-xs ${trip1Seats > 5 ? 'text-green-600' : trip1Seats > 2 ? 'text-orange-600' : 'text-red-600'}`}>
+                1便 残{trip1Seats}
+              </div>
+              <div className={`text-[10px] sm:text-xs ${trip2Seats > 5 ? 'text-green-600' : trip2Seats > 2 ? 'text-orange-600' : 'text-red-600'}`}>
+                2便 残{trip2Seats}
+              </div>
             </div>
           )}
         </div>
@@ -57,6 +74,53 @@ export function ScheduleSection() {
     }
 
     return days;
+  };
+
+  const renderWeekView = () => {
+    const today = new Date();
+    const startOfWeek = new Date(today);
+    startOfWeek.setDate(today.getDate() - today.getDay() + (selectedWeek * 7));
+    
+    const weekDays = [];
+    for (let i = 0; i < 7; i++) {
+      const date = new Date(startOfWeek);
+      date.setDate(startOfWeek.getDate() + i);
+      
+      const isToday = date.toDateString() === new Date().toDateString();
+      const isPast = date < new Date(new Date().setHours(0, 0, 0, 0));
+      
+      const dateStr = date.toISOString().split('T')[0];
+      const trip1Seats = getAvailableSeats(dateStr, 1);
+      const trip2Seats = getAvailableSeats(dateStr, 2);
+      
+      weekDays.push(
+        <div
+          key={i}
+          className={`border rounded-lg p-3 ${
+            isPast ? 'bg-gray-100 opacity-50' : 'hover:bg-blue-50 cursor-pointer'
+          } ${isToday ? 'ring-2 ring-primary' : ''}`}
+        >
+          <div className="text-center mb-2">
+            <div className="text-xs text-gray-600">
+              {['日', '月', '火', '水', '木', '金', '土'][date.getDay()]}
+            </div>
+            <div className="font-bold text-lg">{date.getDate()}</div>
+          </div>
+          {!isPast && (
+            <div className="space-y-2">
+              <div className={`text-xs text-center p-2 rounded ${trip1Seats > 5 ? 'bg-green-100 text-green-800' : trip1Seats > 2 ? 'bg-orange-100 text-orange-800' : 'bg-red-100 text-red-800'}`}>
+                1便<br />残{trip1Seats}席
+              </div>
+              <div className={`text-xs text-center p-2 rounded ${trip2Seats > 5 ? 'bg-green-100 text-green-800' : trip2Seats > 2 ? 'bg-orange-100 text-orange-800' : 'bg-red-100 text-red-800'}`}>
+                2便<br />残{trip2Seats}席
+              </div>
+            </div>
+          )}
+        </div>
+      );
+    }
+    
+    return weekDays;
   };
 
   return (
@@ -71,53 +135,103 @@ export function ScheduleSection() {
 
         <Card className="max-w-6xl mx-auto">
           <CardHeader className="px-3 sm:px-6">
-            <div className="flex flex-col sm:flex-row justify-between items-center gap-3">
-              <CardTitle className="text-xl sm:text-2xl">
-                {selectedYear}年 {monthNames[selectedMonth]}
-              </CardTitle>
-              <div className="flex gap-2">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => {
-                    if (selectedMonth === 0) {
-                      setSelectedMonth(11);
-                      setSelectedYear(selectedYear - 1);
-                    } else {
-                      setSelectedMonth(selectedMonth - 1);
-                    }
-                  }}
-                >
-                  前月
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => {
-                    if (selectedMonth === 11) {
-                      setSelectedMonth(0);
-                      setSelectedYear(selectedYear + 1);
-                    } else {
-                      setSelectedMonth(selectedMonth + 1);
-                    }
-                  }}
-                >
-                  翌月
-                </Button>
+            <div className="flex flex-col gap-3">
+              <div className="flex justify-between items-center">
+                <CardTitle className="text-xl sm:text-2xl">
+                  {viewMode === 'month' ? `${selectedYear}年 ${monthNames[selectedMonth]}` : '週間スケジュール'}
+                </CardTitle>
+                <div className="flex gap-2">
+                  <div className="md:hidden flex gap-1">
+                    <Button
+                      variant={viewMode === 'month' ? 'default' : 'outline'}
+                      size="sm"
+                      onClick={() => setViewMode('month')}
+                    >
+                      月
+                    </Button>
+                    <Button
+                      variant={viewMode === 'week' ? 'default' : 'outline'}
+                      size="sm"
+                      onClick={() => setViewMode('week')}
+                    >
+                      週
+                    </Button>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="flex gap-2 justify-center">
+                {viewMode === 'month' ? (
+                  <>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        if (selectedMonth === 0) {
+                          setSelectedMonth(11);
+                          setSelectedYear(selectedYear - 1);
+                        } else {
+                          setSelectedMonth(selectedMonth - 1);
+                        }
+                      }}
+                    >
+                      前月
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        if (selectedMonth === 11) {
+                          setSelectedMonth(0);
+                          setSelectedYear(selectedYear + 1);
+                        } else {
+                          setSelectedMonth(selectedMonth + 1);
+                        }
+                      }}
+                    >
+                      翌月
+                    </Button>
+                  </>
+                ) : (
+                  <>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setSelectedWeek(selectedWeek - 1)}
+                    >
+                      前週
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setSelectedWeek(selectedWeek + 1)}
+                    >
+                      翌週
+                    </Button>
+                  </>
+                )}
               </div>
             </div>
           </CardHeader>
           <CardContent className="px-2 sm:px-6">
-            <div className="grid grid-cols-7 gap-1 sm:gap-2 mb-2 sm:mb-4">
-              {['日', '月', '火', '水', '木', '金', '土'].map((day) => (
-                <div key={day} className="text-center font-semibold text-xs sm:text-sm">
-                  {day}
+            {viewMode === 'month' ? (
+              <>
+                <div className="grid grid-cols-7 gap-1 sm:gap-2 mb-2 sm:mb-4">
+                  {['日', '月', '火', '水', '木', '金', '土'].map((day) => (
+                    <div key={day} className="text-center font-semibold text-xs sm:text-sm">
+                      {day}
+                    </div>
+                  ))}
                 </div>
-              ))}
-            </div>
-            <div className="grid grid-cols-7 gap-1 sm:gap-2">
-              {renderCalendar()}
-            </div>
+                <div className="grid grid-cols-7 gap-1 sm:gap-2">
+                  {renderCalendar()}
+                </div>
+              </>
+            ) : (
+              <div className="grid grid-cols-7 gap-2">
+                {renderWeekView()}
+              </div>
+            )}
             
             <div className="mt-8 flex justify-center">
               <Button size="lg" asChild>

@@ -23,7 +23,7 @@ export function formatPhoneNumber(phone: string) {
 }
 
 export function calculateTotalAmount(peopleCount: number, rodRental: boolean) {
-  const basePrice = 10000;
+  const basePrice = 11000;
   const rodRentalPrice = 2000;
   return peopleCount * basePrice + (rodRental ? rodRentalPrice * peopleCount : 0);
 }

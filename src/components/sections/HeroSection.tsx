@@ -43,7 +43,7 @@ export function HeroSection() {
 
           {/* キャッチコピー */}
           <div className="mb-6 md:mb-8 animate-fade-in px-4">
-            <p className="text-xl sm:text-2xl md:text-4xl font-bold mb-3 md:mb-4 leading-relaxed">
+            <p className="text-xl sm:text-2xl md:text-4xl font-bold mb-3 md:mb-4 leading-relaxed font-serif">
               日本海の恵み、
               <span className="text-yellow-300">白いか</span>を追い求めて
             </p>

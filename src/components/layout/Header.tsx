@@ -27,14 +27,30 @@ export function Header() {
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-center h-20">
           <Link href="/" className="flex items-center space-x-3 group">
-            <Anchor className={`h-8 w-8 transition-colors ${
-              isScrolled ? 'text-blue-600' : 'text-white'
-            } group-hover:rotate-12 transition-transform duration-300`} />
+            {/* ロゴ画像 */}
+            <div className="relative">
+              <img 
+                src="/images/logo.png" 
+                alt="明勝丸ロゴ" 
+                className="h-12 w-12 object-contain group-hover:scale-110 transition-transform duration-300"
+                onError={(e) => {
+                  // ロゴがない場合はアンカーアイコンを表示
+                  e.currentTarget.style.display = 'none';
+                  e.currentTarget.nextElementSibling?.classList.remove('hidden');
+                }}
+              />
+              <Anchor className={`h-8 w-8 transition-colors hidden ${
+                isScrolled ? 'text-blue-600' : 'text-white'
+              } group-hover:rotate-12 transition-transform duration-300`} />
+            </div>
             <div>
               <div className={`text-3xl font-black transition-colors ${
                 isScrolled ? 'text-gray-900' : 'text-white'
               }`}>
-                <span className="bg-gradient-to-r from-red-600 to-orange-500 bg-clip-text text-transparent">
+                <span className={isScrolled 
+                  ? "text-gray-900" 
+                  : "bg-gradient-to-r from-red-600 to-orange-500 bg-clip-text text-transparent"
+                }>
                   明勝丸
                 </span>
               </div>
