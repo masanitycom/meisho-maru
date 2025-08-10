@@ -58,6 +58,9 @@
     color: hsl(var(--foreground));
     font-feature-settings: "rlig" 1, "calt" 1;
   }
+  .font-serif {
+    font-family: var(--font-serif), serif;
+  }
 }
 
 @layer utilities {

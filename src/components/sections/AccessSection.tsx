@@ -9,7 +9,7 @@ export function AccessSection() {
         <div className="text-center mb-12">
           <h2 className="text-4xl font-bold mb-4">アクセス</h2>
           <p className="text-xl text-gray-600">
-            鳥取市賀露港からの出航です
+            鳥取県琴浦町赤碕港からの出航です
           </p>
         </div>
 
@@ -26,7 +26,7 @@ export function AccessSection() {
                 <CardContent>
                   <p className="text-lg mb-2">{SITE_CONFIG.contact.address}</p>
                   <p className="text-sm text-gray-600">
-                    賀露港西防波堤付近
+                    赤碕港より出航
                   </p>
                 </CardContent>
               </Card>

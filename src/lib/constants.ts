@@ -5,7 +5,7 @@ export const SITE_CONFIG = {
   contact: {
     phone: '090-1234-5678',
     email: 'info@meisho-maru.com',
-    address: '鳥取県鳥取市賀露町',
+    address: '鳥取県東伯郡琴浦町大字別所１１２８番地',
   },
 };
 

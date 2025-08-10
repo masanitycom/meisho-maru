@@ -27,29 +27,29 @@ export function HeroSection() {
       <div className="container mx-auto px-4 relative z-10">
         <div className="text-center text-white">
           {/* 日本語ロゴ */}
-          <div className="mb-8 animate-fade-in-down">
+          <div className="mb-6 md:mb-8 animate-fade-in-down">
             <div className="inline-block relative">
-              <div className="absolute -inset-4 bg-white/20 blur-2xl rounded-full"></div>
-              <h1 className="relative text-7xl md:text-9xl font-black tracking-wider">
+              <div className="absolute -inset-4 bg-white/20 blur-2xl rounded-full hidden md:block"></div>
+              <h1 className="relative text-5xl sm:text-7xl md:text-9xl font-black tracking-wider">
                 <span className="bg-gradient-to-r from-yellow-300 via-yellow-400 to-orange-400 bg-clip-text text-transparent drop-shadow-2xl">
                   明勝丸
                 </span>
               </h1>
-              <div className="text-lg md:text-xl mt-2 tracking-[0.3em] text-yellow-300">
+              <div className="text-sm sm:text-lg md:text-xl mt-2 tracking-[0.3em] text-yellow-300">
                 MEISHO-MARU
               </div>
             </div>
           </div>
 
           {/* キャッチコピー */}
-          <div className="mb-8 animate-fade-in">
-            <p className="text-2xl md:text-4xl font-bold mb-4 leading-relaxed">
+          <div className="mb-6 md:mb-8 animate-fade-in px-4">
+            <p className="text-xl sm:text-2xl md:text-4xl font-bold mb-3 md:mb-4 leading-relaxed">
               日本海の恵み、
               <span className="text-yellow-300">白いか</span>を追い求めて
             </p>
-            <p className="text-lg md:text-xl text-blue-100 max-w-3xl mx-auto">
-              鳥取県賀露港から出航。プロの漁師が導く本格的な釣り体験。
-              <br />
+            <p className="text-base sm:text-lg md:text-xl text-blue-100 max-w-3xl mx-auto font-serif">
+              鳥取県琴浦町赤碕港から出航。プロの漁師が導く本格的な釣り体験。
+              <br className="hidden sm:block" />
               初心者からベテランまで、忘れられない海の冒険をお約束します。
             </p>
           </div>
@@ -58,24 +58,24 @@ export function HeroSection() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12 animate-fade-in-up">
             <Button 
               size="lg" 
-              className="bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white px-8 py-6 text-lg font-bold shadow-2xl transform hover:scale-105 transition-all duration-300"
+              className="bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white px-8 py-6 text-lg font-bold shadow-2xl transform hover:scale-105 transition-all duration-300 inline-flex items-center"
               asChild
             >
               <Link href="/reservation">
-                <Calendar className="mr-2 h-6 w-6" />
-                予約はこちら
+                <Calendar className="mr-2 h-6 w-6 flex-shrink-0" />
+                <span>予約はこちら</span>
               </Link>
             </Button>
             
             <Button 
               size="lg" 
               variant="outline" 
-              className="border-2 border-white text-white hover:bg-white hover:text-blue-900 px-8 py-6 text-lg font-bold backdrop-blur-sm transform hover:scale-105 transition-all duration-300"
+              className="border-2 border-white text-white hover:bg-white hover:text-blue-900 px-8 py-6 text-lg font-bold backdrop-blur-sm transform hover:scale-105 transition-all duration-300 inline-flex items-center"
               asChild
             >
               <a href={`tel:${SITE_CONFIG.contact.phone}`}>
-                <Phone className="mr-2 h-6 w-6" />
-                今すぐ電話
+                <Phone className="mr-2 h-6 w-6 flex-shrink-0" />
+                <span>今すぐ電話</span>
               </a>
             </Button>
           </div>

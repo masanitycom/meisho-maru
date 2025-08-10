@@ -41,15 +41,15 @@ export function ScheduleSection() {
       days.push(
         <div
           key={day}
-          className={`border rounded-lg p-2 h-24 ${
+          className={`border rounded-lg p-1 sm:p-2 min-h-[60px] sm:h-24 ${
             isPast ? 'bg-gray-100 opacity-50' : 'hover:bg-blue-50 cursor-pointer'
           } ${isToday ? 'ring-2 ring-primary' : ''}`}
         >
-          <div className="font-semibold text-sm mb-1">{day}</div>
+          <div className="font-semibold text-xs sm:text-sm mb-1">{day}</div>
           {!isPast && (
-            <div className="space-y-1">
-              <div className="text-xs text-green-600">午前: 空席あり</div>
-              <div className="text-xs text-green-600">午後: 空席あり</div>
+            <div className="space-y-0.5 sm:space-y-1">
+              <div className="text-[10px] sm:text-xs text-green-600">午前○</div>
+              <div className="text-[10px] sm:text-xs text-green-600">午後○</div>
             </div>
           )}
         </div>
@@ -70,14 +70,15 @@ export function ScheduleSection() {
         </div>
 
         <Card className="max-w-6xl mx-auto">
-          <CardHeader>
-            <div className="flex justify-between items-center">
-              <CardTitle className="text-2xl">
+          <CardHeader className="px-3 sm:px-6">
+            <div className="flex flex-col sm:flex-row justify-between items-center gap-3">
+              <CardTitle className="text-xl sm:text-2xl">
                 {selectedYear}年 {monthNames[selectedMonth]}
               </CardTitle>
               <div className="flex gap-2">
                 <Button
                   variant="outline"
+                  size="sm"
                   onClick={() => {
                     if (selectedMonth === 0) {
                       setSelectedMonth(11);
@@ -91,6 +92,7 @@ export function ScheduleSection() {
                 </Button>
                 <Button
                   variant="outline"
+                  size="sm"
                   onClick={() => {
                     if (selectedMonth === 11) {
                       setSelectedMonth(0);
@@ -105,15 +107,15 @@ export function ScheduleSection() {
               </div>
             </div>
           </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-7 gap-2 mb-4">
+          <CardContent className="px-2 sm:px-6">
+            <div className="grid grid-cols-7 gap-1 sm:gap-2 mb-2 sm:mb-4">
               {['日', '月', '火', '水', '木', '金', '土'].map((day) => (
-                <div key={day} className="text-center font-semibold text-sm">
+                <div key={day} className="text-center font-semibold text-xs sm:text-sm">
                   {day}
                 </div>
               ))}
             </div>
-            <div className="grid grid-cols-7 gap-2">
+            <div className="grid grid-cols-7 gap-1 sm:gap-2">
               {renderCalendar()}
             </div>
             
