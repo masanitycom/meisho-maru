@@ -32,7 +32,7 @@ export function Header() {
               <img 
                 src="/images/headlogo.png" 
                 alt="明勝丸ロゴ" 
-                className="h-16 w-16 object-contain group-hover:scale-110 transition-transform duration-300 drop-shadow-lg"
+                className="h-32 w-32 object-contain group-hover:scale-110 transition-transform duration-300 drop-shadow-lg"
                 style={{
                   filter: 'drop-shadow(0 0 8px rgba(255,255,255,0.8)) drop-shadow(0 0 16px rgba(255,255,255,0.4))'
                 }}
