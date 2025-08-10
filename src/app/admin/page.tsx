@@ -17,8 +17,249 @@ import {
   Mail,
   Edit,
   Trash2,
-  Settings
+  Settings,
+  User,
+  Plus
 } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+
+function NewReservationForm() {
+  const [formData, setFormData] = useState({
+    date: '',
+    tripNumber: '',
+    peopleCount: '1',
+    name: '',
+    nameKana: '',
+    phone: '',
+    email: '',
+    rodRental: 'false',
+    notes: '',
+    source: 'phone', // phone, walk-in, etc
+  });
+
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    
+    // TODO: Supabaseに予約データを保存
+    console.log('管理者による予約登録:', formData);
+    
+    // 仮の成功処理
+    setTimeout(() => {
+      alert('予約を登録しました。');
+      // フォームをリセット
+      setFormData({
+        date: '',
+        tripNumber: '',
+        peopleCount: '1',
+        name: '',
+        nameKana: '',
+        phone: '',
+        email: '',
+        rodRental: 'false',
+        notes: '',
+        source: 'phone',
+      });
+      setLoading(false);
+    }, 1000);
+  };
+
+  const calculateTotal = () => {
+    const people = parseInt(formData.peopleCount) || 0;
+    const basePrice = 11000 * people;
+    const rodPrice = formData.rodRental === 'true' ? 2000 * people : 0;
+    return basePrice + rodPrice;
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* 左列 */}
+        <div className="space-y-4">
+          {/* 予約元 */}
+          <div className="space-y-2">
+            <Label htmlFor="source">予約方法</Label>
+            <Select
+              value={formData.source}
+              onValueChange={(value) => setFormData({...formData, source: value})}
+            >
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="phone">電話予約</SelectItem>
+                <SelectItem value="walk-in">店頭予約</SelectItem>
+                <SelectItem value="other">その他</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* 日付 */}
+          <div className="space-y-2">
+            <Label htmlFor="date">乗船日</Label>
+            <Input
+              id="date"
+              type="date"
+              required
+              value={formData.date}
+              onChange={(e) => setFormData({...formData, date: e.target.value})}
+            />
+          </div>
+
+          {/* 便選択 */}
+          <div className="space-y-2">
+            <Label htmlFor="trip">便選択</Label>
+            <Select
+              value={formData.tripNumber}
+              onValueChange={(value) => setFormData({...formData, tripNumber: value})}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="便を選択してください" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="1">1便（17:30過ぎ〜23:30頃）</SelectItem>
+                <SelectItem value="2">2便（24:00頃〜5:30頃）</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* 人数 */}
+          <div className="space-y-2">
+            <Label htmlFor="people">人数</Label>
+            <Select
+              value={formData.peopleCount}
+              onValueChange={(value) => setFormData({...formData, peopleCount: value})}
+            >
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {[1,2,3,4,5,6,7,8,9,10].map(n => (
+                  <SelectItem key={n} value={n.toString()}>{n}名</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* 竿レンタル */}
+          <div className="space-y-2">
+            <Label htmlFor="rod">竿レンタル</Label>
+            <Select
+              value={formData.rodRental}
+              onValueChange={(value) => setFormData({...formData, rodRental: value})}
+            >
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="false">不要</SelectItem>
+                <SelectItem value="true">必要（¥2,000/人）</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+
+        {/* 右列 */}
+        <div className="space-y-4">
+          {/* お名前 */}
+          <div className="space-y-2">
+            <Label htmlFor="name">お名前</Label>
+            <Input
+              id="name"
+              type="text"
+              required
+              placeholder="山田 太郎"
+              value={formData.name}
+              onChange={(e) => setFormData({...formData, name: e.target.value})}
+            />
+          </div>
+
+          {/* フリガナ */}
+          <div className="space-y-2">
+            <Label htmlFor="nameKana">フリガナ</Label>
+            <Input
+              id="nameKana"
+              type="text"
+              required
+              placeholder="ヤマダ タロウ"
+              value={formData.nameKana}
+              onChange={(e) => setFormData({...formData, nameKana: e.target.value})}
+            />
+          </div>
+
+          {/* 電話番号 */}
+          <div className="space-y-2">
+            <Label htmlFor="phone">電話番号</Label>
+            <Input
+              id="phone"
+              type="tel"
+              required
+              placeholder="090-1234-5678"
+              value={formData.phone}
+              onChange={(e) => setFormData({...formData, phone: e.target.value})}
+            />
+          </div>
+
+          {/* メールアドレス */}
+          <div className="space-y-2">
+            <Label htmlFor="email">メールアドレス</Label>
+            <Input
+              id="email"
+              type="email"
+              placeholder="example@email.com（任意）"
+              value={formData.email}
+              onChange={(e) => setFormData({...formData, email: e.target.value})}
+            />
+          </div>
+
+          {/* 備考 */}
+          <div className="space-y-2">
+            <Label htmlFor="notes">備考・メモ</Label>
+            <Textarea
+              id="notes"
+              placeholder="電話での要望や特記事項"
+              value={formData.notes}
+              onChange={(e) => setFormData({...formData, notes: e.target.value})}
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* 料金表示 */}
+      <div className="bg-blue-50 p-4 rounded-lg">
+        <div className="flex justify-between items-center">
+          <span className="font-semibold">合計金額</span>
+          <span className="text-2xl font-bold text-primary">
+            ¥{calculateTotal().toLocaleString()}
+          </span>
+        </div>
+        <div className="text-sm text-gray-600 mt-2">
+          <div>乗船料: ¥11,000 × {formData.peopleCount}名</div>
+          {formData.rodRental === 'true' && (
+            <div>竿レンタル: ¥2,000 × {formData.peopleCount}名</div>
+          )}
+        </div>
+      </div>
+
+      {/* ボタン */}
+      <div className="flex justify-end">
+        <Button
+          type="submit"
+          disabled={loading}
+          className="min-w-32"
+        >
+          <Plus className="mr-2 h-4 w-4" />
+          {loading ? '登録中...' : '予約を登録'}
+        </Button>
+      </div>
+    </form>
+  );
+}
 
 export default function AdminPage() {
   const [reservations] = useState([
@@ -167,8 +408,9 @@ export default function AdminPage() {
 
         {/* タブメニュー */}
         <Tabs defaultValue="reservations" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-2">
+          <TabsList className="grid w-full grid-cols-3">
             <TabsTrigger value="reservations">予約管理</TabsTrigger>
+            <TabsTrigger value="new-reservation">新規予約</TabsTrigger>
             <TabsTrigger value="customers">顧客管理</TabsTrigger>
           </TabsList>
 
@@ -224,6 +466,19 @@ export default function AdminPage() {
                     </tbody>
                   </table>
                 </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* 新規予約 */}
+          <TabsContent value="new-reservation">
+            <Card>
+              <CardHeader>
+                <CardTitle>新規予約登録</CardTitle>
+                <p className="text-sm text-gray-600">電話予約などの管理者による予約登録</p>
+              </CardHeader>
+              <CardContent>
+                <NewReservationForm />
               </CardContent>
             </Card>
           </TabsContent>
