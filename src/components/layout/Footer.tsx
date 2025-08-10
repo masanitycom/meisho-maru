@@ -13,7 +13,7 @@ export function Footer() {
               <img 
                 src="/images/headlogo.png" 
                 alt="明勝丸ロゴ" 
-                className="h-24 w-24 object-contain"
+                className="h-48 w-48 object-contain"
                 style={{
                   filter: 'drop-shadow(0 0 8px rgba(255,255,255,0.5)) drop-shadow(0 0 16px rgba(255,255,255,0.3))'
                 }}
