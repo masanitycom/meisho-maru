@@ -13,7 +13,7 @@ export function ScheduleSection() {
   const [selectedWeek, setSelectedWeek] = useState(0);
 
   // 残り人数のダミーデータ（実際にはSupabaseから取得）
-  const getAvailableSeats = (date: string, tripNumber: 1 | 2) => {
+  const getAvailableSeats = (_date: string, _tripNumber: 1 | 2) => {
     // ランダムな残り席数を生成（デモ用）
     const randomSeats = Math.floor(Math.random() * 10) + 1;
     return randomSeats;

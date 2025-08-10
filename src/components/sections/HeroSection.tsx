@@ -40,11 +40,6 @@ export function HeroSection() {
                   style={{
                     filter: 'drop-shadow(0 0 30px rgba(255,255,255,0.9)) drop-shadow(0 0 60px rgba(255,255,255,0.5)) drop-shadow(0 0 90px rgba(255,255,255,0.3))'
                   }}
-                  onError={(e) => {
-                    // ロゴがない場合はアンカーアイコンを表示
-                    e.currentTarget.style.display = 'none';
-                    e.currentTarget.nextElementSibling?.classList.remove('hidden');
-                  }}
                 />
                 <div className="hidden">
                   <Anchor className="h-24 w-24 sm:h-32 w-32 md:h-36 md:w-36 lg:h-48 lg:w-48 mx-auto text-white drop-shadow-2xl" />

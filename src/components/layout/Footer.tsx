@@ -17,11 +17,6 @@ export function Footer() {
                 style={{
                   filter: 'drop-shadow(0 0 8px rgba(255,255,255,0.5)) drop-shadow(0 0 16px rgba(255,255,255,0.3))'
                 }}
-                onError={(e) => {
-                  // ロゴがない場合はアンカーアイコンを表示
-                  e.currentTarget.style.display = 'none';
-                  e.currentTarget.nextElementSibling?.classList.remove('hidden');
-                }}
               />
               <Anchor className="h-12 w-12 text-white hidden" />
             </div>
