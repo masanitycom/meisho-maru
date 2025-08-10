@@ -302,6 +302,7 @@ interface Reservation {
   people_count: number;
   name: string;
   phone: string;
+  email?: string;
   rod_rental: boolean;
   status?: string;
 }
