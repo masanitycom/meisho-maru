@@ -1,48 +1,88 @@
 'use client';
 
 import Link from 'next/link';
-import { useState } from 'react';
-import { Menu, X, Phone, Calendar } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Menu, X, Phone, Calendar, Anchor } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { SITE_CONFIG } from '@/lib/constants';
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 10);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   return (
-    <header className="bg-white shadow-md sticky top-0 z-50">
+    <header className={`fixed top-0 w-full z-50 transition-all duration-300 ${
+      isScrolled 
+        ? 'bg-white/95 backdrop-blur-md shadow-lg' 
+        : 'bg-transparent'
+    }`}>
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-center h-20">
-          <Link href="/" className="flex items-center space-x-2">
-            <div className="text-3xl font-bold text-primary">
-              <span className="text-accent">明</span>勝丸
+          <Link href="/" className="flex items-center space-x-3 group">
+            <Anchor className={`h-8 w-8 transition-colors ${
+              isScrolled ? 'text-blue-600' : 'text-white'
+            } group-hover:rotate-12 transition-transform duration-300`} />
+            <div>
+              <div className={`text-3xl font-black transition-colors ${
+                isScrolled ? 'text-gray-900' : 'text-white'
+              }`}>
+                <span className="bg-gradient-to-r from-red-600 to-orange-500 bg-clip-text text-transparent">
+                  明勝丸
+                </span>
+              </div>
+              <div className={`text-xs tracking-widest transition-colors ${
+                isScrolled ? 'text-gray-600' : 'text-white/80'
+              }`}>
+                MEISHO-MARU
+              </div>
             </div>
           </Link>
 
-          <nav className="hidden md:flex items-center space-x-8">
-            <Link href="/#schedule" className="text-gray-700 hover:text-primary transition-colors">
-              運航スケジュール
-            </Link>
-            <Link href="/#info" className="text-gray-700 hover:text-primary transition-colors">
-              料金・設備
-            </Link>
-            <Link href="/#access" className="text-gray-700 hover:text-primary transition-colors">
-              アクセス
-            </Link>
-            <Link href="/#results" className="text-gray-700 hover:text-primary transition-colors">
-              釣果情報
-            </Link>
+          <nav className="hidden lg:flex items-center space-x-8">
+            {[
+              { href: '/#schedule', label: '運航スケジュール' },
+              { href: '/#info', label: '料金・設備' },
+              { href: '/#access', label: 'アクセス' },
+              { href: '/#results', label: '釣果情報' },
+            ].map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={`font-medium transition-all duration-300 hover:scale-105 ${
+                  isScrolled 
+                    ? 'text-gray-700 hover:text-blue-600' 
+                    : 'text-white hover:text-yellow-300'
+                }`}
+              >
+                {item.label}
+              </Link>
+            ))}
           </nav>
 
-          <div className="hidden md:flex items-center space-x-4">
+          <div className="hidden lg:flex items-center space-x-4">
             <a
               href={`tel:${SITE_CONFIG.contact.phone}`}
-              className="flex items-center space-x-2 text-primary"
+              className={`flex items-center space-x-2 font-medium transition-colors ${
+                isScrolled 
+                  ? 'text-blue-600 hover:text-blue-700' 
+                  : 'text-white hover:text-yellow-300'
+              }`}
             >
               <Phone className="h-5 w-5" />
-              <span className="font-medium">{SITE_CONFIG.contact.phone}</span>
+              <span>{SITE_CONFIG.contact.phone}</span>
             </a>
-            <Button asChild>
+            <Button 
+              className="bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white shadow-lg transform hover:scale-105 transition-all duration-300"
+              asChild
+            >
               <Link href="/reservation">
                 <Calendar className="mr-2 h-4 w-4" />
                 予約する
@@ -51,57 +91,48 @@ export function Header() {
           </div>
 
           <button
-            className="md:hidden"
+            className="lg:hidden p-2"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
           >
             {isMenuOpen ? (
-              <X className="h-6 w-6 text-gray-700" />
+              <X className={`h-6 w-6 ${isScrolled ? 'text-gray-700' : 'text-white'}`} />
             ) : (
-              <Menu className="h-6 w-6 text-gray-700" />
+              <Menu className={`h-6 w-6 ${isScrolled ? 'text-gray-700' : 'text-white'}`} />
             )}
           </button>
         </div>
 
+        {/* モバイルメニュー */}
         {isMenuOpen && (
-          <div className="md:hidden py-4 border-t">
-            <nav className="flex flex-col space-y-4">
-              <Link
-                href="/#schedule"
-                className="text-gray-700 hover:text-primary transition-colors"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                運航スケジュール
-              </Link>
-              <Link
-                href="/#info"
-                className="text-gray-700 hover:text-primary transition-colors"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                料金・設備
-              </Link>
-              <Link
-                href="/#access"
-                className="text-gray-700 hover:text-primary transition-colors"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                アクセス
-              </Link>
-              <Link
-                href="/#results"
-                className="text-gray-700 hover:text-primary transition-colors"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                釣果情報
-              </Link>
-              <div className="pt-4 border-t">
+          <div className="lg:hidden py-4 border-t border-gray-200 bg-white/95 backdrop-blur-md rounded-b-2xl shadow-xl">
+            <nav className="flex flex-col space-y-4 px-4">
+              {[
+                { href: '/#schedule', label: '運航スケジュール' },
+                { href: '/#info', label: '料金・設備' },
+                { href: '/#access', label: 'アクセス' },
+                { href: '/#results', label: '釣果情報' },
+              ].map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className="text-gray-700 hover:text-blue-600 font-medium transition-colors py-2"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  {item.label}
+                </Link>
+              ))}
+              <div className="pt-4 border-t border-gray-200">
                 <a
                   href={`tel:${SITE_CONFIG.contact.phone}`}
-                  className="flex items-center space-x-2 text-primary mb-4"
+                  className="flex items-center space-x-2 text-blue-600 font-medium mb-4"
                 >
                   <Phone className="h-5 w-5" />
-                  <span className="font-medium">{SITE_CONFIG.contact.phone}</span>
+                  <span>{SITE_CONFIG.contact.phone}</span>
                 </a>
-                <Button asChild className="w-full">
+                <Button 
+                  className="w-full bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white"
+                  asChild
+                >
                   <Link href="/reservation">
                     <Calendar className="mr-2 h-4 w-4" />
                     予約する
