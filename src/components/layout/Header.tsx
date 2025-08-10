@@ -30,7 +30,7 @@ export function Header() {
             {/* ロゴ画像 */}
             <div className="relative">
               <img 
-                src="/images/logo.png" 
+                src="/images/headlogo.png" 
                 alt="明勝丸ロゴ" 
                 className="h-16 w-16 object-contain group-hover:scale-110 transition-transform duration-300 drop-shadow-lg"
                 style={{

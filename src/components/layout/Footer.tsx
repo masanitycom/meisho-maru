@@ -11,7 +11,7 @@ export function Footer() {
             {/* ロゴ */}
             <div className="mb-4">
               <img 
-                src="/images/logo.png" 
+                src="/images/headlogo.png" 
                 alt="明勝丸ロゴ" 
                 className="h-12 w-12 object-contain"
                 style={{
