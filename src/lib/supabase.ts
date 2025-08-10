@@ -106,10 +106,10 @@ export const getAvailableSeats = async (date: string, tripNumber: number) => {
     
     console.log(`📅 スケジュール取得 ${date}-${tripNumber}:`, schedule);
     
-    // 運航停止の場合は0を返す
+    // 運航停止の場合は-1を返す（休漁日として識別）
     if (!schedule.is_available) {
-      console.log(`❌ 運航停止 ${date}-${tripNumber}`);
-      return 0
+      console.log(`🚫 休漁日 ${date}-${tripNumber}`);
+      return -1
     }
     
     // 既存予約数を取得

@@ -189,10 +189,10 @@ export default function ScheduleManagePage() {
   };
 
   const getStatusColor = (available: boolean, seats: number) => {
-    if (!available) return 'bg-gray-100 border-gray-300';
-    if (seats === 0) return 'bg-red-50 border-red-200';
-    if (seats <= 2) return 'bg-orange-50 border-orange-200';
-    return 'bg-green-50 border-green-200';
+    if (!available || seats === -1) return 'bg-gray-100 border-gray-300'; // 休漁日
+    if (seats === 0) return 'bg-red-50 border-red-200'; // 満席
+    if (seats <= 2) return 'bg-orange-50 border-orange-200'; // 残りわずか
+    return 'bg-green-50 border-green-200'; // 空席あり
   };
 
   if (loading) {
@@ -302,7 +302,7 @@ export default function ScheduleManagePage() {
                     <div className="space-y-4">
                       <div className="text-center">
                         <div className="text-2xl font-bold mb-2">
-                          空席 {schedule.trip1Seats}席 / 定員 {schedule.trip1Capacity}席
+                          {schedule.trip1Seats === -1 ? '休漁日' : `空席 ${schedule.trip1Seats}席 / 定員 ${schedule.trip1Capacity}席`}
                         </div>
                         
                         {/* 定員調整ボタン */}
@@ -369,7 +369,7 @@ export default function ScheduleManagePage() {
                     <div className="space-y-4">
                       <div className="text-center">
                         <div className="text-2xl font-bold mb-2">
-                          空席 {schedule.trip2Seats}席 / 定員 {schedule.trip2Capacity}席
+                          {schedule.trip2Seats === -1 ? '休漁日' : `空席 ${schedule.trip2Seats}席 / 定員 ${schedule.trip2Capacity}席`}
                         </div>
                         
                         {/* 定員調整ボタン */}

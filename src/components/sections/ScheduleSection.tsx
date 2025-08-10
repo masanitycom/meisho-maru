@@ -97,20 +97,23 @@ export function ScheduleSection() {
   }, [mounted]);
 
   const getStatusIcon = (seats: number) => {
-    if (seats === 0) return <XCircle className="h-5 w-5 text-red-500" />;
-    if (seats <= 2) return <AlertCircle className="h-5 w-5 text-orange-500" />;
-    return <CheckCircle className="h-5 w-5 text-green-500" />;
+    if (seats === -1) return <XCircle className="h-5 w-5 text-gray-500" />; // 休漁日
+    if (seats === 0) return <XCircle className="h-5 w-5 text-red-500" />; // 満席
+    if (seats <= 2) return <AlertCircle className="h-5 w-5 text-orange-500" />; // 残りわずか
+    return <CheckCircle className="h-5 w-5 text-green-500" />; // 空席あり
   };
 
   const getStatusText = (seats: number) => {
+    if (seats === -1) return '休漁日';
     if (seats === 0) return '満席';
     return `空席${seats}席`;
   };
 
   const getStatusColor = (seats: number) => {
-    if (seats === 0) return 'text-red-600 bg-red-50';
-    if (seats <= 2) return 'text-orange-600 bg-orange-50';
-    return 'text-green-600 bg-green-50';
+    if (seats === -1) return 'text-gray-600 bg-gray-100'; // 休漁日
+    if (seats === 0) return 'text-red-600 bg-red-50'; // 満席
+    if (seats <= 2) return 'text-orange-600 bg-orange-50'; // 残りわずか
+    return 'text-green-600 bg-green-50'; // 空席あり
   };
 
   const scroll = (direction: 'left' | 'right') => {
@@ -149,6 +152,10 @@ export function ScheduleSection() {
                 <span className="flex items-center gap-1">
                   <XCircle className="h-4 w-4 text-red-500" />
                   満席
+                </span>
+                <span className="flex items-center gap-1">
+                  <XCircle className="h-4 w-4 text-gray-500" />
+                  休漁日
                 </span>
               </div>
             </CardTitle>
@@ -239,6 +246,9 @@ export function ScheduleSection() {
                                   </Link>
                                 </Button>
                               )}
+                              {dateInfo.trip1Seats === -1 && (
+                                <span className="text-sm text-gray-500">出船なし</span>
+                              )}
                             </div>
                           </div>
                         </div>
@@ -268,6 +278,9 @@ export function ScheduleSection() {
                                     予約する
                                   </Link>
                                 </Button>
+                              )}
+                              {dateInfo.trip2Seats === -1 && (
+                                <span className="text-sm text-gray-500">出船なし</span>
                               )}
                             </div>
                           </div>
