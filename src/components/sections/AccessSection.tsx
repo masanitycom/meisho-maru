@@ -69,7 +69,7 @@ export function AccessSection() {
                 <CardContent className="p-0 h-full relative">
                   <div className="w-full h-full rounded-lg overflow-hidden">
                     <iframe
-                      src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3254.6789012345678!2d133.67543999999999!3d35.463999999999996!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x355519e7c8c8c8c8%3A0x1234567890123456!2z6LW16Kqs56eBIOmdosOcgOaagw!5e0!3m2!1sja!2sjp!4v1704067200000!5m2!1sja!2sjp&q=鳥取県東伯郡琴浦町大字別所1128赤碕港"
+                      src="https://www.google.com/maps/embed?pb=!1m10!1m8!1m3!1d5842.835531025195!2d133.65524702587717!3d35.51013348227905!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sja!2sjp!4v1754797682068!5m2!1sja!2sjp"
                       width="100%"
                       height="100%"
                       style={{ border: 0, minHeight: '400px' }}
