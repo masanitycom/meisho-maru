@@ -180,8 +180,10 @@ export function ScheduleSection() {
                                 {getStatusText(dateInfo.trip1Seats)}
                               </span>
                               {dateInfo.trip1Seats > 0 && (
-                                <Button size="sm" variant="outline">
-                                  予約する
+                                <Button size="sm" variant="outline" asChild>
+                                  <Link href={`/reservation?date=${dateInfo.dateStr}&trip=1`}>
+                                    予約する
+                                  </Link>
                                 </Button>
                               )}
                             </div>
@@ -208,8 +210,10 @@ export function ScheduleSection() {
                                 {getStatusText(dateInfo.trip2Seats)}
                               </span>
                               {dateInfo.trip2Seats > 0 && (
-                                <Button size="sm" variant="outline">
-                                  予約する
+                                <Button size="sm" variant="outline" asChild>
+                                  <Link href={`/reservation?date=${dateInfo.dateStr}&trip=2`}>
+                                    予約する
+                                  </Link>
                                 </Button>
                               )}
                             </div>

@@ -1,7 +1,7 @@
 'use client';
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, useEffect } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -12,6 +12,7 @@ import { Calendar, Clock, Users, Phone, Mail, User, AlertCircle } from 'lucide-r
 
 export default function ReservationPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     date: '',
@@ -24,6 +25,19 @@ export default function ReservationPage() {
     rodRental: 'false',
     notes: '',
   });
+
+  // URLパラメーターから日付と便の情報を取得
+  useEffect(() => {
+    const dateParam = searchParams.get('date');
+    const tripParam = searchParams.get('trip');
+    
+    if (dateParam) {
+      setFormData(prev => ({ ...prev, date: dateParam }));
+    }
+    if (tripParam) {
+      setFormData(prev => ({ ...prev, tripNumber: tripParam }));
+    }
+  }, [searchParams]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
