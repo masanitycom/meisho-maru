@@ -75,19 +75,19 @@ export function Footer() {
           </div>
 
           <div>
-            <h4 className="text-lg font-semibold mb-4">営業時間</h4>
+            <h4 className="text-lg font-semibold mb-4">運航時間</h4>
             <ul className="space-y-2 text-gray-400">
-              <li>午前便: 6:00～12:00</li>
-              <li>午後便: 13:00～19:00</li>
+              <li>1便: 17:30過ぎ～23:30頃</li>
+              <li>2便: 24:00頃～5:30頃</li>
               <li className="pt-2">
-                <span className="text-accent">※</span> 天候により欠航の場合があります
+                <span className="text-accent">※</span> 季節、天候により変更になる場合があります
               </li>
             </ul>
           </div>
         </div>
 
         <div className="mt-8 pt-8 border-t border-gray-800 text-center text-gray-400">
-          <p>&copy; 2024 明勝丸. All rights reserved.</p>
+          <p>&copy; 2025 明勝丸. All rights reserved.</p>
         </div>
       </div>
     </footer>

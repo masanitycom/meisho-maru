@@ -103,7 +103,7 @@ export function HeroSection() {
             <div className="bg-white/10 backdrop-blur-md rounded-xl p-6 transform hover:scale-105 transition-all duration-300 border border-white/20">
               <Clock className="h-10 w-10 mb-3 text-yellow-300 mx-auto" />
               <h3 className="text-xl font-bold mb-2">1日2便運航</h3>
-              <p className="text-sm text-blue-100">午前・午後から選択可</p>
+              <p className="text-sm text-blue-100">夕方便・深夜便</p>
             </div>
           </div>
         </div>

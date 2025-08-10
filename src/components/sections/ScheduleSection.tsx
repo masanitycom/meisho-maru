@@ -48,8 +48,8 @@ export function ScheduleSection() {
           <div className="font-semibold text-xs sm:text-sm mb-1">{day}</div>
           {!isPast && (
             <div className="space-y-0.5 sm:space-y-1">
-              <div className="text-[10px] sm:text-xs text-green-600">午前○</div>
-              <div className="text-[10px] sm:text-xs text-green-600">午後○</div>
+              <div className="text-[10px] sm:text-xs text-green-600">1便○</div>
+              <div className="text-[10px] sm:text-xs text-green-600">2便○</div>
             </div>
           )}
         </div>
@@ -135,14 +135,17 @@ export function ScheduleSection() {
             <CardHeader>
               <CardTitle className="flex items-center">
                 <Clock className="mr-2 h-5 w-5 text-primary" />
-                午前便
+                1便
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-2xl font-bold mb-2">6:00 〜 12:00</p>
+              <p className="text-2xl font-bold mb-2">17:30 〜 23:30</p>
               <p className="text-gray-600">
-                朝一番の新鮮な海で、白いか釣りを楽しめます。
-                初心者の方にもおすすめの時間帯です。
+                夕方から夜にかけての出船。
+                日没後の活性が高い時間帯での釣りが楽しめます。
+              </p>
+              <p className="text-sm text-orange-600 mt-2">
+                ※17:30過ぎに出船、23:30頃帰港
               </p>
             </CardContent>
           </Card>
@@ -151,17 +154,26 @@ export function ScheduleSection() {
             <CardHeader>
               <CardTitle className="flex items-center">
                 <Clock className="mr-2 h-5 w-5 text-primary" />
-                午後便
+                2便
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-2xl font-bold mb-2">13:00 〜 19:00</p>
+              <p className="text-2xl font-bold mb-2">24:00 〜 5:30</p>
               <p className="text-gray-600">
-                夕暮れ時の美しい景色とともに、
-                ゆったりと釣りを楽しめます。
+                深夜から早朝にかけての出船。
+                静かな海で集中して釣りを楽しめます。
+              </p>
+              <p className="text-sm text-orange-600 mt-2">
+                ※24:00頃出航、5:30頃帰港
               </p>
             </CardContent>
           </Card>
+        </div>
+        
+        <div className="mt-8 text-center">
+          <p className="text-sm text-gray-600">
+            ※季節、天候により変更になる場合がありますのでご了承下さい。
+          </p>
         </div>
       </div>
     </section>

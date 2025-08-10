@@ -11,16 +11,16 @@ export const SITE_CONFIG = {
 
 export const TRIP_TIMES = {
   1: {
-    label: '午前便',
-    time: '6:00～12:00',
-    departure: '6:00',
-    return: '12:00',
+    label: '1便',
+    time: '17:30～23:30',
+    departure: '17:30過ぎ',
+    return: '23:30頃',
   },
   2: {
-    label: '午後便',
-    time: '13:00～19:00',
-    departure: '13:00',
-    return: '19:00',
+    label: '2便',
+    time: '24:00～5:30',
+    departure: '24:00頃',
+    return: '5:30頃',
   },
 } as const;
 

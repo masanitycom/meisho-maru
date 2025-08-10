@@ -40,9 +40,9 @@ export function AccessSection() {
                 </CardHeader>
                 <CardContent>
                   <ul className="space-y-2 text-sm">
-                    <li>鳥取自動車道「鳥取IC」から約15分</li>
-                    <li>国道9号線から県道318号線経由</li>
-                    <li className="text-primary font-semibold">無料駐車場完備（20台）</li>
+                    <li>山陰自動車道「米子IC」から国道9号 車で約30分</li>
+                    <li>JR鳥取駅から国道9号 約70分</li>
+                    <li className="text-primary font-semibold">無料駐車場完備</li>
                   </ul>
                 </CardContent>
               </Card>
@@ -56,9 +56,9 @@ export function AccessSection() {
                 </CardHeader>
                 <CardContent>
                   <ul className="space-y-2 text-sm">
-                    <li>JR鳥取駅からタクシーで約15分</li>
-                    <li>JR鳥取駅からバスで約20分</li>
-                    <li>「賀露港」バス停下車、徒歩5分</li>
+                    <li>JR赤碕駅からタクシーで約10分</li>
+                    <li>JR赤碕駅からバスで約20分</li>
+                    <li>「赤碕港入口」バス停下車、徒歩5分</li>
                   </ul>
                 </CardContent>
               </Card>
@@ -70,15 +70,22 @@ export function AccessSection() {
                   <div className="w-full h-full bg-gray-200 rounded-lg flex items-center justify-center">
                     <div className="text-center p-8">
                       <MapPin className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                      <p className="text-gray-600">
-                        地図エリア
+                      <p className="text-gray-600 mb-4">
+                        赤碕港
                         <br />
                         <span className="text-sm">
-                          Google Maps等の地図サービスを
-                          <br />
-                          埋め込むことができます
+                          {SITE_CONFIG.contact.address}
                         </span>
                       </p>
+                      <a
+                        href="https://maps.app.goo.gl/RrNkBLXPYakqmU6n8"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                      >
+                        <MapPin className="h-4 w-4 mr-2" />
+                        Google Mapsで開く
+                      </a>
                     </div>
                   </div>
                 </CardContent>
@@ -96,23 +103,23 @@ export function AccessSection() {
             <CardContent>
               <div className="grid md:grid-cols-2 gap-6">
                 <div>
-                  <h4 className="font-semibold mb-2">午前便</h4>
+                  <h4 className="font-semibold mb-2">1便</h4>
                   <p className="text-sm text-gray-600">
-                    集合時間: 5:30
+                    集合時間: 17:15
                     <br />
-                    出航時間: 6:00
+                    出船時間: 17:30過ぎ
                     <br />
-                    ※出航15分前までにお越しください
+                    帰港時間: 23:30頃
                   </p>
                 </div>
                 <div>
-                  <h4 className="font-semibold mb-2">午後便</h4>
+                  <h4 className="font-semibold mb-2">2便</h4>
                   <p className="text-sm text-gray-600">
-                    集合時間: 12:30
+                    集合時間: 23:45
                     <br />
-                    出航時間: 13:00
+                    出航時間: 24:00頃
                     <br />
-                    ※出航15分前までにお越しください
+                    帰港時間: 5:30頃
                   </p>
                 </div>
               </div>
