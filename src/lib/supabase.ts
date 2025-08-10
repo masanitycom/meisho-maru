@@ -87,10 +87,10 @@ export const getSchedules = async (startDate?: string, endDate?: string) => {
 
 // 予約可能席数を計算
 export const getAvailableSeats = async (date: string, tripNumber: number) => {
-  // スケジュールから定員を取得
+  // スケジュールから定員と運航状態を取得
   const { data: schedule, error: scheduleError } = await supabase
     .from('schedules')
-    .select('max_capacity')
+    .select('max_capacity, is_available')
     .eq('date', date)
     .eq('trip_number', tripNumber)
     .single()
@@ -98,6 +98,11 @@ export const getAvailableSeats = async (date: string, tripNumber: number) => {
   if (scheduleError) {
     // スケジュールが存在しない場合はデフォルト値
     return 10
+  }
+  
+  // 運航停止の場合は0を返す
+  if (!schedule.is_available) {
+    return 0
   }
   
   // 既存予約数を取得
@@ -114,4 +119,51 @@ export const getAvailableSeats = async (date: string, tripNumber: number) => {
   const availableSeats = schedule.max_capacity - bookedSeats
   
   return Math.max(0, availableSeats)
+}
+
+// スケジュール更新（残席調整・休業設定）
+export const updateSchedule = async (date: string, tripNumber: number, updates: {
+  max_capacity?: number;
+  is_available?: boolean;
+}) => {
+  const { data, error } = await supabase
+    .from('schedules')
+    .upsert([
+      {
+        date,
+        trip_number: tripNumber,
+        ...updates
+      }
+    ], { onConflict: 'date,trip_number' })
+    .select()
+    
+  if (error) throw error
+  return data
+}
+
+// 複数日の一括休業設定
+export const setBulkHoliday = async (startDate: string, endDate: string, tripNumbers: number[]) => {
+  const updates = []
+  const start = new Date(startDate)
+  const end = new Date(endDate)
+  
+  for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
+    const dateStr = d.toISOString().split('T')[0]
+    for (const tripNumber of tripNumbers) {
+      updates.push({
+        date: dateStr,
+        trip_number: tripNumber,
+        max_capacity: 10,
+        is_available: false
+      })
+    }
+  }
+  
+  const { data, error } = await supabase
+    .from('schedules')
+    .upsert(updates, { onConflict: 'date,trip_number' })
+    .select()
+    
+  if (error) throw error
+  return data
 }

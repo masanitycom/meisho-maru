@@ -20,8 +20,10 @@ import {
   Trash2,
   Settings,
   User,
-  Plus
+  Plus,
+  Ship
 } from 'lucide-react';
+import Link from 'next/link';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
@@ -415,10 +417,11 @@ export default function AdminPage() {
 
         {/* タブメニュー */}
         <Tabs defaultValue="reservations" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-3">
+          <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="reservations">予約管理</TabsTrigger>
             <TabsTrigger value="new-reservation">新規予約</TabsTrigger>
             <TabsTrigger value="customers">顧客管理</TabsTrigger>
+            <TabsTrigger value="schedule">運航管理</TabsTrigger>
           </TabsList>
 
           {/* 予約管理 */}
@@ -582,6 +585,65 @@ export default function AdminPage() {
                       )}
                     </tbody>
                   </table>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* 運航管理 */}
+          <TabsContent value="schedule">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center">
+                  <Ship className="mr-2 h-5 w-5" />
+                  運航管理
+                </CardTitle>
+                <p className="text-sm text-gray-600">残席調整・休業日設定を簡単操作で行えます</p>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="text-center p-6 border-2 border-dashed border-gray-200 rounded-lg">
+                    <Ship className="mx-auto h-12 w-12 text-blue-500 mb-4" />
+                    <h3 className="text-lg font-bold mb-2">スケジュール調整</h3>
+                    <p className="text-gray-600 mb-4">
+                      各日の定員数調整や運航状態の切り替えを大きなボタンで簡単操作
+                    </p>
+                    <Button asChild className="w-full h-12 text-lg">
+                      <Link href="/admin/schedule">
+                        <Calendar className="mr-2 h-5 w-5" />
+                        運航管理画面へ
+                      </Link>
+                    </Button>
+                  </div>
+                  
+                  <div className="space-y-4">
+                    <h3 className="text-lg font-bold flex items-center">
+                      <Clock className="mr-2 h-5 w-5" />
+                      主な機能
+                    </h3>
+                    <ul className="space-y-2 text-sm">
+                      <li className="flex items-center">
+                        <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
+                        ➕➖ボタンで定員数を調整（最大20席）
+                      </li>
+                      <li className="flex items-center">
+                        <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
+                        ワンクリックで運航ON/OFF切り替え
+                      </li>
+                      <li className="flex items-center">
+                        <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
+                        期間指定で連続休業日設定
+                      </li>
+                      <li className="flex items-center">
+                        <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
+                        リアルタイム空席数表示
+                      </li>
+                      <li className="flex items-center">
+                        <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
+                        大きなボタンで操作しやすい設計
+                      </li>
+                    </ul>
+                  </div>
                 </div>
               </CardContent>
             </Card>
