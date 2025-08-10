@@ -26,39 +26,25 @@ export function Header() {
     }`}>
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-center h-20">
-          <Link href="/" className="flex items-center space-x-3 group">
+          <Link href="/" className="flex items-center group">
             {/* ロゴ画像 */}
             <div className="relative">
               <img 
                 src="/images/logo.png" 
                 alt="明勝丸ロゴ" 
-                className="h-12 w-12 object-contain group-hover:scale-110 transition-transform duration-300"
+                className="h-16 w-16 object-contain group-hover:scale-110 transition-transform duration-300 drop-shadow-lg"
+                style={{
+                  filter: 'drop-shadow(0 0 8px rgba(255,255,255,0.8)) drop-shadow(0 0 16px rgba(255,255,255,0.4))'
+                }}
                 onError={(e) => {
                   // ロゴがない場合はアンカーアイコンを表示
                   e.currentTarget.style.display = 'none';
                   e.currentTarget.nextElementSibling?.classList.remove('hidden');
                 }}
               />
-              <Anchor className={`h-8 w-8 transition-colors hidden ${
+              <Anchor className={`h-12 w-12 transition-colors hidden ${
                 isScrolled ? 'text-blue-600' : 'text-white'
-              } group-hover:rotate-12 transition-transform duration-300`} />
-            </div>
-            <div>
-              <div className={`text-3xl font-black transition-colors ${
-                isScrolled ? 'text-gray-900' : 'text-white'
-              }`}>
-                <span className={isScrolled 
-                  ? "text-gray-900" 
-                  : "bg-gradient-to-r from-red-600 to-orange-500 bg-clip-text text-transparent"
-                }>
-                  明勝丸
-                </span>
-              </div>
-              <div className={`text-xs tracking-widest transition-colors ${
-                isScrolled ? 'text-gray-600' : 'text-white/80'
-              }`}>
-                MEISHO-MARU
-              </div>
+              } group-hover:rotate-12 transition-transform duration-300 drop-shadow-lg`} />
             </div>
           </Link>
 
@@ -86,22 +72,22 @@ export function Header() {
           <div className="hidden lg:flex items-center space-x-4">
             <a
               href={`tel:${SITE_CONFIG.contact.phone}`}
-              className={`flex items-center space-x-2 font-medium transition-colors ${
+              className={`inline-flex items-center space-x-2 font-medium transition-colors ${
                 isScrolled 
                   ? 'text-blue-600 hover:text-blue-700' 
                   : 'text-white hover:text-yellow-300'
               }`}
             >
-              <Phone className="h-5 w-5" />
-              <span>{SITE_CONFIG.contact.phone}</span>
+              <Phone className="h-5 w-5 flex-shrink-0" />
+              <span className="whitespace-nowrap">{SITE_CONFIG.contact.phone}</span>
             </a>
             <Button 
-              className="bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white shadow-lg transform hover:scale-105 transition-all duration-300"
+              className="bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white shadow-lg transform hover:scale-105 transition-all duration-300 inline-flex items-center"
               asChild
             >
-              <Link href="/reservation">
-                <Calendar className="mr-2 h-4 w-4" />
-                予約する
+              <Link href="/reservation" className="inline-flex items-center">
+                <Calendar className="mr-2 h-4 w-4 flex-shrink-0" />
+                <span>予約する</span>
               </Link>
             </Button>
           </div>
@@ -140,18 +126,18 @@ export function Header() {
               <div className="pt-4 border-t border-gray-200">
                 <a
                   href={`tel:${SITE_CONFIG.contact.phone}`}
-                  className="flex items-center space-x-2 text-blue-600 font-medium mb-4"
+                  className="inline-flex items-center space-x-2 text-blue-600 font-medium mb-4"
                 >
-                  <Phone className="h-5 w-5" />
-                  <span>{SITE_CONFIG.contact.phone}</span>
+                  <Phone className="h-5 w-5 flex-shrink-0" />
+                  <span className="whitespace-nowrap">{SITE_CONFIG.contact.phone}</span>
                 </a>
                 <Button 
-                  className="w-full bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white"
+                  className="w-full bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white inline-flex items-center justify-center"
                   asChild
                 >
-                  <Link href="/reservation">
-                    <Calendar className="mr-2 h-4 w-4" />
-                    予約する
+                  <Link href="/reservation" className="inline-flex items-center justify-center w-full">
+                    <Calendar className="mr-2 h-4 w-4 flex-shrink-0" />
+                    <span>予約する</span>
                   </Link>
                 </Button>
               </div>

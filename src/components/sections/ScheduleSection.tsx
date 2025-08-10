@@ -234,10 +234,10 @@ export function ScheduleSection() {
             )}
             
             <div className="mt-8 flex justify-center">
-              <Button size="lg" asChild>
-                <Link href="/reservation">
-                  <Calendar className="mr-2 h-5 w-5" />
-                  予約画面へ進む
+              <Button size="lg" className="inline-flex items-center" asChild>
+                <Link href="/reservation" className="inline-flex items-center">
+                  <Calendar className="mr-2 h-5 w-5 flex-shrink-0" />
+                  <span>予約画面へ進む</span>
                 </Link>
               </Button>
             </div>

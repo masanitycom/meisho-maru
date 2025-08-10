@@ -26,10 +26,31 @@ export function HeroSection() {
 
       <div className="container mx-auto px-4 relative z-10">
         <div className="text-center text-white">
-          {/* 日本語ロゴ */}
+          {/* ロゴとタイトル */}
           <div className="mb-6 md:mb-8 animate-fade-in-down">
             <div className="inline-block relative">
               <div className="absolute -inset-4 bg-white/20 blur-2xl rounded-full hidden md:block"></div>
+              
+              {/* ロゴ画像 */}
+              <div className="mb-4 md:mb-6">
+                <img 
+                  src="/images/logo.png" 
+                  alt="明勝丸ロゴ" 
+                  className="h-32 w-32 md:h-48 md:w-48 mx-auto object-contain drop-shadow-2xl"
+                  style={{
+                    filter: 'drop-shadow(0 0 20px rgba(255,255,255,0.8)) drop-shadow(0 0 40px rgba(255,255,255,0.4))'
+                  }}
+                  onError={(e) => {
+                    // ロゴがない場合はアンカーアイコンを表示
+                    e.currentTarget.style.display = 'none';
+                    e.currentTarget.nextElementSibling?.classList.remove('hidden');
+                  }}
+                />
+                <div className="hidden">
+                  <Anchor className="h-32 w-32 md:h-48 md:w-48 mx-auto text-white drop-shadow-2xl" />
+                </div>
+              </div>
+              
               <h1 className="relative text-5xl sm:text-7xl md:text-9xl font-black tracking-wider">
                 <span className="bg-gradient-to-r from-yellow-300 via-yellow-400 to-orange-400 bg-clip-text text-transparent drop-shadow-2xl">
                   明勝丸
