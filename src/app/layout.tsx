@@ -57,12 +57,19 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: [
-      { url: "/favicon.ico" },
-      { url: "/images/logo.png", type: "image/png" }
+      { url: "/favicon.ico", type: "image/x-icon" },
+      { url: "/icon.png", type: "image/png", sizes: "32x32" },
+      { url: "/images/logo.png", type: "image/png", sizes: "any" }
     ],
     apple: [
-      { url: "/apple-touch-icon.png" },
-      { url: "/images/logo.png", type: "image/png" }
+      { url: "/apple-icon.png", type: "image/png", sizes: "180x180" },
+      { url: "/apple-touch-icon.png", type: "image/png", sizes: "180x180" }
+    ],
+    other: [
+      {
+        rel: "icon",
+        url: "/favicon.ico",
+      },
     ],
   },
   robots: {
