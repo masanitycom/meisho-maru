@@ -81,12 +81,6 @@ export function ImageSlider() {
                     className="w-full h-full object-cover"
                     loading={index === 0 ? 'eager' : 'lazy'}
                   />
-                  {/* オプション: 画像の上にオーバーレイテキスト */}
-                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-4 md:p-8">
-                    <p className="text-white text-lg md:text-xl font-semibold">
-                      {slide.alt}
-                    </p>
-                  </div>
                 </div>
               ))}
             </div>
@@ -123,15 +117,6 @@ export function ImageSlider() {
           </div>
         </div>
 
-        {/* プレースホルダーテキスト */}
-        <div className="mt-8 text-center">
-          <p className="text-sm text-gray-500">
-            ※ 画像は /public/images/slider/ フォルダに配置してください
-          </p>
-          <p className="text-sm text-gray-500 mt-2">
-            推奨サイズ: 1200x600px (デスクトップ) / 1200x800px (モバイル)
-          </p>
-        </div>
       </div>
     </section>
   );
