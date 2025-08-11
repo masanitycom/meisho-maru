@@ -25,7 +25,6 @@ export function ScheduleSection() {
 
   // 今日から30日分のデータを生成（並列処理で高速化）
   const generateDates = async (): Promise<DateInfo[]> => {
-    console.log('🚀 カレンダーデータ生成開始');
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     
@@ -51,7 +50,7 @@ export function ScheduleSection() {
           isToday: i === 0,
         };
       } catch (error) {
-        console.error(`Error fetching seats for ${dateStr}:`, error);
+        console.error(`スケジュール取得エラー ${dateStr}:`, error);
         // エラーの場合はデフォルト値
         return {
           date: date,
@@ -66,7 +65,6 @@ export function ScheduleSection() {
     
     // 全ての日付のデータを並列で待機
     const dateList = await Promise.all(datePromises);
-    console.log('✅ カレンダーデータ生成完了:', dateList.length, '日分');
     
     return dateList;
   };
@@ -76,18 +74,15 @@ export function ScheduleSection() {
   }, []);
 
   useEffect(() => {
-    console.log('📊 ScheduleSection マウント状態:', mounted);
     if (!mounted) return;
     
     const loadDates = async () => {
-      console.log('🎯 お客様向けカレンダー: データ読み込み開始');
       setLoading(true);
       try {
         const dateData = await generateDates();
-        console.log('🎯 お客様向けカレンダー: データ設定完了', dateData);
         setDates(dateData);
       } catch (error) {
-        console.error('🎯 お客様向けカレンダー: エラー', error);
+        console.error('カレンダー読み込みエラー:', error);
       } finally {
         setLoading(false);
       }

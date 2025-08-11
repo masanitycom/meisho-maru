@@ -88,8 +88,6 @@ export const getSchedules = async (startDate?: string, endDate?: string) => {
 // 予約可能席数を計算
 export const getAvailableSeats = async (date: string, tripNumber: number) => {
   try {
-    console.log(`🔍 空席確認開始: ${date}, 便${tripNumber}`);
-    
     // スケジュールから定員と運航状態を取得
     const { data: schedule, error: scheduleError } = await supabase
       .from('schedules')
@@ -99,16 +97,12 @@ export const getAvailableSeats = async (date: string, tripNumber: number) => {
       .single()
       
     if (scheduleError) {
-      console.log(`⚠️ スケジュールエラー ${date}-${tripNumber}:`, scheduleError.message);
       // スケジュールが存在しない場合はデフォルト値
       return 10
     }
     
-    console.log(`📅 スケジュール取得 ${date}-${tripNumber}:`, schedule);
-    
     // 運航停止の場合は-1を返す（休漁日として識別）
     if (!schedule.is_available) {
-      console.log(`🚫 休漁日 ${date}-${tripNumber}`);
       return -1
     }
     
@@ -121,18 +115,16 @@ export const getAvailableSeats = async (date: string, tripNumber: number) => {
       .eq('status', 'confirmed')
       
     if (reservationError) {
-      console.error(`❌ 予約取得エラー ${date}-${tripNumber}:`, reservationError);
+      console.error(`予約取得エラー ${date}-${tripNumber}:`, reservationError);
       throw reservationError
     }
     
     const bookedSeats = reservations?.reduce((sum, r) => sum + r.people_count, 0) || 0
     const availableSeats = schedule.max_capacity - bookedSeats
     
-    console.log(`✅ 空席計算完了 ${date}-${tripNumber}: 定員${schedule.max_capacity} - 予約${bookedSeats} = 空席${availableSeats}`);
-    
     return Math.max(0, availableSeats)
   } catch (error) {
-    console.error(`💥 getAvailableSeats エラー ${date}-${tripNumber}:`, error);
+    console.error(`空席確認エラー ${date}-${tripNumber}:`, error);
     return 10; // エラーの場合はデフォルト値
   }
 }
