@@ -87,7 +87,7 @@ export function HeroSection() {
           </div>
 
           {/* 特徴カード */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 max-w-5xl mx-auto animate-fade-in">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 max-w-5xl mx-auto animate-fade-in mb-12 md:mb-16">
             <div className="bg-white/10 backdrop-blur-md rounded-xl p-6 transform hover:scale-105 transition-all duration-300 border border-white/20">
               <Fish className="h-10 w-10 mb-3 text-yellow-300 mx-auto" />
               <h3 className="text-xl font-bold mb-2">豊富な漁獲量</h3>
