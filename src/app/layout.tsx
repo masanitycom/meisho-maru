@@ -76,8 +76,11 @@ export default function RootLayout({
   return (
     <html lang="ja">
       <head>
-        <link rel="icon" href="/favicon.ico" sizes="any" />
-        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+        <link rel="icon" href="/icon.png" sizes="32x32" />
+        <link rel="icon" href="/icon" type="image/png" sizes="32x32" />
+        <link rel="apple-touch-icon" href="/apple-icon.png" sizes="180x180" />
+        <link rel="apple-touch-icon" href="/apple-icon" sizes="180x180" />
+        <meta name="theme-color" content="#1e3a8a" />
         <meta name="geo.region" content="JP-31" />
         <meta name="geo.placename" content="琴浦町" />
         <meta name="geo.position" content="35.5002;133.6833" />
