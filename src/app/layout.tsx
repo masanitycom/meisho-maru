@@ -40,7 +40,7 @@ export const metadata: Metadata = {
     siteName: "明勝丸 - 鳥取県琴浦町の遊漁船",
     images: [
       {
-        url: "/images/og-image.jpg",
+        url: "/images/logo.png",
         width: 1200,
         height: 630,
         alt: "明勝丸 - 鳥取県琴浦町の白イカ釣り遊漁船",
@@ -53,7 +53,17 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "明勝丸 | 鳥取県琴浦町の白イカ釣り遊漁船",
     description: "鳥取県琴浦町赤碕港から出港。白イカ釣り体験なら明勝丸へ。",
-    images: ["/images/og-image.jpg"],
+    images: ["/images/logo.png"],
+  },
+  icons: {
+    icon: [
+      { url: "/favicon.ico" },
+      { url: "/images/logo.png", type: "image/png" }
+    ],
+    apple: [
+      { url: "/apple-touch-icon.png" },
+      { url: "/images/logo.png", type: "image/png" }
+    ],
   },
   robots: {
     index: true,
@@ -76,10 +86,14 @@ export default function RootLayout({
   return (
     <html lang="ja">
       <head>
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" href="/favicon.ico" sizes="any" />
         <link rel="icon" href="/images/logo.png" type="image/png" sizes="any" />
-        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+        <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180" />
+        <link rel="apple-touch-icon" href="/images/logo.png" sizes="any" />
+        <link rel="manifest" href="/manifest.json" />
         <meta name="theme-color" content="#1e3a8a" />
+        <meta name="msapplication-TileColor" content="#1e3a8a" />
+        <meta name="msapplication-TileImage" content="/images/logo.png" />
         <meta name="geo.region" content="JP-31" />
         <meta name="geo.placename" content="琴浦町" />
         <meta name="geo.position" content="35.5002;133.6833" />
