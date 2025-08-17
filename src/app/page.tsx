@@ -3,6 +3,7 @@ import { ImageSlider } from '@/components/sections/ImageSlider';
 import { LineReservation } from '@/components/sections/LineReservation';
 import { ScheduleSection } from '@/components/sections/ScheduleSection';
 import { InfoSection } from '@/components/sections/InfoSection';
+import { ImportantNoticeSection } from '@/components/sections/ImportantNoticeSection';
 import { TestimonialsSection } from '@/components/sections/TestimonialsSection';
 import { AccessSection } from '@/components/sections/AccessSection';
 import { InstagramBanner } from '@/components/sections/InstagramBanner';
@@ -15,6 +16,7 @@ export default function Home() {
       <LineReservation />
       <ScheduleSection />
       <InfoSection />
+      <ImportantNoticeSection />
       <TestimonialsSection />
       <AccessSection />
       <InstagramBanner />
