@@ -6,17 +6,27 @@ export const getJSTToday = (): string => {
   // JST = UTC+9
   const jstOffset = 9 * 60; // 分単位
   const jstTime = new Date(now.getTime() + (jstOffset * 60 * 1000));
-  return jstTime.toISOString().split('T')[0];
+  const todayStr = jstTime.toISOString().split('T')[0];
+  
+  console.log('JST Today Debug:', {
+    utcNow: now.toISOString(),
+    jstTime: jstTime.toISOString(),
+    todayStr: todayStr
+  });
+  
+  return todayStr;
 };
 
 // 日本時間での日付オブジェクトを取得
 export const getJSTDate = (offset: number = 0): Date => {
-  const now = new Date();
-  const jstOffset = 9 * 60; // JST = UTC+9（分単位）
-  const jstTime = new Date(now.getTime() + (jstOffset * 60 * 1000));
+  // JST今日の日付文字列を取得
+  const todayStr = getJSTToday();
   
-  // 指定された日数分オフセット
-  const targetDate = new Date(jstTime.getFullYear(), jstTime.getMonth(), jstTime.getDate() + offset);
+  // その日付にオフセット日数を加算
+  const baseDate = new Date(todayStr + 'T00:00:00.000Z');
+  const targetDate = new Date(baseDate);
+  targetDate.setUTCDate(baseDate.getUTCDate() + offset);
+  
   return targetDate;
 };
 
