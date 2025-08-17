@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { getAvailableSeats } from '@/lib/supabase';
+import { getJSTDate } from '@/lib/date-utils';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Calendar, Clock, ChevronLeft, ChevronRight, CheckCircle, AlertCircle, XCircle } from 'lucide-react';
@@ -23,15 +24,13 @@ export function ScheduleSection() {
   const [loading, setLoading] = useState(true);
   const [mounted, setMounted] = useState(false);
 
-  // 今日から30日分のデータを生成（並列処理で高速化）
+  // 今日から30日分のデータを生成（日本時間基準・並列処理で高速化）
   const generateDates = async (): Promise<DateInfo[]> => {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
+    console.log('フロントエンド JST今日:', getJSTDate(0).toISOString().split('T')[0]);
     
     // 全ての日付の空席数を並列で取得
     const datePromises = Array.from({ length: 30 }, async (_, i) => {
-      const date = new Date(today);
-      date.setDate(today.getDate() + i);
+      const date = getJSTDate(i);
       const dateStr = date.toISOString().split('T')[0];
       
       try {
@@ -51,12 +50,12 @@ export function ScheduleSection() {
         };
       } catch (error) {
         console.error(`スケジュール取得エラー ${dateStr}:`, error);
-        // エラーの場合はデフォルト値
+        // エラーの場合はデフォルト値（定員8名）
         return {
           date: date,
           dateStr: dateStr,
-          trip1Seats: 10,
-          trip2Seats: 10,
+          trip1Seats: 8,
+          trip2Seats: 8,
           dayOfWeek: ['日', '月', '火', '水', '木', '金', '土'][date.getDay()],
           isToday: i === 0,
         };

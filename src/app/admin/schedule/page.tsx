@@ -9,6 +9,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { getSchedules, updateSchedule, setBulkHoliday, getAvailableSeats } from '@/lib/supabase';
 import { createManualReservation, deleteLastManualReservation } from '@/lib/reservation-admin';
+import { getJSTDate, isJSTToday } from '@/lib/date-utils';
 import { 
   Calendar, 
   Plus, 
@@ -52,16 +53,14 @@ export default function ScheduleManagePage() {
   const [holidayStart, setHolidayStart] = useState('');
   const [holidayEnd, setHolidayEnd] = useState('');
 
-  // 今日から14日分のスケジュールを表示
+  // 今日から30日分のスケジュールを表示（日本時間基準）
   const loadSchedules = useCallback(async (clearLocal = false) => {
     setLoading(true);
     try {
       console.log('🚀 予約状況読み込み開始');
-      const today = new Date();
       
-      const schedulePromises = Array.from({ length: 14 }, async (_, i) => {
-        const date = new Date(today);
-        date.setDate(today.getDate() + i);
+      const schedulePromises = Array.from({ length: 30 }, async (_, i) => {
+        const date = getJSTDate(i);
         const dateStr = date.toISOString().split('T')[0];
         
         try {
@@ -103,6 +102,7 @@ export default function ScheduleManagePage() {
       
       const scheduleData = await Promise.all(schedulePromises);
       console.log('✅ 予約状況読み込み完了:', scheduleData.length, '日分');
+      console.log('JST今日の日付:', getJSTDate(0).toISOString().split('T')[0]);
       
       setSchedules(scheduleData);
       if (clearLocal) {
@@ -275,7 +275,8 @@ export default function ScheduleManagePage() {
     const month = date.getMonth() + 1;
     const day = date.getDate();
     const dayOfWeek = ['日', '月', '火', '水', '木', '金', '土'][date.getDay()];
-    const isToday = dateStr === new Date().toISOString().split('T')[0];
+    
+    const isToday = isJSTToday(dateStr);
     const isWeekend = date.getDay() === 0 || date.getDay() === 6;
     
     return (

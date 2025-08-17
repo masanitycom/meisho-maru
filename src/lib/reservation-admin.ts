@@ -1,20 +1,5 @@
 import { supabase } from './supabase';
-
-// 日付フォーマットを正規化（YYYY-MM-DD形式を保証）
-const normalizeDate = (date: string): string => {
-  // 既にYYYY-MM-DD形式の場合はそのまま
-  if (/^\d{4}-\d{2}-\d{2}$/.test(date)) {
-    return date;
-  }
-  
-  // Date オブジェクトとして解析し、YYYY-MM-DD形式に変換
-  const dateObj = new Date(date);
-  if (isNaN(dateObj.getTime())) {
-    throw new Error(`Invalid date format: ${date}`);
-  }
-  
-  return dateObj.toISOString().split('T')[0];
-};
+import { normalizeDate } from './date-utils';
 
 // 手動予約の作成（電話・LINE予約用）
 export const createManualReservation = async (
