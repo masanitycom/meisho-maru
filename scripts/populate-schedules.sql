@@ -5,7 +5,7 @@ INSERT INTO schedules (date, trip_number, max_capacity, is_available)
 SELECT 
   (CURRENT_DATE + INTERVAL '1 day' * generate_series(0, 29)) as date,
   trip_number,
-  10 as max_capacity,
+  8 as max_capacity,
   true as is_available
 FROM (VALUES (1), (2)) AS t(trip_number)
 ON CONFLICT (date, trip_number) DO NOTHING;
