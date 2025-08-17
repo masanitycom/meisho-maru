@@ -1,15 +1,36 @@
 import { supabase } from './supabase';
 
+// 日付フォーマットを正規化（YYYY-MM-DD形式を保証）
+const normalizeDate = (date: string): string => {
+  // 既にYYYY-MM-DD形式の場合はそのまま
+  if (/^\d{4}-\d{2}-\d{2}$/.test(date)) {
+    return date;
+  }
+  
+  // Date オブジェクトとして解析し、YYYY-MM-DD形式に変換
+  const dateObj = new Date(date);
+  if (isNaN(dateObj.getTime())) {
+    throw new Error(`Invalid date format: ${date}`);
+  }
+  
+  return dateObj.toISOString().split('T')[0];
+};
+
 // 手動予約の作成（電話・LINE予約用）
 export const createManualReservation = async (
   date: string,
   tripNumber: number,
   peopleCount: number
 ) => {
+  console.log('Creating manual reservation:', { date, tripNumber, peopleCount });
+  
+  const normalizedDate = normalizeDate(date);
+  console.log('Normalized date:', normalizedDate);
+  
   const { data, error } = await supabase
     .from('reservations')
     .insert([{
-      date,
+      date: normalizedDate,
       trip_number: tripNumber,
       people_count: peopleCount,
       name: '電話・LINE予約',
@@ -24,7 +45,12 @@ export const createManualReservation = async (
     .select()
     .single();
     
-  if (error) throw error;
+  if (error) {
+    console.error('Manual reservation creation error:', error);
+    throw error;
+  }
+  
+  console.log('Manual reservation created:', data);
   return data;
 };
 
@@ -33,11 +59,16 @@ export const deleteLastManualReservation = async (
   date: string,
   tripNumber: number
 ) => {
+  console.log('Deleting manual reservation:', { date, tripNumber });
+  
+  const normalizedDate = normalizeDate(date);
+  console.log('Normalized date for deletion:', normalizedDate);
+  
   // 最新の手動予約を1件取得
   const { data: reservation, error: fetchError } = await supabase
     .from('reservations')
     .select('id')
-    .eq('date', date)
+    .eq('date', normalizedDate)
     .eq('trip_number', tripNumber)
     .eq('source', 'manual')
     .eq('status', 'confirmed')
@@ -46,7 +77,7 @@ export const deleteLastManualReservation = async (
     .single();
     
   if (fetchError || !reservation) {
-    console.log('削除する手動予約がありません');
+    console.log('削除する手動予約がありません:', fetchError);
     return null;
   }
   
@@ -56,7 +87,12 @@ export const deleteLastManualReservation = async (
     .delete()
     .eq('id', reservation.id);
     
-  if (deleteError) throw deleteError;
+  if (deleteError) {
+    console.error('Manual reservation deletion error:', deleteError);
+    throw deleteError;
+  }
+  
+  console.log('Manual reservation deleted:', reservation.id);
   return reservation.id;
 };
 
@@ -65,10 +101,12 @@ export const getReservationCount = async (
   date: string,
   tripNumber: number
 ): Promise<number> => {
+  const normalizedDate = normalizeDate(date);
+  
   const { data, error } = await supabase
     .from('reservations')
     .select('people_count')
-    .eq('date', date)
+    .eq('date', normalizedDate)
     .eq('trip_number', tripNumber)
     .eq('status', 'confirmed');
     

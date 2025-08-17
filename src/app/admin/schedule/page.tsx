@@ -159,8 +159,14 @@ export default function ScheduleManagePage() {
     try {
       // すべての変更を順次適用
       for (const [key, changeAmount] of Object.entries(localChanges)) {
-        const [date, tripNumberStr] = key.split('-');
-        const tripNumber = parseInt(tripNumberStr);
+        console.log('Processing key:', key, 'changeAmount:', changeAmount);
+        
+        // キーのフォーマット: "YYYY-MM-DD-tripNumber"
+        const keyParts = key.split('-');
+        const tripNumber = parseInt(keyParts[keyParts.length - 1]); // 最後の部分がtripNumber
+        const date = keyParts.slice(0, -1).join('-'); // 最後以外を結合してdate
+        
+        console.log('Parsed date:', date, 'tripNumber:', tripNumber);
         
         if (changeAmount > 0) {
           // 予約追加
