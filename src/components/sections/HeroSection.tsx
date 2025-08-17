@@ -97,7 +97,7 @@ export function HeroSection() {
             <div className="bg-white/10 backdrop-blur-md rounded-xl p-6 transform hover:scale-105 transition-all duration-300 border border-white/20">
               <Anchor className="h-10 w-10 mb-3 text-yellow-300 mx-auto" />
               <h3 className="text-xl font-bold mb-2">最新設備</h3>
-              <p className="text-sm text-blue-100">GPS魚探・電動リール完備</p>
+              <p className="text-sm text-blue-100">GPS魚群探知機完備</p>
             </div>
 
             <div className="bg-white/10 backdrop-blur-md rounded-xl p-6 transform hover:scale-105 transition-all duration-300 border border-white/20">

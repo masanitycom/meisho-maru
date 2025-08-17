@@ -98,7 +98,7 @@ export const getAvailableSeats = async (date: string, tripNumber: number) => {
       
     if (scheduleError) {
       // スケジュールが存在しない場合はデフォルト値
-      return 10
+      return 8
     }
     
     // 運航停止の場合は-1を返す（休漁日として識別）
@@ -125,7 +125,7 @@ export const getAvailableSeats = async (date: string, tripNumber: number) => {
     return Math.max(0, availableSeats)
   } catch (error) {
     console.error(`空席確認エラー ${date}-${tripNumber}:`, error);
-    return 10; // エラーの場合はデフォルト値
+    return 8; // エラーの場合はデフォルト値
   }
 }
 
@@ -161,7 +161,7 @@ export const setBulkHoliday = async (startDate: string, endDate: string, tripNum
       updates.push({
         date: dateStr,
         trip_number: tripNumber,
-        max_capacity: 10,
+        max_capacity: 8,
         is_available: false
       })
     }
