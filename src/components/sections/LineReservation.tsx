@@ -45,7 +45,7 @@ export function LineReservation() {
                   </a>
                 </Button>
                 <p className="text-sm text-gray-500 mt-2">
-                  @meisho_maru
+                  @707ejlid
                 </p>
               </CardContent>
             </Card>
