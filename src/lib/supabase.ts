@@ -85,9 +85,12 @@ export const getSchedules = async (startDate?: string, endDate?: string) => {
   return data
 }
 
-// 予約可能席数を計算
-export const getAvailableSeats = async (date: string, tripNumber: number) => {
+// 予約可能席数を計算（キャッシュ無効化オプション付き）
+export const getAvailableSeats = async (date: string, tripNumber: number, noCache = false) => {
   try {
+    // キャッシュ無効化のためタイムスタンプを追加
+    const cacheKey = noCache ? `_t=${Date.now()}` : '';
+    
     // スケジュールから定員と運航状態を取得
     const { data: schedule, error: scheduleError } = await supabase
       .from('schedules')
@@ -97,7 +100,7 @@ export const getAvailableSeats = async (date: string, tripNumber: number) => {
       .single()
       
     if (scheduleError) {
-      // スケジュールが存在しない場合はデフォルト値
+      // スケジュールが存在しない場合はデフォルト値（定員8名固定）
       return 8
     }
     
@@ -106,7 +109,7 @@ export const getAvailableSeats = async (date: string, tripNumber: number) => {
       return -1
     }
     
-    // 既存予約数を取得
+    // 既存予約数を取得（リアルタイム）
     const { data: reservations, error: reservationError } = await supabase
       .from('reservations')
       .select('people_count')
@@ -120,7 +123,8 @@ export const getAvailableSeats = async (date: string, tripNumber: number) => {
     }
     
     const bookedSeats = reservations?.reduce((sum, r) => sum + r.people_count, 0) || 0
-    const availableSeats = schedule.max_capacity - bookedSeats
+    // 定員は常に8名固定
+    const availableSeats = 8 - bookedSeats
     
     return Math.max(0, availableSeats)
   } catch (error) {
