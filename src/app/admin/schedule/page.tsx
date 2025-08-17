@@ -329,12 +329,12 @@ export default function ScheduleManagePage() {
         <div className="container mx-auto px-4 py-4">
           {/* ヘッダー */}
           <div className="sticky top-20 bg-white z-10 pb-4 mb-4 border-b">
-            <div className="flex justify-between items-center">
-              <h1 className="text-xl font-bold flex items-center">
+            <div className="flex flex-col gap-3 md:flex-row md:justify-between md:items-center">
+              <h1 className="text-lg md:text-xl font-bold flex items-center">
                 <Users className="mr-2 h-5 w-5" />
                 予約人数管理
               </h1>
-              <div className="flex gap-2">
+              <div className="flex gap-2 justify-end">
                 {hasChanges && (
                   <>
                     <Button 
@@ -342,36 +342,40 @@ export default function ScheduleManagePage() {
                       variant="outline" 
                       size="sm"
                       disabled={saving}
+                      className="flex-shrink-0"
                     >
-                      <X className="h-4 w-4 mr-1" />
-                      取消
+                      <X className="h-4 w-4 md:mr-1" />
+                      <span className="hidden md:inline">取消</span>
                     </Button>
                     <Button 
                       onClick={saveChanges} 
                       variant="default" 
                       size="sm"
                       disabled={saving}
-                      className="bg-green-600 hover:bg-green-700"
+                      className="bg-green-600 hover:bg-green-700 flex-shrink-0"
                     >
                       {saving ? (
-                        <RefreshCw className="h-4 w-4 mr-1 animate-spin" />
+                        <RefreshCw className="h-4 w-4 md:mr-1 animate-spin" />
                       ) : (
-                        <Save className="h-4 w-4 mr-1" />
+                        <Save className="h-4 w-4 md:mr-1" />
                       )}
-                      保存
+                      <span className="hidden md:inline">保存</span>
                     </Button>
                   </>
                 )}
-                <Button onClick={() => loadSchedules(true)} variant="outline" size="sm">
+                <Button onClick={() => loadSchedules(true)} variant="outline" size="sm" className="flex-shrink-0">
                   <RefreshCw className="h-4 w-4" />
                 </Button>
               </div>
             </div>
-            <p className="text-sm text-gray-600 mt-1">定員8名 - 電話・LINE予約の人数を調整してください</p>
+            <p className="text-xs md:text-sm text-gray-600 mt-1">定員8名 - 電話・LINE予約の人数を調整してください</p>
             {hasChanges && (
-              <p className="text-sm text-orange-600 mt-1 font-bold">
-                ※ 変更があります。保存ボタンを押してください。
-              </p>
+              <div className="bg-orange-50 border border-orange-200 rounded-lg p-3 mt-2">
+                <p className="text-sm text-orange-800 font-bold flex items-center">
+                  <AlertCircle className="h-4 w-4 mr-2" />
+                  変更があります。保存ボタンを押してください。
+                </p>
+              </div>
             )}
           </div>
 
@@ -629,6 +633,35 @@ export default function ScheduleManagePage() {
             </CardContent>
           </Card>
         </div>
+
+        {/* スマホ用固定保存バー */}
+        {hasChanges && (
+          <div className="fixed bottom-0 left-0 right-0 bg-white border-t shadow-lg p-4 z-50 md:hidden">
+            <div className="flex gap-3 max-w-sm mx-auto">
+              <Button 
+                onClick={cancelChanges} 
+                variant="outline" 
+                className="flex-1"
+                disabled={saving}
+              >
+                <X className="h-4 w-4 mr-2" />
+                取消
+              </Button>
+              <Button 
+                onClick={saveChanges} 
+                className="flex-1 bg-green-600 hover:bg-green-700"
+                disabled={saving}
+              >
+                {saving ? (
+                  <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
+                ) : (
+                  <Save className="h-4 w-4 mr-2" />
+                )}
+                保存
+              </Button>
+            </div>
+          </div>
+        )}
       </div>
     </AdminAuth>
   );
