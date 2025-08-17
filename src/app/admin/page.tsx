@@ -173,7 +173,7 @@ function NewReservationForm({ onReservationCreated }: { onReservationCreated: ()
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                {[1,2,3,4,5,6,7,8,9,10].map(n => (
+                {[1,2,3,4,5,6,7,8].map(n => (
                   <SelectItem key={n} value={n.toString()}>{n}名</SelectItem>
                 ))}
               </SelectContent>
@@ -465,6 +465,27 @@ export default function AdminPage() {
             設定
           </Button>
         </div>
+
+        {/* 運航スケジュール管理への大きなボタン */}
+        <Card className="mb-8 bg-gradient-to-r from-blue-500 to-blue-600">
+          <CardContent className="p-6">
+            <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+              <div className="text-white">
+                <h2 className="text-2xl font-bold mb-2 flex items-center">
+                  <Ship className="mr-3 h-7 w-7" />
+                  運航スケジュール管理
+                </h2>
+                <p className="text-blue-100">定員調整・休業日設定をスマホで簡単操作</p>
+              </div>
+              <Button asChild size="lg" className="bg-white text-blue-600 hover:bg-gray-100 min-w-[200px] h-14 text-lg font-bold shadow-lg">
+                <Link href="/admin/schedule" className="inline-flex items-center justify-center">
+                  <Calendar className="mr-2 h-6 w-6" />
+                  管理画面を開く
+                </Link>
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
 
         {/* ダッシュボード統計 */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
