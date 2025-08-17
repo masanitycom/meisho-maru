@@ -35,7 +35,7 @@ export function LineReservation() {
                   asChild
                 >
                   <a
-                    href="https://line.me/ti/p/@meisho_maru"
+                    href="https://lin.ee/HQX3Ezq"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center justify-center"
@@ -66,11 +66,11 @@ export function LineReservation() {
                   asChild
                 >
                   <a
-                    href="tel:090-1234-5678"
+                    href="tel:090-4695-3087"
                     className="inline-flex items-center justify-center"
                   >
                     <Phone className="mr-2 h-5 w-5" />
-                    090-1234-5678
+                    090-4695-3087
                   </a>
                 </Button>
                 <p className="text-sm text-gray-500 mt-2">

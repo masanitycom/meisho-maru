@@ -120,7 +120,7 @@ export default function RootLayout({
               "alternateName": "めいしょうまる",
               "description": "鳥取県琴浦町赤碕港を拠点とする白イカ釣り専門の遊漁船",
               "url": "https://meisho-maru.com",
-              "telephone": "090-1234-5678",
+              "telephone": "090-4695-3087",
               "priceRange": "¥¥",
               "address": {
                 "@type": "PostalAddress",
@@ -154,7 +154,7 @@ export default function RootLayout({
               "keywords": "山陰 白いか 遊漁, 日本海 白いか 遊漁, 山陰 白いか, 日本海 白いか, 山陰 遊漁船, 日本海 遊漁船, 山陰 釣り船, 日本海 釣り船, 鳥取 白いか 遊漁, 琴浦 白いか 遊漁, 赤碕 白いか 遊漁, 鳥取 白いか, 琴浦 白いか, 赤碕 白いか, 鳥取 遊漁船, 琴浦 遊漁船, 赤碕 遊漁船, 鳥取 イカ釣り, 白イカ釣り, 遊漁船, 琴浦町 釣り船, 赤碕港, 日本海 釣り, 鳥取県 遊漁",
               "sameAs": [
                 "https://www.instagram.com/meisho_maru",
-                "https://line.me/ti/p/@meisho_maru"
+                "https://lin.ee/HQX3Ezq"
               ]
             })
           }}

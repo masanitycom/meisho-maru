@@ -3,7 +3,7 @@ export const SITE_CONFIG = {
   description: '鳥取県の白いか遊漁船',
   url: process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000',
   contact: {
-    phone: '090-1234-5678',
+    phone: '090-4695-3087',
     email: 'info@meisho-maru.com',
     address: '鳥取県東伯郡琴浦町大字別所１１２８番地',
   },
