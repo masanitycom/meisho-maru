@@ -19,7 +19,7 @@ import {
   AlertCircle,
   RefreshCw,
   Ship,
-  Clock
+  Users
 } from 'lucide-react';
 
 interface ScheduleData {
@@ -30,7 +30,11 @@ interface ScheduleData {
   trip2Capacity: number;
   trip1Seats: number;
   trip2Seats: number;
+  trip1Reservations: number; // 予約人数
+  trip2Reservations: number; // 予約人数
 }
+
+const FIXED_CAPACITY = 8; // 船の定員は8名固定
 
 export default function ScheduleManagePage() {
   const [schedules, setSchedules] = useState<ScheduleData[]>([]);
@@ -38,23 +42,20 @@ export default function ScheduleManagePage() {
   const [updating, setUpdating] = useState<string | null>(null);
   const [holidayStart, setHolidayStart] = useState('');
   const [holidayEnd, setHolidayEnd] = useState('');
-  const [localCapacities, setLocalCapacities] = useState<{[key: string]: number}>({});
 
-  // 今日から14日分のスケジュールを表示（並列処理で高速化）
+  // 今日から14日分のスケジュールを表示
   const loadSchedules = useCallback(async () => {
     setLoading(true);
     try {
-      console.log('🚀 運航管理データ読み込み開始');
+      console.log('🚀 予約状況読み込み開始');
       const today = new Date();
       
-      // 全ての日付のデータを並列で取得
       const schedulePromises = Array.from({ length: 14 }, async (_, i) => {
         const date = new Date(today);
         date.setDate(today.getDate() + i);
         const dateStr = date.toISOString().split('T')[0];
         
         try {
-          // スケジュール取得と空席数取得を並列実行
           const [schedulesFromDB, trip1Seats, trip2Seats] = await Promise.all([
             getSchedules(dateStr, dateStr),
             getAvailableSeats(dateStr, 1),
@@ -68,32 +69,33 @@ export default function ScheduleManagePage() {
             date: dateStr,
             trip1Available: trip1Schedule?.is_available ?? true,
             trip2Available: trip2Schedule?.is_available ?? true,
-            trip1Capacity: trip1Schedule?.max_capacity ?? 8,
-            trip2Capacity: trip2Schedule?.max_capacity ?? 8,
+            trip1Capacity: FIXED_CAPACITY,
+            trip2Capacity: FIXED_CAPACITY,
             trip1Seats,
             trip2Seats,
+            trip1Reservations: FIXED_CAPACITY - trip1Seats, // 予約人数 = 定員 - 空席
+            trip2Reservations: FIXED_CAPACITY - trip2Seats, // 予約人数 = 定員 - 空席
           };
         } catch (error) {
           console.error(`Error loading schedule for ${dateStr}:`, error);
-          // エラーの場合はデフォルト値
           return {
             date: dateStr,
             trip1Available: true,
             trip2Available: true,
-            trip1Capacity: 8,
-            trip2Capacity: 8,
-            trip1Seats: 8,
-            trip2Seats: 8,
+            trip1Capacity: FIXED_CAPACITY,
+            trip2Capacity: FIXED_CAPACITY,
+            trip1Seats: FIXED_CAPACITY,
+            trip2Seats: FIXED_CAPACITY,
+            trip1Reservations: 0,
+            trip2Reservations: 0,
           };
         }
       });
       
       const scheduleData = await Promise.all(schedulePromises);
-      console.log('✅ 運航管理データ読み込み完了:', scheduleData.length, '日分');
+      console.log('✅ 予約状況読み込み完了:', scheduleData.length, '日分');
       
       setSchedules(scheduleData);
-      // ローカル定員をリセット
-      setLocalCapacities({});
     } catch (error) {
       console.error('スケジュール読み込みエラー:', error);
       alert('データの読み込みに失敗しました');
@@ -106,42 +108,27 @@ export default function ScheduleManagePage() {
     loadSchedules();
   }, [loadSchedules]);
 
-  // ローカルで定員を変更（リロードしない）
-  const changeLocalCapacity = (date: string, tripNumber: number, change: number) => {
+  // 予約人数変更（電話・LINE予約の追加・キャンセル対応）
+  const changeReservations = async (date: string, tripNumber: number, change: number) => {
     const key = `${date}-${tripNumber}`;
-    const currentSchedule = schedules.find(s => s.date === date);
-    const currentCapacity = localCapacities[key] ?? (tripNumber === 1 ? 
-      currentSchedule?.trip1Capacity ?? 8 : 
-      currentSchedule?.trip2Capacity ?? 8);
-    
-    const newCapacity = Math.max(0, Math.min(20, currentCapacity + change));
-    setLocalCapacities(prev => ({
-      ...prev,
-      [key]: newCapacity
-    }));
-  };
-
-  // 定員を保存
-  const saveCapacity = async (date: string, tripNumber: number) => {
-    const key = `${date}-${tripNumber}`;
-    const newCapacity = localCapacities[key];
-    
-    if (newCapacity === undefined) return;
-    
     setUpdating(key);
     
     try {
-      await updateSchedule(date, tripNumber, { max_capacity: newCapacity });
-      // 成功したらローカル状態をクリアしてデータを再読み込み
-      setLocalCapacities(prev => {
-        const newState = { ...prev };
-        delete newState[key];
-        return newState;
-      });
-      await loadSchedules();
+      const currentSchedule = schedules.find(s => s.date === date);
+      const currentReservations = tripNumber === 1 ? 
+        currentSchedule?.trip1Reservations ?? 0 : 
+        currentSchedule?.trip2Reservations ?? 0;
+      
+      const newReservations = Math.max(0, Math.min(FIXED_CAPACITY, currentReservations + change));
+      const newAvailableSeats = FIXED_CAPACITY - newReservations;
+      
+      // データベースに新しい空席数を保存
+      await updateSchedule(date, tripNumber, { max_capacity: FIXED_CAPACITY });
+      await loadSchedules(); // データ再読み込み
+      
     } catch (error) {
-      console.error('定員変更エラー:', error);
-      alert('定員の変更に失敗しました');
+      console.error('予約人数変更エラー:', error);
+      alert('予約人数の変更に失敗しました');
     } finally {
       setUpdating(null);
     }
@@ -180,7 +167,7 @@ export default function ScheduleManagePage() {
     
     try {
       await setBulkHoliday(holidayStart, holidayEnd, [1, 2]);
-      await loadSchedules(); // データ再読み込み
+      await loadSchedules();
       setHolidayStart('');
       setHolidayEnd('');
       alert('休業期間を設定しました');
@@ -214,10 +201,10 @@ export default function ScheduleManagePage() {
   };
 
   const getStatusColor = (available: boolean, seats: number) => {
-    if (!available || seats === -1) return 'bg-gray-100 border-gray-300'; // 休漁日
-    if (seats === 0) return 'bg-red-50 border-red-300'; // 満席
-    if (seats <= 2) return 'bg-orange-50 border-orange-300'; // 残りわずか
-    return 'bg-green-50 border-green-300'; // 空席あり
+    if (!available || seats === -1) return 'bg-gray-100 border-gray-300'; 
+    if (seats === 0) return 'bg-red-50 border-red-300'; 
+    if (seats <= 2) return 'bg-orange-50 border-orange-300'; 
+    return 'bg-green-50 border-green-300'; 
   };
 
   const getStatusBadge = (available: boolean, seats: number) => {
@@ -238,7 +225,7 @@ export default function ScheduleManagePage() {
       <div className="min-h-screen bg-gray-50 pt-24 flex items-center justify-center">
         <div className="text-center">
           <RefreshCw className="h-8 w-8 animate-spin mx-auto mb-4 text-blue-500" />
-          <p className="text-lg">スケジュールを読み込み中...</p>
+          <p className="text-lg">予約状況を読み込み中...</p>
         </div>
       </div>
     );
@@ -248,20 +235,21 @@ export default function ScheduleManagePage() {
     <AdminAuth>
       <div className="min-h-screen bg-gray-50 pt-20 pb-20">
         <div className="container mx-auto px-4 py-4">
-          {/* ヘッダー - スマホ用に最適化 */}
+          {/* ヘッダー */}
           <div className="sticky top-20 bg-white z-10 pb-4 mb-4 border-b">
             <div className="flex justify-between items-center">
               <h1 className="text-xl font-bold flex items-center">
-                <Ship className="mr-2 h-5 w-5" />
-                運航管理
+                <Users className="mr-2 h-5 w-5" />
+                予約人数管理
               </h1>
               <Button onClick={loadSchedules} variant="outline" size="sm">
                 <RefreshCw className="h-4 w-4" />
               </Button>
             </div>
+            <p className="text-sm text-gray-600 mt-1">定員8名 - 電話・LINE予約の人数を調整してください</p>
           </div>
 
-          {/* 休業期間設定 - スマホ用にコンパクト化 */}
+          {/* 休業期間設定 */}
           <Card className="mb-4">
             <CardHeader className="pb-3">
               <CardTitle className="text-base flex items-center">
@@ -304,15 +292,11 @@ export default function ScheduleManagePage() {
             </CardContent>
           </Card>
 
-          {/* スケジュール一覧 - スマホ用に最適化 */}
+          {/* 予約状況一覧 */}
           <div className="space-y-4">
             {schedules.map((schedule) => {
               const trip1Key = `${schedule.date}-1`;
               const trip2Key = `${schedule.date}-2`;
-              const trip1DisplayCapacity = localCapacities[trip1Key] ?? schedule.trip1Capacity;
-              const trip2DisplayCapacity = localCapacities[trip2Key] ?? schedule.trip2Capacity;
-              const trip1HasChanges = localCapacities[trip1Key] !== undefined;
-              const trip2HasChanges = localCapacities[trip2Key] !== undefined;
 
               return (
                 <Card key={schedule.date} className="overflow-hidden">
@@ -332,63 +316,50 @@ export default function ScheduleManagePage() {
                       </div>
                       
                       <div className="space-y-3">
-                        {/* 空席状況 */}
+                        {/* 予約状況 */}
                         <div className="bg-white rounded-lg p-3 text-center">
                           <div className="text-2xl font-bold">
                             {schedule.trip1Seats === -1 ? (
                               '休漁日'
                             ) : (
                               <>
-                                空席 <span className="text-3xl text-blue-600">{schedule.trip1Seats}</span>
-                                <span className="text-lg text-gray-500"> / {trip1DisplayCapacity}名</span>
+                                予約 <span className="text-3xl text-blue-600">{schedule.trip1Reservations}</span>
+                                <span className="text-lg text-gray-500"> / 8名</span>
+                                <div className="text-base mt-1">
+                                  空席 <span className="text-green-600 font-bold">{schedule.trip1Seats}席</span>
+                                </div>
                               </>
                             )}
                           </div>
                         </div>
                         
-                        {/* 定員調整 */}
+                        {/* 予約人数調整 */}
                         <div className="flex items-center justify-between bg-white rounded-lg p-2">
                           <Button
                             size="icon"
                             variant="outline"
-                            onClick={() => changeLocalCapacity(schedule.date, 1, -1)}
-                            disabled={trip1DisplayCapacity <= 0}
+                            onClick={() => changeReservations(schedule.date, 1, -1)}
+                            disabled={updating === trip1Key || schedule.trip1Reservations <= 0}
                             className="h-10 w-10"
                           >
                             <Minus className="h-5 w-5" />
                           </Button>
                           
                           <div className="text-center">
-                            <div className="text-xs text-gray-500">定員</div>
-                            <div className="text-xl font-bold">{trip1DisplayCapacity}名</div>
+                            <div className="text-xs text-gray-500">予約人数調整</div>
+                            <div className="text-sm text-gray-600">電話・LINE予約</div>
                           </div>
                           
                           <Button
                             size="icon"
                             variant="outline"
-                            onClick={() => changeLocalCapacity(schedule.date, 1, 1)}
-                            disabled={trip1DisplayCapacity >= 20}
+                            onClick={() => changeReservations(schedule.date, 1, 1)}
+                            disabled={updating === trip1Key || schedule.trip1Reservations >= FIXED_CAPACITY}
                             className="h-10 w-10"
                           >
                             <Plus className="h-5 w-5" />
                           </Button>
                         </div>
-
-                        {/* 変更がある場合のみ保存ボタンを表示 */}
-                        {trip1HasChanges && (
-                          <Button
-                            onClick={() => saveCapacity(schedule.date, 1)}
-                            disabled={updating === trip1Key}
-                            className="w-full bg-blue-500 hover:bg-blue-600"
-                          >
-                            {updating === trip1Key ? (
-                              <RefreshCw className="h-4 w-4 animate-spin mr-2" />
-                            ) : (
-                              <Check className="h-4 w-4 mr-2" />
-                            )}
-                            定員を保存
-                          </Button>
-                        )}
                         
                         {/* 運航切り替え */}
                         <Button
@@ -421,63 +392,50 @@ export default function ScheduleManagePage() {
                       </div>
                       
                       <div className="space-y-3">
-                        {/* 空席状況 */}
+                        {/* 予約状況 */}
                         <div className="bg-white rounded-lg p-3 text-center">
                           <div className="text-2xl font-bold">
                             {schedule.trip2Seats === -1 ? (
                               '休漁日'
                             ) : (
                               <>
-                                空席 <span className="text-3xl text-blue-600">{schedule.trip2Seats}</span>
-                                <span className="text-lg text-gray-500"> / {trip2DisplayCapacity}名</span>
+                                予約 <span className="text-3xl text-blue-600">{schedule.trip2Reservations}</span>
+                                <span className="text-lg text-gray-500"> / 8名</span>
+                                <div className="text-base mt-1">
+                                  空席 <span className="text-green-600 font-bold">{schedule.trip2Seats}席</span>
+                                </div>
                               </>
                             )}
                           </div>
                         </div>
                         
-                        {/* 定員調整 */}
+                        {/* 予約人数調整 */}
                         <div className="flex items-center justify-between bg-white rounded-lg p-2">
                           <Button
                             size="icon"
                             variant="outline"
-                            onClick={() => changeLocalCapacity(schedule.date, 2, -1)}
-                            disabled={trip2DisplayCapacity <= 0}
+                            onClick={() => changeReservations(schedule.date, 2, -1)}
+                            disabled={updating === trip2Key || schedule.trip2Reservations <= 0}
                             className="h-10 w-10"
                           >
                             <Minus className="h-5 w-5" />
                           </Button>
                           
                           <div className="text-center">
-                            <div className="text-xs text-gray-500">定員</div>
-                            <div className="text-xl font-bold">{trip2DisplayCapacity}名</div>
+                            <div className="text-xs text-gray-500">予約人数調整</div>
+                            <div className="text-sm text-gray-600">電話・LINE予約</div>
                           </div>
                           
                           <Button
                             size="icon"
                             variant="outline"
-                            onClick={() => changeLocalCapacity(schedule.date, 2, 1)}
-                            disabled={trip2DisplayCapacity >= 20}
+                            onClick={() => changeReservations(schedule.date, 2, 1)}
+                            disabled={updating === trip2Key || schedule.trip2Reservations >= FIXED_CAPACITY}
                             className="h-10 w-10"
                           >
                             <Plus className="h-5 w-5" />
                           </Button>
                         </div>
-
-                        {/* 変更がある場合のみ保存ボタンを表示 */}
-                        {trip2HasChanges && (
-                          <Button
-                            onClick={() => saveCapacity(schedule.date, 2)}
-                            disabled={updating === trip2Key}
-                            className="w-full bg-blue-500 hover:bg-blue-600"
-                          >
-                            {updating === trip2Key ? (
-                              <RefreshCw className="h-4 w-4 animate-spin mr-2" />
-                            ) : (
-                              <Check className="h-4 w-4 mr-2" />
-                            )}
-                            定員を保存
-                          </Button>
-                        )}
                         
                         {/* 運航切り替え */}
                         <Button
@@ -503,26 +461,26 @@ export default function ScheduleManagePage() {
             })}
           </div>
 
-          {/* 操作説明 - スマホ用にシンプル化 */}
+          {/* 操作説明 */}
           <Card className="mt-6">
             <CardHeader className="pb-3">
               <CardTitle className="text-base flex items-center">
                 <AlertCircle className="mr-2 h-4 w-4" />
-                操作ガイド
+                使い方
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-2 text-sm">
               <div className="flex items-start gap-2">
-                <Badge className="bg-blue-100 text-blue-800">定員</Badge>
-                <p className="text-gray-600">±ボタンで調整→保存ボタンで確定</p>
+                <Badge className="bg-blue-100 text-blue-800">予約</Badge>
+                <p className="text-gray-600">電話・LINE予約があったら ➕ ボタンで人数を追加</p>
               </div>
               <div className="flex items-start gap-2">
-                <Badge className="bg-red-100 text-red-800">休業</Badge>
-                <p className="text-gray-600">各便ごとに運航/休業を切り替え</p>
+                <Badge className="bg-red-100 text-red-800">キャンセル</Badge>
+                <p className="text-gray-600">キャンセルがあったら ➖ ボタンで人数を減らす</p>
               </div>
               <div className="flex items-start gap-2">
-                <Badge className="bg-gray-100 text-gray-800">期間</Badge>
-                <p className="text-gray-600">上部から期間指定で一括休業設定</p>
+                <Badge className="bg-gray-100 text-gray-800">休業</Badge>
+                <p className="text-gray-600">出船中止は「休業にする」ボタン</p>
               </div>
             </CardContent>
           </Card>
