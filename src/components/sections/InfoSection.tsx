@@ -1,5 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Check, Anchor, Users, Shield, Wifi } from 'lucide-react';
+import { Check, Anchor, Users, Shield } from 'lucide-react';
 import { PRICES } from '@/lib/constants';
 
 export function InfoSection() {
@@ -80,9 +80,9 @@ export function InfoSection() {
                     <Anchor className="h-6 w-6 text-primary" />
                   </div>
                   <div>
-                    <h4 className="font-semibold mb-1">最新設備完備</h4>
+                    <h4 className="font-semibold mb-1">最新設備</h4>
                     <p className="text-sm text-gray-600">
-                      GPS魚群探知機、電動リール対応
+                      GPS魚群探知機完備
                     </p>
                   </div>
                 </div>
@@ -92,7 +92,7 @@ export function InfoSection() {
                     <Users className="h-6 w-6 text-primary" />
                   </div>
                   <div>
-                    <h4 className="font-semibold mb-1">定員10名</h4>
+                    <h4 className="font-semibold mb-1">定員8名</h4>
                     <p className="text-sm text-gray-600">
                       ゆったりとした釣り座でストレスフリー
                     </p>
@@ -111,17 +111,6 @@ export function InfoSection() {
                   </div>
                 </div>
 
-                <div className="flex items-start space-x-3">
-                  <div className="bg-primary/10 p-2 rounded-lg">
-                    <Wifi className="h-6 w-6 text-primary" />
-                  </div>
-                  <div>
-                    <h4 className="font-semibold mb-1">便利な設備</h4>
-                    <p className="text-sm text-gray-600">
-                      トイレ、キャビン、無料Wi-Fi完備
-                    </p>
-                  </div>
-                </div>
               </div>
 
               <div className="mt-6 p-4 bg-amber-50 rounded-lg">
