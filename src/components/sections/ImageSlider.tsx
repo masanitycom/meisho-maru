@@ -5,7 +5,7 @@ import useEmblaCarousel from 'embla-carousel-react';
 import Autoplay from 'embla-carousel-autoplay';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
-// スライダー画像の配列（実際の画像パスに置き換えてください）
+// スライダー画像の配列（実際に存在する画像のみ）
 const slideImages = [
   {
     src: '/images/slider/slide-1.jpg',
@@ -16,16 +16,8 @@ const slideImages = [
     alt: '釣れた白イカ',
   },
   {
-    src: '/images/slider/slide-3.jpg',
-    alt: '船内の様子',
-  },
-  {
     src: '/images/slider/slide-4.jpg',
     alt: '夕日の海',
-  },
-  {
-    src: '/images/slider/slide-5.jpg',
-    alt: 'お客様の釣果',
   },
 ];
 
