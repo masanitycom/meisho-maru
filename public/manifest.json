@@ -1,7 +1,7 @@
 {
-  "name": "明勝丸 - 鳥取県琴浦町の白イカ釣り遊漁船",
+  "name": "明勝丸 - 山陰・日本海・鳥取の白いか釣り遊漁船",
   "short_name": "明勝丸",
-  "description": "鳥取県琴浦町赤碕港から出港する白イカ釣り専門の遊漁船",
+  "description": "山陰・日本海の白いか遊漁なら明勝丸。鳥取県琴浦町赤碕港から出港する白いか釣り専門の遊漁船",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#1e3a8a",
@@ -9,8 +9,13 @@
   "icons": [
     {
       "src": "/favicon.ico",
-      "sizes": "64x64",
-      "type": "image/x-icon"
+      "sizes": "48x48",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon.png",
+      "sizes": "32x32",
+      "type": "image/png"
     },
     {
       "src": "/images/logo.png",
@@ -20,6 +25,11 @@
     },
     {
       "src": "/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    },
+    {
+      "src": "/apple-icon.png",
       "sizes": "180x180",
       "type": "image/png"
     }

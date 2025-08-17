@@ -57,20 +57,15 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: [
-      { url: "/favicon.ico", type: "image/x-icon" },
+      { url: "/favicon.ico", sizes: "48x48" },
       { url: "/icon.png", type: "image/png", sizes: "32x32" },
-      { url: "/images/logo.png", type: "image/png", sizes: "any" }
+      { url: "/images/logo.png", type: "image/png", sizes: "192x192" }
     ],
     apple: [
       { url: "/apple-icon.png", type: "image/png", sizes: "180x180" },
       { url: "/apple-touch-icon.png", type: "image/png", sizes: "180x180" }
     ],
-    other: [
-      {
-        rel: "icon",
-        url: "/favicon.ico",
-      },
-    ],
+    shortcut: "/favicon.ico",
   },
   robots: {
     index: true,
@@ -93,10 +88,12 @@ export default function RootLayout({
   return (
     <html lang="ja">
       <head>
-        <link rel="icon" href="/favicon.ico" sizes="any" />
-        <link rel="icon" href="/images/logo.png" type="image/png" sizes="any" />
+        <link rel="icon" href="/favicon.ico" sizes="48x48" />
+        <link rel="icon" href="/icon.png" type="image/png" sizes="32x32" />
+        <link rel="icon" href="/images/logo.png" type="image/png" sizes="192x192" />
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180" />
-        <link rel="apple-touch-icon" href="/images/logo.png" sizes="any" />
+        <link rel="apple-touch-icon" href="/apple-icon.png" sizes="180x180" />
+        <link rel="shortcut icon" href="/favicon.ico" />
         <link rel="manifest" href="/manifest.json" />
         <meta name="theme-color" content="#1e3a8a" />
         <meta name="msapplication-TileColor" content="#1e3a8a" />
