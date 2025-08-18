@@ -4,7 +4,7 @@ import nodemailer from 'nodemailer';
 
 // Gmail SMTPトランスポーターの作成
 const createTransporter = () => {
-  return nodemailer.createTransporter({
+  return nodemailer.createTransport({
     service: 'gmail',
     auth: {
       user: process.env.GMAIL_USER, // ikameishomaru@gmail.com
