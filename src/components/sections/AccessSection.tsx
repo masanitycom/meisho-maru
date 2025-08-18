@@ -9,8 +9,26 @@ export function AccessSection() {
         <div className="text-center mb-12">
           <h2 className="text-4xl font-bold mb-4">アクセス</h2>
           <p className="text-xl text-gray-600">
-            鳥取県琴浦町赤碕港からの出航です
+            関西・中国地方から好アクセス！鳥取県琴浦町赤碕港からの出航
           </p>
+          <div className="mt-6 grid grid-cols-2 md:grid-cols-4 gap-4 max-w-3xl mx-auto">
+            <div className="bg-blue-50 p-3 rounded-lg">
+              <div className="font-semibold text-blue-800">大阪から</div>
+              <div className="text-sm text-blue-600">約3時間</div>
+            </div>
+            <div className="bg-green-50 p-3 rounded-lg">
+              <div className="font-semibold text-green-800">広島から</div>
+              <div className="text-sm text-green-600">約2.5時間</div>
+            </div>
+            <div className="bg-orange-50 p-3 rounded-lg">
+              <div className="font-semibold text-orange-800">岡山から</div>
+              <div className="text-sm text-orange-600">約2時間</div>
+            </div>
+            <div className="bg-purple-50 p-3 rounded-lg">
+              <div className="font-semibold text-purple-800">名古屋から</div>
+              <div className="text-sm text-purple-600">約4時間</div>
+            </div>
+          </div>
         </div>
 
         <div className="max-w-5xl mx-auto">
@@ -39,11 +57,25 @@ export function AccessSection() {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <ul className="space-y-2 text-sm">
-                    <li>山陰自動車道「米子IC」から国道9号 車で約30分</li>
-                    <li>JR鳥取駅から国道9号 約70分</li>
-                    <li className="text-primary font-semibold">無料駐車場完備</li>
-                  </ul>
+                  <div className="space-y-4">
+                    <div>
+                      <h4 className="font-semibold text-sm mb-2">関西・中国地方から</h4>
+                      <ul className="space-y-1 text-sm">
+                        <li>• <strong>大阪・京都から</strong>：中国自動車道→院庄IC→国道179号→国道9号（約3時間）</li>
+                        <li>• <strong>広島から</strong>：山陽自動車道→落合JCT→中国自動車道→院庄IC（約2.5時間）</li>
+                        <li>• <strong>岡山から</strong>：国道53号→鳥取→国道9号（約2時間）</li>
+                      </ul>
+                    </div>
+                    <div>
+                      <h4 className="font-semibold text-sm mb-2">東海地方から</h4>
+                      <ul className="space-y-1 text-sm">
+                        <li>• <strong>名古屋から</strong>：名神高速→中国自動車道→院庄IC→国道179号（約4時間）</li>
+                      </ul>
+                    </div>
+                    <div className="bg-blue-50 p-3 rounded-lg">
+                      <p className="text-primary font-semibold text-sm">✓ 無料駐車場完備　✓ 大型車対応</p>
+                    </div>
+                  </div>
                 </CardContent>
               </Card>
 
