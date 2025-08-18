@@ -12,45 +12,73 @@ interface WebVitalsProps {
 
 export function WebVitals({ onCLS, onFID, onFCP, onLCP, onTTFB }: WebVitalsProps) {
   useEffect(() => {
-    // Web Vitalsの監視を開始
-    if (typeof window !== 'undefined') {
-      import('web-vitals').then(({ getCLS, getFID, getFCP, getLCP, getTTFB }) => {
-        getCLS((metric) => {
-          if (onCLS) onCLS(metric.value);
-          // 開発環境でのみコンソール出力
-          if (process.env.NODE_ENV === 'development') {
-            console.log('CLS:', metric.value);
-          }
-        });
+    // ブラウザのPerformance APIを使用してパフォーマンスを監視
+    if (typeof window !== 'undefined' && 'performance' in window) {
+      // LCP (Largest Contentful Paint) の監視
+      if ('PerformanceObserver' in window) {
+        try {
+          const lcpObserver = new PerformanceObserver((entryList) => {
+            const entries = entryList.getEntries();
+            const lastEntry = entries[entries.length - 1];
+            if (lastEntry && onLCP) {
+              onLCP(lastEntry.startTime);
+              if (process.env.NODE_ENV === 'development') {
+                console.log('LCP:', lastEntry.startTime);
+              }
+            }
+          });
+          lcpObserver.observe({ entryTypes: ['largest-contentful-paint'] });
 
-        getFID((metric) => {
-          if (onFID) onFID(metric.value);
-          if (process.env.NODE_ENV === 'development') {
-            console.log('FID:', metric.value);
-          }
-        });
+          // FCP (First Contentful Paint) の監視
+          const fcpObserver = new PerformanceObserver((entryList) => {
+            const entries = entryList.getEntries();
+            entries.forEach((entry) => {
+              if (entry.name === 'first-contentful-paint' && onFCP) {
+                onFCP(entry.startTime);
+                if (process.env.NODE_ENV === 'development') {
+                  console.log('FCP:', entry.startTime);
+                }
+              }
+            });
+          });
+          fcpObserver.observe({ entryTypes: ['paint'] });
 
-        getFCP((metric) => {
-          if (onFCP) onFCP(metric.value);
-          if (process.env.NODE_ENV === 'development') {
-            console.log('FCP:', metric.value);
-          }
-        });
+          // CLS (Cumulative Layout Shift) の監視
+          const clsObserver = new PerformanceObserver((entryList) => {
+            let clsValue = 0;
+            const entries = entryList.getEntries();
+            entries.forEach((entry) => {
+              const layoutShiftEntry = entry as PerformanceEntry & {
+                hadRecentInput?: boolean;
+                value?: number;
+              };
+              if (!layoutShiftEntry.hadRecentInput && layoutShiftEntry.value) {
+                clsValue += layoutShiftEntry.value;
+              }
+            });
+            if (clsValue > 0 && onCLS) {
+              onCLS(clsValue);
+              if (process.env.NODE_ENV === 'development') {
+                console.log('CLS:', clsValue);
+              }
+            }
+          });
+          clsObserver.observe({ entryTypes: ['layout-shift'] });
 
-        getLCP((metric) => {
-          if (onLCP) onLCP(metric.value);
-          if (process.env.NODE_ENV === 'development') {
-            console.log('LCP:', metric.value);
-          }
-        });
+        } catch (error) {
+          console.warn('Performance monitoring not supported:', error);
+        }
+      }
 
-        getTTFB((metric) => {
-          if (onTTFB) onTTFB(metric.value);
-          if (process.env.NODE_ENV === 'development') {
-            console.log('TTFB:', metric.value);
-          }
-        });
-      });
+      // Navigation Timing APIでTTFBを測定
+      const navigation = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming;
+      if (navigation && onTTFB) {
+        const ttfb = navigation.responseStart - navigation.requestStart;
+        onTTFB(ttfb);
+        if (process.env.NODE_ENV === 'development') {
+          console.log('TTFB:', ttfb);
+        }
+      }
     }
   }, [onCLS, onFID, onFCP, onLCP, onTTFB]);
 
