@@ -136,6 +136,8 @@ export const sendReservationEmail = async (
     phone: string;
   }
 ) => {
+  console.log('お客様メール送信開始:', { to, name: data.name });
+  
   const transporter = createTransporter();
   
   const mailOptions = {
@@ -148,13 +150,19 @@ export const sendReservationEmail = async (
     html: createReservationEmailHtml(data),
   };
 
+  console.log('お客様メールオプション:', { 
+    from: mailOptions.from, 
+    to: mailOptions.to, 
+    subject: mailOptions.subject 
+  });
+
   try {
     const info = await transporter.sendMail(mailOptions);
-    console.log('メール送信成功:', info.messageId);
-    return { success: true, messageId: info.messageId };
+    console.log('お客様メール送信成功:', { messageId: info.messageId, to });
+    return { success: true, messageId: info.messageId, to };
   } catch (error) {
-    console.error('メール送信エラー:', error);
-    return { success: false, error };
+    console.error('お客様メール送信エラー:', { error, to });
+    return { success: false, error, to };
   }
 };
 

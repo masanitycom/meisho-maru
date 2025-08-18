@@ -39,13 +39,21 @@ export async function POST(request: NextRequest) {
       notes,
     };
 
+    console.log('メール送信開始:', { email, name, date: formattedDate });
+
     // 並列でメール送信
     const [customerResult, adminResult] = await Promise.all([
       // お客様への確認メール（メールアドレスがある場合のみ）
-      email ? sendReservationEmail(email, emailData) : Promise.resolve({ success: true }),
+      email ? sendReservationEmail(email, emailData) : Promise.resolve({ success: true, skipped: 'no email' }),
       // 管理者への通知メール
       sendAdminNotificationEmail(emailData),
     ]);
+
+    console.log('メール送信結果:', { 
+      customer: customerResult, 
+      admin: adminResult,
+      emailProvided: !!email 
+    });
 
     if (!customerResult.success || !adminResult.success) {
       console.error('メール送信に一部失敗:', { customerResult, adminResult });
@@ -61,7 +69,8 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ 
       success: true, 
-      message: 'メール送信成功' 
+      message: 'メール送信成功',
+      details: { customerResult, adminResult, emailProvided: !!email }
     });
     
   } catch (error) {
