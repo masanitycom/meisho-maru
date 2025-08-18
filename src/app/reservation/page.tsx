@@ -2,7 +2,7 @@
 
 import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { createReservation, upsertCustomer } from '@/lib/supabase';
+import { createReservation, upsertCustomer, getAvailableSeats } from '@/lib/supabase';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -15,6 +15,7 @@ function ReservationForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [loading, setLoading] = useState(false);
+  const [availableSeats, setAvailableSeats] = useState<number | null>(null);
   const [formData, setFormData] = useState({
     date: '',
     tripNumber: '',
@@ -24,6 +25,7 @@ function ReservationForm() {
     phone: '',
     email: '',
     rodRental: 'false',
+    rodRentalCount: '0',
     notes: '',
   });
 
@@ -39,6 +41,23 @@ function ReservationForm() {
       setFormData(prev => ({ ...prev, tripNumber: tripParam }));
     }
   }, [searchParams]);
+
+  // 残席数を取得
+  useEffect(() => {
+    const fetchAvailableSeats = async () => {
+      if (formData.date && formData.tripNumber) {
+        try {
+          const seats = await getAvailableSeats(formData.date, parseInt(formData.tripNumber));
+          setAvailableSeats(seats);
+        } catch (error) {
+          console.error('残席数取得エラー:', error);
+          setAvailableSeats(8); // エラー時はデフォルト値
+        }
+      }
+    };
+    
+    fetchAvailableSeats();
+  }, [formData.date, formData.tripNumber]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -65,6 +84,7 @@ function ReservationForm() {
         phone: formData.phone,
         email: formData.email || undefined,
         rod_rental: formData.rodRental === 'true',
+        rod_rental_count: parseInt(formData.rodRentalCount) || 0,
         notes: formData.notes || undefined,
         source: 'web',
       };
@@ -84,6 +104,7 @@ function ReservationForm() {
             tripNumber: parseInt(formData.tripNumber),
             peopleCount: parseInt(formData.peopleCount),
             rodRental: formData.rodRental === 'true',
+            rodRentalCount: parseInt(formData.rodRentalCount) || 0,
             phone: formData.phone,
             notes: formData.notes
           })
@@ -115,7 +136,8 @@ function ReservationForm() {
   const calculateTotal = () => {
     const people = parseInt(formData.peopleCount) || 0;
     const basePrice = 11000 * people;
-    const rodPrice = formData.rodRental === 'true' ? 2000 * people : 0;
+    const rodCount = parseInt(formData.rodRentalCount) || 0;
+    const rodPrice = rodCount * 2000;
     return basePrice + rodPrice;
   };
 
@@ -171,16 +193,27 @@ function ReservationForm() {
                   <Label htmlFor="people">
                     <Users className="inline h-4 w-4 mr-1" />
                     人数
+                    {availableSeats !== null && (
+                      <span className="text-sm text-gray-600 ml-2">
+                        （残席{availableSeats}席）
+                      </span>
+                    )}
                   </Label>
                   <Select
                     value={formData.peopleCount}
-                    onValueChange={(value) => setFormData({...formData, peopleCount: value})}
+                    onValueChange={(value) => {
+                      setFormData({...formData, peopleCount: value});
+                      // 人数変更時に竿レンタル本数をリセット
+                      if (parseInt(value) < parseInt(formData.rodRentalCount)) {
+                        setFormData(prev => ({...prev, peopleCount: value, rodRentalCount: '0'}));
+                      }
+                    }}
                   >
                     <SelectTrigger id="people">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      {[1,2,3,4,5,6,7,8,9,10].map(n => (
+                      {Array.from({ length: Math.min(availableSeats || 8, 8) }, (_, i) => i + 1).map(n => (
                         <SelectItem key={n} value={n.toString()}>{n}名</SelectItem>
                       ))}
                     </SelectContent>
@@ -253,19 +286,28 @@ function ReservationForm() {
 
                 {/* 竿レンタル */}
                 <div className="space-y-2">
-                  <Label htmlFor="rod">
-                    竿レンタル
+                  <Label htmlFor="rodCount">
+                    竿レンタル本数
+                    <span className="text-sm text-gray-600 ml-2">（¥2,000/本）</span>
                   </Label>
                   <Select
-                    value={formData.rodRental}
-                    onValueChange={(value) => setFormData({...formData, rodRental: value})}
+                    value={formData.rodRentalCount}
+                    onValueChange={(value) => {
+                      setFormData({
+                        ...formData, 
+                        rodRentalCount: value,
+                        rodRental: value === '0' ? 'false' : 'true'
+                      });
+                    }}
                   >
-                    <SelectTrigger id="rod">
+                    <SelectTrigger id="rodCount">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="false">不要</SelectItem>
-                      <SelectItem value="true">必要（¥2,000/人）</SelectItem>
+                      <SelectItem value="0">不要（0本）</SelectItem>
+                      {Array.from({ length: parseInt(formData.peopleCount) || 1 }, (_, i) => i + 1).map(n => (
+                        <SelectItem key={n} value={n.toString()}>{n}本</SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                 </div>
@@ -293,8 +335,8 @@ function ReservationForm() {
                   </div>
                   <div className="text-sm text-gray-600 mt-2">
                     <div>乗船料: ¥11,000 × {formData.peopleCount}名</div>
-                    {formData.rodRental === 'true' && (
-                      <div>竿レンタル: ¥2,000 × {formData.peopleCount}名</div>
+                    {parseInt(formData.rodRentalCount) > 0 && (
+                      <div>竿レンタル: ¥2,000 × {formData.rodRentalCount}本</div>
                     )}
                   </div>
                 </div>

@@ -13,14 +13,15 @@ export async function POST(request: NextRequest) {
       tripNumber,
       peopleCount,
       rodRental,
+      rodRentalCount,
       phone,
       notes,
     } = body;
 
     // 料金計算
     const basePrice = 11000;
-    const rodRentalPrice = rodRental ? 2000 : 0;
-    const totalAmount = (basePrice + rodRentalPrice) * peopleCount;
+    const rodRentalPrice = (rodRentalCount || 0) * 2000;
+    const totalAmount = basePrice * peopleCount + rodRentalPrice;
 
     // 日付をフォーマット
     const dateObj = new Date(date);
@@ -33,6 +34,7 @@ export async function POST(request: NextRequest) {
       tripNumber,
       peopleCount,
       rodRental,
+      rodRentalCount: rodRentalCount || 0,
       totalAmount,
       phone,
       email,

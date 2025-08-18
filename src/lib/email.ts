@@ -20,6 +20,7 @@ export const createReservationEmailHtml = (data: {
   tripNumber: number;
   peopleCount: number;
   rodRental: boolean;
+  rodRentalCount?: number;
   totalAmount: number;
   phone: string;
 }) => {
@@ -27,8 +28,9 @@ export const createReservationEmailHtml = (data: {
     ? '第1便（17:30過ぎ〜23:30頃）' 
     : '第2便（24:00頃〜5:30頃）';
   
-  const rodRentalText = data.rodRental 
-    ? `竿レンタル: あり（¥2,000/人）` 
+  const rodRentalCount = data.rodRentalCount || 0;
+  const rodRentalText = rodRentalCount > 0
+    ? `竿レンタル: ${rodRentalCount}本（¥2,000/本）` 
     : '竿レンタル: なし';
 
   return `
@@ -135,6 +137,7 @@ export const sendReservationEmail = async (
     tripNumber: number;
     peopleCount: number;
     rodRental: boolean;
+    rodRentalCount?: number;
     totalAmount: number;
     phone: string;
   }
@@ -178,6 +181,7 @@ export const sendAdminNotificationEmail = async (
     tripNumber: number;
     peopleCount: number;
     rodRental: boolean;
+    rodRentalCount?: number;
     totalAmount: number;
     phone: string;
     email?: string;
@@ -232,7 +236,7 @@ export const sendAdminNotificationEmail = async (
       </tr>
       <tr>
         <td style="padding: 10px; border: 1px solid #dee2e6;"><strong>竿レンタル</strong></td>
-        <td style="padding: 10px; border: 1px solid #dee2e6;">${data.rodRental ? 'あり' : 'なし'}</td>
+        <td style="padding: 10px; border: 1px solid #dee2e6;">${(data.rodRentalCount || 0) > 0 ? `${data.rodRentalCount}本` : 'なし'}</td>
       </tr>
       <tr style="background-color: #f8f9fa;">
         <td style="padding: 10px; border: 1px solid #dee2e6;"><strong>合計金額</strong></td>

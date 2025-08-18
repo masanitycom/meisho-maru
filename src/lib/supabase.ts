@@ -16,6 +16,7 @@ export const createReservation = async (reservationData: {
   phone: string;
   email?: string;
   rod_rental: boolean;
+  rod_rental_count?: number;
   notes?: string;
   source?: string;
 }) => {
@@ -197,6 +198,7 @@ export const updateReservation = async (reservationId: string, updates: {
   phone?: string;
   email?: string;
   rod_rental?: boolean;
+  rod_rental_count?: number;
   notes?: string;
   status?: string;
 }) => {
