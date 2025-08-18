@@ -104,10 +104,48 @@ export function ScheduleSection() {
   };
 
   const getStatusColor = (seats: number) => {
-    if (seats === -1) return 'text-gray-600 bg-gray-100'; // 休漁日
-    if (seats === 0) return 'text-red-600 bg-red-50'; // 満席
-    if (seats <= 2) return 'text-orange-600 bg-orange-50'; // 残りわずか
-    return 'text-green-600 bg-green-50'; // 空席あり
+    if (seats === -1) return 'text-gray-700 bg-gray-200 border-gray-300'; // 休漁日
+    if (seats === 0) return 'text-white bg-red-500 border-red-600'; // 満席
+    if (seats <= 2) return 'text-white bg-orange-500 border-orange-600'; // 残りわずか
+    return 'text-white bg-green-500 border-green-600'; // 空席あり
+  };
+
+  const getStatusBadge = (seats: number) => {
+    const baseClasses = "inline-flex items-center justify-center px-3 py-2 text-lg font-bold rounded-lg border-2 min-w-[100px]";
+    
+    if (seats === -1) {
+      return (
+        <div className={`${baseClasses} ${getStatusColor(seats)}`}>
+          <XCircle className="h-5 w-5 mr-2" />
+          休漁日
+        </div>
+      );
+    }
+    
+    if (seats === 0) {
+      return (
+        <div className={`${baseClasses} ${getStatusColor(seats)}`}>
+          <XCircle className="h-5 w-5 mr-2" />
+          満席
+        </div>
+      );
+    }
+    
+    if (seats <= 2) {
+      return (
+        <div className={`${baseClasses} ${getStatusColor(seats)}`}>
+          <AlertCircle className="h-5 w-5 mr-2" />
+          残り{seats}席
+        </div>
+      );
+    }
+    
+    return (
+      <div className={`${baseClasses} ${getStatusColor(seats)}`}>
+        <CheckCircle className="h-5 w-5 mr-2" />
+        空席{seats}席
+      </div>
+    );
   };
 
   const scroll = (direction: 'left' | 'right') => {
@@ -187,13 +225,13 @@ export function ScheduleSection() {
                 ) : dates.map((dateInfo) => (
                   <div
                     key={dateInfo.dateStr}
-                    className={`flex-shrink-0 w-72 sm:w-80 ${
+                    className={`flex-shrink-0 w-80 sm:w-96 ${
                       selectedDate === dateInfo.dateStr ? 'ring-2 ring-primary' : ''
                     }`}
                   >
                     <Card 
-                      className={`h-full cursor-pointer hover:shadow-lg transition-shadow ${
-                        dateInfo.isToday ? 'border-primary border-2' : ''
+                      className={`cursor-pointer hover:shadow-xl transition-all duration-200 min-h-[500px] ${
+                        dateInfo.isToday ? 'border-blue-500 border-3 shadow-lg' : 'border-gray-200'
                       }`}
                       onClick={() => setSelectedDate(dateInfo.dateStr)}
                     >
@@ -213,70 +251,72 @@ export function ScheduleSection() {
                           <Calendar className="h-6 w-6 text-gray-400" />
                         </div>
                       </CardHeader>
-                      <CardContent className="space-y-3">
+                      <CardContent className="space-y-4">
                         {/* 1便 */}
-                        <div className={`rounded-lg p-3 ${getStatusColor(dateInfo.trip1Seats)}`}>
-                          <div className="flex justify-between items-center mb-2">
-                            <div className="font-semibold text-lg">1便</div>
-                            {getStatusIcon(dateInfo.trip1Seats)}
+                        <div className="border-2 border-gray-200 rounded-lg p-4 bg-white">
+                          <div className="flex justify-between items-center mb-3">
+                            <div className="font-bold text-xl text-gray-800">1便</div>
+                            <div className="text-sm text-gray-600">
+                              17:30〜23:30
+                            </div>
                           </div>
-                          <div className="text-sm space-y-1">
-                            <div className="flex justify-between">
-                              <span>出港時間</span>
-                              <span className="font-medium">17:30過ぎ</span>
-                            </div>
-                            <div className="flex justify-between">
-                              <span>帰港時間</span>
-                              <span className="font-medium">23:30頃</span>
-                            </div>
-                            <div className="flex justify-between items-center mt-2 pt-2 border-t">
-                              <span className="font-bold text-base">
-                                {getStatusText(dateInfo.trip1Seats)}
-                              </span>
-                              {dateInfo.trip1Seats > 0 && (
-                                <Button size="sm" variant="outline" asChild>
-                                  <Link href={`/reservation?date=${dateInfo.dateStr}&trip=1`}>
-                                    予約する
-                                  </Link>
-                                </Button>
-                              )}
-                              {dateInfo.trip1Seats === -1 && (
-                                <span className="text-sm text-gray-500">出船なし</span>
-                              )}
-                            </div>
+                          
+                          {/* 空席数バッジ（大きく目立つ） */}
+                          <div className="flex justify-center mb-4">
+                            {getStatusBadge(dateInfo.trip1Seats)}
+                          </div>
+                          
+                          {/* 予約ボタン */}
+                          <div className="text-center">
+                            {dateInfo.trip1Seats > 0 ? (
+                              <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2" asChild>
+                                <Link href={`/reservation?date=${dateInfo.dateStr}&trip=1`}>
+                                  この便を予約する
+                                </Link>
+                              </Button>
+                            ) : dateInfo.trip1Seats === 0 ? (
+                              <Button disabled className="w-full bg-gray-300 text-gray-500 py-2">
+                                満席のため予約不可
+                              </Button>
+                            ) : (
+                              <Button disabled className="w-full bg-gray-300 text-gray-500 py-2">
+                                運航なし
+                              </Button>
+                            )}
                           </div>
                         </div>
 
                         {/* 2便 */}
-                        <div className={`rounded-lg p-3 ${getStatusColor(dateInfo.trip2Seats)}`}>
-                          <div className="flex justify-between items-center mb-2">
-                            <div className="font-semibold text-lg">2便</div>
-                            {getStatusIcon(dateInfo.trip2Seats)}
+                        <div className="border-2 border-gray-200 rounded-lg p-4 bg-white">
+                          <div className="flex justify-between items-center mb-3">
+                            <div className="font-bold text-xl text-gray-800">2便</div>
+                            <div className="text-sm text-gray-600">
+                              24:00〜5:30
+                            </div>
                           </div>
-                          <div className="text-sm space-y-1">
-                            <div className="flex justify-between">
-                              <span>出港時間</span>
-                              <span className="font-medium">24:00頃</span>
-                            </div>
-                            <div className="flex justify-between">
-                              <span>帰港時間</span>
-                              <span className="font-medium">5:30頃</span>
-                            </div>
-                            <div className="flex justify-between items-center mt-2 pt-2 border-t">
-                              <span className="font-bold text-base">
-                                {getStatusText(dateInfo.trip2Seats)}
-                              </span>
-                              {dateInfo.trip2Seats > 0 && (
-                                <Button size="sm" variant="outline" asChild>
-                                  <Link href={`/reservation?date=${dateInfo.dateStr}&trip=2`}>
-                                    予約する
-                                  </Link>
-                                </Button>
-                              )}
-                              {dateInfo.trip2Seats === -1 && (
-                                <span className="text-sm text-gray-500">出船なし</span>
-                              )}
-                            </div>
+                          
+                          {/* 空席数バッジ（大きく目立つ） */}
+                          <div className="flex justify-center mb-4">
+                            {getStatusBadge(dateInfo.trip2Seats)}
+                          </div>
+                          
+                          {/* 予約ボタン */}
+                          <div className="text-center">
+                            {dateInfo.trip2Seats > 0 ? (
+                              <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2" asChild>
+                                <Link href={`/reservation?date=${dateInfo.dateStr}&trip=2`}>
+                                  この便を予約する
+                                </Link>
+                              </Button>
+                            ) : dateInfo.trip2Seats === 0 ? (
+                              <Button disabled className="w-full bg-gray-300 text-gray-500 py-2">
+                                満席のため予約不可
+                              </Button>
+                            ) : (
+                              <Button disabled className="w-full bg-gray-300 text-gray-500 py-2">
+                                運航なし
+                              </Button>
+                            )}
                           </div>
                         </div>
                       </CardContent>
