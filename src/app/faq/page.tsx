@@ -1,8 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { ChevronDown, ChevronUp, Anchor, HelpCircle, Phone, Calendar, MapPin, Users, Clock, Shield } from 'lucide-react';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { ChevronDown, ChevronUp, Anchor, HelpCircle, Phone, Calendar, MapPin } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 

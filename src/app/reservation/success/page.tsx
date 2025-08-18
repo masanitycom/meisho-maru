@@ -9,7 +9,16 @@ import { CheckCircle, Calendar, Phone, MessageCircle, Share2, Instagram } from '
 
 export default function ReservationSuccessPage() {
   const searchParams = useSearchParams();
-  const [reservationData, setReservationData] = useState<any>(null);
+  const [reservationData, setReservationData] = useState<{
+    name: string | null;
+    email: string | null;
+    phone: string | null;
+    date: string | null;
+    time: string | null;
+    people: string | null;
+    rodRental: string | null;
+    rodRentalCount: string | null;
+  } | null>(null);
 
   useEffect(() => {
     // URLパラメータから予約情報を取得
