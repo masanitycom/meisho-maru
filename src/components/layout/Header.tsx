@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { useState, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 import { Menu, X, Phone, Calendar, Anchor } from 'lucide-react';
@@ -41,9 +42,12 @@ export function Header() {
           <Link href="/" className="flex items-center group">
             {/* ロゴ画像 */}
             <div className="relative">
-              <img 
-                src="/images/headlogo.png" 
-                alt="明勝丸 - 鳥取県琴浦町赤碕港の白いか釣り船" 
+              <Image
+                src="/images/headlogo.png"
+                alt="明勝丸 - 鳥取県琴浦町赤碕港の白いか釣り船"
+                width={192}
+                height={80}
+                priority
                 className="h-12 w-32 md:h-16 md:w-40 lg:h-20 lg:w-48 object-contain group-hover:scale-105 transition-transform duration-300 drop-shadow-lg"
                 style={{
                   filter: 'drop-shadow(0 0 8px rgba(255,255,255,0.8)) drop-shadow(0 0 16px rgba(255,255,255,0.4))'

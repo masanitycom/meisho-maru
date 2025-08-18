@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect } from 'react';
+import Image from 'next/image';
 import useEmblaCarousel from 'embla-carousel-react';
 import Autoplay from 'embla-carousel-autoplay';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
@@ -67,11 +68,13 @@ export function ImageSlider() {
                   key={index}
                   className="flex-[0_0_100%] min-w-0 relative aspect-[16/9] md:aspect-[21/9]"
                 >
-                  <img
+                  <Image
                     src={slide.src}
                     alt={slide.alt}
-                    className="w-full h-full object-cover"
-                    loading={index === 0 ? 'eager' : 'lazy'}
+                    fill
+                    className="object-cover"
+                    priority={index === 0}
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 100vw, 100vw"
                   />
                 </div>
               ))}

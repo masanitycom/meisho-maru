@@ -9,21 +9,42 @@ import { FAQSection } from '@/components/sections/FAQSection';
 import { AccessSection } from '@/components/sections/AccessSection';
 import { RegulationsSection } from '@/components/sections/RegulationsSection';
 import { InstagramBanner } from '@/components/sections/InstagramBanner';
+import { LazySection } from '@/components/ui/LazySection';
 
 export default function Home() {
   return (
     <main>
       <HeroSection />
-      <ImageSlider />
-      <LineReservation />
-      <ScheduleSection />
-      <InfoSection />
-      <ImportantNoticeSection />
-      <TestimonialsSection />
-      <FAQSection />
-      <AccessSection />
-      <RegulationsSection />
-      <InstagramBanner />
+      <LazySection>
+        <ImageSlider />
+      </LazySection>
+      <LazySection>
+        <LineReservation />
+      </LazySection>
+      <LazySection>
+        <ScheduleSection />
+      </LazySection>
+      <LazySection>
+        <InfoSection />
+      </LazySection>
+      <LazySection>
+        <ImportantNoticeSection />
+      </LazySection>
+      <LazySection>
+        <TestimonialsSection />
+      </LazySection>
+      <LazySection>
+        <FAQSection />
+      </LazySection>
+      <LazySection>
+        <AccessSection />
+      </LazySection>
+      <LazySection>
+        <RegulationsSection />
+      </LazySection>
+      <LazySection>
+        <InstagramBanner />
+      </LazySection>
     </main>
   );
 }

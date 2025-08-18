@@ -112,51 +112,125 @@ export default function RootLayout({
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              "@context": "https://schema.org",
-              "@type": "LocalBusiness",
-              "@id": "https://meisho-maru.com",
-              "name": "明勝丸",
-              "alternateName": "めいしょうまる",
-              "description": "関西・中国地方から多数来船する鳥取県琴浦町赤碕港の白イカ釣り専門遊漁船。大阪・名古屋・広島・岡山から好アクセス。",
-              "url": "https://meisho-maru.com",
-              "telephone": "090-4695-3087",
-              "priceRange": "¥¥",
-              "address": {
-                "@type": "PostalAddress",
-                "streetAddress": "大字別所１１２８番地",
-                "addressLocality": "琴浦町",
-                "addressRegion": "鳥取県",
-                "postalCode": "689-2501",
-                "addressCountry": "JP"
+            __html: JSON.stringify([
+              {
+                "@context": "https://schema.org",
+                "@type": "LocalBusiness",
+                "@id": "https://kotourameishomaru.com",
+                "name": "明勝丸",
+                "alternateName": "めいしょうまる",
+                "description": "鳥取県琴浦町赤碕港の白いか釣り専門船。日本海で夜釣り・イカメタル体験。関西・中国地方から好アクセス。",
+                "url": "https://kotourameishomaru.com",
+                "telephone": "+81-90-4695-3087",
+                "priceRange": "¥11,000-¥13,000",
+                "image": [
+                  "https://kotourameishomaru.com/images/logo.png",
+                  "https://kotourameishomaru.com/images/slider/slide-1.jpg"
+                ],
+                "address": {
+                  "@type": "PostalAddress",
+                  "streetAddress": "大字別所１１２８番地",
+                  "addressLocality": "琴浦町",
+                  "addressRegion": "鳥取県",
+                  "postalCode": "689-2501",
+                  "addressCountry": "JP"
+                },
+                "geo": {
+                  "@type": "GeoCoordinates",
+                  "latitude": 35.5002,
+                  "longitude": 133.6833
+                },
+                "openingHoursSpecification": [
+                  {
+                    "@type": "OpeningHoursSpecification",
+                    "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+                    "opens": "17:30",
+                    "closes": "05:30"
+                  }
+                ],
+                "aggregateRating": {
+                  "@type": "AggregateRating",
+                  "ratingValue": "5.0",
+                  "reviewCount": "50",
+                  "bestRating": "5",
+                  "worstRating": "1"
+                },
+                "review": [
+                  {
+                    "@type": "Review",
+                    "reviewRating": {
+                      "@type": "Rating",
+                      "ratingValue": "5",
+                      "bestRating": "5"
+                    },
+                    "author": {
+                      "@type": "Person",
+                      "name": "田中様"
+                    },
+                    "reviewBody": "初めての白いか釣りでしたが、船長さんが丁寧に教えてくださり、たくさん釣ることができました。"
+                  }
+                ],
+                "hasOfferCatalog": {
+                  "@type": "OfferCatalog",
+                  "name": "釣りプラン",
+                  "itemListElement": [
+                    {
+                      "@type": "Offer",
+                      "name": "白いか釣り体験",
+                      "price": "11000",
+                      "priceCurrency": "JPY",
+                      "availability": "https://schema.org/InStock"
+                    }
+                  ]
+                },
+                "sameAs": [
+                  "https://www.instagram.com/meisho_maru",
+                  "https://lin.ee/HQX3Ezq"
+                ]
               },
-              "geo": {
-                "@type": "GeoCoordinates",
-                "latitude": 35.5002,
-                "longitude": 133.6833
+              {
+                "@context": "https://schema.org",
+                "@type": "FAQPage",
+                "mainEntity": [
+                  {
+                    "@type": "Question",
+                    "name": "初心者でも釣れますか？",
+                    "acceptedAnswer": {
+                      "@type": "Answer",
+                      "text": "初心者の方でも大丈夫です！船長が丁寧に釣り方をお教えします。"
+                    }
+                  },
+                  {
+                    "@type": "Question",
+                    "name": "料金はいくらですか？",
+                    "acceptedAnswer": {
+                      "@type": "Answer",
+                      "text": "乗船料は1名様11,000円（税込）です。竿レンタルをご希望の場合は、1本2,000円でご用意しております。"
+                    }
+                  },
+                  {
+                    "@type": "Question",
+                    "name": "キャンセル料はかかりますか？",
+                    "acceptedAnswer": {
+                      "@type": "Answer",
+                      "text": "キャンセルは3日前までにご連絡いただければキャンセル料はかかりません。天候による欠航の場合もキャンセル料は不要です。"
+                    }
+                  }
+                ]
               },
-              "openingHoursSpecification": [
-                {
-                  "@type": "OpeningHoursSpecification",
-                  "dayOfWeek": [
-                    "Monday",
-                    "Tuesday",
-                    "Wednesday",
-                    "Thursday",
-                    "Friday",
-                    "Saturday",
-                    "Sunday"
-                  ],
-                  "opens": "17:30",
-                  "closes": "05:30"
-                }
-              ],
-              "keywords": "イカメタル, イカメタル 山陰, イカメタル 日本海, イカメタル 鳥取, イカメタル 琴浦, イカメタル 赤碕, 山陰 白いか 遊漁, 日本海 白いか 遊漁, 山陰 白いか, 日本海 白いか, 山陰 遊漁船, 日本海 遊漁船, 山陰 釣り船, 日本海 釣り船, 鳥取 白いか 遊漁, 琴浦 白いか 遊漁, 赤碕 白いか 遊漁, 鳥取 白いか, 琴浦 白いか, 赤碕 白いか, 鳥取 遊漁船, 琴浦 遊漁船, 赤碕 遊漁船, 鳥取 イカ釣り, 白イカ釣り, 遊漁船, 琴浦町 釣り船, 赤碕港, 日本海 釣り, 鳥取県 遊漁",
-              "sameAs": [
-                "https://www.instagram.com/meisho_maru",
-                "https://lin.ee/HQX3Ezq"
-              ]
-            })
+              {
+                "@context": "https://schema.org",
+                "@type": "BreadcrumbList",
+                "itemListElement": [
+                  {
+                    "@type": "ListItem",
+                    "position": 1,
+                    "name": "ホーム",
+                    "item": "https://kotourameishomaru.com"
+                  }
+                ]
+              }
+            ])
           }}
         />
       </body>

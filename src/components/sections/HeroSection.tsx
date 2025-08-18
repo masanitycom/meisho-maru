@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { Calendar, Phone, Anchor, Fish, MapPin, Clock } from 'lucide-react';
 import { SITE_CONFIG } from '@/lib/constants';
@@ -32,10 +33,13 @@ export function HeroSection() {
               <div className="absolute -inset-8 bg-white/20 blur-3xl rounded-full hidden md:block"></div>
               
               {/* ロゴ画像 */}
-              <div>
-                <img 
-                  src="/images/logo.png" 
-                  alt="明勝丸 - 鳥取県琴浦町の白いか釣り専門遊漁船ロゴ" 
+              <div className="relative">
+                <Image
+                  src="/images/logo.png"
+                  alt="明勝丸 - 鳥取県琴浦町の白いか釣り専門遊漁船ロゴ"
+                  width={448}
+                  height={448}
+                  priority
                   className="md:h-80 md:w-80 lg:h-96 lg:w-96 xl:h-[28rem] xl:w-[28rem] mx-auto object-contain drop-shadow-2xl"
                   style={{
                     filter: 'drop-shadow(0 0 30px rgba(255,255,255,0.9)) drop-shadow(0 0 60px rgba(255,255,255,0.5)) drop-shadow(0 0 90px rgba(255,255,255,0.3))'
