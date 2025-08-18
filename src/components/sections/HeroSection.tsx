@@ -35,7 +35,7 @@ export function HeroSection() {
               <div>
                 <img 
                   src="/images/logo.png" 
-                  alt="明勝丸ロゴ" 
+                  alt="明勝丸 - 鳥取県琴浦町の白いか釣り専門遊漁船ロゴ" 
                   className="md:h-80 md:w-80 lg:h-96 lg:w-96 xl:h-[28rem] xl:w-[28rem] mx-auto object-contain drop-shadow-2xl"
                   style={{
                     filter: 'drop-shadow(0 0 30px rgba(255,255,255,0.9)) drop-shadow(0 0 60px rgba(255,255,255,0.5)) drop-shadow(0 0 90px rgba(255,255,255,0.3))'
@@ -50,7 +50,10 @@ export function HeroSection() {
 
           {/* キャッチコピー */}
           <div className="mb-6 md:mb-8 animate-fade-in px-4">
-            <p className="text-xl sm:text-2xl md:text-4xl font-bold mb-3 md:mb-4 leading-relaxed font-serif">
+            <h1 className="text-xl sm:text-2xl md:text-4xl font-bold mb-3 md:mb-4 leading-relaxed font-serif">
+              鳥取県琴浦町の白いか釣り専門船 明勝丸
+            </h1>
+            <p className="text-lg sm:text-xl md:text-2xl font-bold mb-3 md:mb-4 leading-relaxed font-serif">
               日本海の恵み、
               <span className="text-yellow-300">白いか</span>を追い求めて
             </p>

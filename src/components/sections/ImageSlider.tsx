@@ -9,15 +9,15 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 const slideImages = [
   {
     src: '/images/slider/slide-1.jpg',
-    alt: '明勝丸の外観',
+    alt: '鳥取県琴浦町赤碕港の白いか釣り専門船明勝丸の外観 - 日本海遊漁船',
   },
   {
     src: '/images/slider/slide-2.jpg',
-    alt: '釣れた白イカ',
+    alt: '明勝丸で釣れた新鮮な白いか（白イカ） - 鳥取の白いか釣り体験',
   },
   {
     src: '/images/slider/slide-4.jpg',
-    alt: '夕日の海',
+    alt: '日本海の夕日と白いか釣り船 - 鳥取県琴浦町の夜釣り風景',
   },
 ];
 

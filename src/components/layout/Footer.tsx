@@ -12,7 +12,7 @@ export function Footer() {
             <div className="mb-4">
               <img 
                 src="/images/headlogo.png" 
-                alt="明勝丸ロゴ" 
+                alt="明勝丸 - 鳥取県琴浦町の白いか釣り遊漁船" 
                 className="h-48 w-48 object-contain"
                 style={{
                   filter: 'drop-shadow(0 0 8px rgba(255,255,255,0.5)) drop-shadow(0 0 16px rgba(255,255,255,0.3))'
@@ -50,6 +50,11 @@ export function Footer() {
               <li>
                 <Link href="/reservation" className="text-gray-400 hover:text-white transition-colors">
                   ご予約
+                </Link>
+              </li>
+              <li>
+                <Link href="/faq" className="text-gray-400 hover:text-white transition-colors">
+                  よくあるご質問
                 </Link>
               </li>
             </ul>

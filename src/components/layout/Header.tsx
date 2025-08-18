@@ -43,7 +43,7 @@ export function Header() {
             <div className="relative">
               <img 
                 src="/images/headlogo.png" 
-                alt="明勝丸ロゴ" 
+                alt="明勝丸 - 鳥取県琴浦町赤碕港の白いか釣り船" 
                 className="h-12 w-32 md:h-16 md:w-40 lg:h-20 lg:w-48 object-contain group-hover:scale-105 transition-transform duration-300 drop-shadow-lg"
                 style={{
                   filter: 'drop-shadow(0 0 8px rgba(255,255,255,0.8)) drop-shadow(0 0 16px rgba(255,255,255,0.4))'
