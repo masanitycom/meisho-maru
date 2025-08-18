@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Noto_Sans_JP, Noto_Serif_JP } from "next/font/google";
 import "./globals.css";
+import "./critical.css";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 
@@ -8,12 +9,16 @@ const notoSansJP = Noto_Sans_JP({
   subsets: ["latin"],
   weight: ["400", "500", "700", "900"],
   variable: "--font-sans",
+  display: "swap",
+  preload: true,
 });
 
 const notoSerifJP = Noto_Serif_JP({
   subsets: ["latin"],
   weight: ["400", "700"],
   variable: "--font-serif",
+  display: "swap",
+  preload: true,
 });
 
 export const metadata: Metadata = {

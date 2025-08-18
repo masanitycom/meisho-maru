@@ -1,0 +1,81 @@
+/* Critical CSS - Above the fold styles */
+/* ヒーローセクションの重要なスタイル */
+.hero-section {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(to bottom, #0f172a, #1e3a8a, #1e40af);
+  padding-top: 6rem;
+}
+
+/* ヘッダーの重要なスタイル */
+.header-fixed {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 50;
+  transition: all 0.3s ease;
+}
+
+.header-scrolled {
+  background-color: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+/* フォントの最適化 */
+@font-face {
+  font-family: 'Noto Sans JP';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('https://fonts.gstatic.com/s/notosansjp/v52/nwpBtK2oNhxS-AoyDWq7rDe-yWWw3RQ.woff2') format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C88, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+
+/* レイアウトシフト防止 */
+.logo-container {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1 / 1;
+}
+
+/* 重要なボタンスタイル */
+.cta-button {
+  background: linear-gradient(to right, #dc2626, #b91c1c);
+  color: white;
+  padding: 1.5rem 2rem;
+  font-size: 1.125rem;
+  font-weight: 700;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  transform: translateY(0);
+  transition: all 0.3s ease;
+}
+
+.cta-button:hover {
+  background: linear-gradient(to right, #b91c1c, #991b1b);
+  transform: scale(1.05);
+}
+
+/* 波のアニメーション最適化 */
+.wave-animation {
+  opacity: 0.3;
+  will-change: transform;
+}
+
+/* スケルトンローディング */
+.skeleton {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: loading 1.5s infinite;
+}
+
+@keyframes loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
