@@ -65,8 +65,8 @@ export default function ScheduleManagePage() {
         try {
           const [schedulesFromDB, trip1Seats, trip2Seats] = await Promise.all([
             getSchedules(dateStr, dateStr),
-            getAvailableSeats(dateStr, 1, true), // キャッシュ無効化
-            getAvailableSeats(dateStr, 2, true)  // キャッシュ無効化
+            getAvailableSeats(dateStr, 1),
+            getAvailableSeats(dateStr, 2)
           ]);
           
           const trip1Schedule = schedulesFromDB?.find(s => s.trip_number === 1);

@@ -85,8 +85,8 @@ export const getSchedules = async (startDate?: string, endDate?: string) => {
   return data
 }
 
-// 予約可能席数を計算（キャッシュ無効化オプション付き）
-export const getAvailableSeats = async (date: string, tripNumber: number, noCache = false) => {
+// 予約可能席数を計算
+export const getAvailableSeats = async (date: string, tripNumber: number) => {
   try {
     // スケジュールから定員と運航状態を取得
     const { data: schedule, error: scheduleError } = await supabase
