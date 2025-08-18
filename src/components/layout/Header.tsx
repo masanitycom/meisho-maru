@@ -12,9 +12,11 @@ export function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const pathname = usePathname();
   
-  // 管理画面・予約ページでは常にスクロール状態として扱う
+  // 管理画面・予約ページ・予約方法ページでは常にスクロール状態として扱う
   const isAdminPage = pathname.startsWith('/admin');
   const isReservationPage = pathname.startsWith('/reservation');
+  const isBookingMethodsPage = pathname.startsWith('/booking-methods');
+  const isHomePage = pathname === '/';
 
   useEffect(() => {
     const handleScroll = () => {
@@ -25,7 +27,8 @@ export function Header() {
   }, []);
 
   // スクロール状態またはテキスト表示判定
-  const shouldShowDarkText = isScrolled || isAdminPage || isReservationPage;
+  // ホームページ以外は常に暗いテキストを表示
+  const shouldShowDarkText = isScrolled || isAdminPage || isReservationPage || isBookingMethodsPage || !isHomePage;
 
   return (
     <header className={`fixed top-0 w-full z-50 transition-all duration-300 ${
