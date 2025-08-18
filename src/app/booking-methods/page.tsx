@@ -10,8 +10,22 @@ export default function BookingMethodsPage() {
   const router = useRouter();
 
   return (
-    <div className="min-h-screen bg-gray-50 pt-24">
-      <div className="container mx-auto px-4 py-8">
+    <div className="min-h-screen bg-gradient-to-b from-blue-50 via-white to-blue-50 pt-24 relative overflow-hidden">
+      {/* 背景装飾 */}
+      <div className="absolute inset-0 opacity-10">
+        <div className="absolute top-20 left-10 w-40 h-40 bg-blue-400 rounded-full blur-3xl"></div>
+        <div className="absolute top-40 right-20 w-60 h-60 bg-purple-400 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-40 left-1/4 w-80 h-80 bg-green-400 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-20 right-1/3 w-40 h-40 bg-orange-400 rounded-full blur-3xl"></div>
+      </div>
+      
+      {/* 波の背景 */}
+      <div className="absolute bottom-0 left-0 right-0 opacity-20">
+        <svg className="w-full h-32" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">
+          <path fill="#3b82f6" fillOpacity="0.3" d="M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,112C672,96,768,96,864,112C960,128,1056,160,1152,160C1248,160,1344,128,1392,112L1440,96L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
+        </svg>
+      </div>
+      <div className="container mx-auto px-4 py-8 relative z-10">
         <div className="max-w-4xl mx-auto">
           {/* ヘッダー */}
           <div className="text-center mb-8">
@@ -47,9 +61,9 @@ export default function BookingMethodsPage() {
                     </p>
                   </div>
                   <Button asChild className="w-full bg-blue-600 hover:bg-blue-700">
-                    <a href="tel:090-4695-3087">
-                      <Phone className="h-4 w-4 mr-2" />
-                      090-4695-3087
+                    <a href="tel:090-4695-3087" className="flex items-center justify-center">
+                      <Phone className="h-4 w-4 mr-2 flex-shrink-0" />
+                      <span>090-4695-3087</span>
                     </a>
                   </Button>
                 </div>
@@ -80,9 +94,9 @@ export default function BookingMethodsPage() {
                     </p>
                   </div>
                   <Button asChild className="w-full bg-green-600 hover:bg-green-700">
-                    <a href="https://lin.ee/HQX3Ezq" target="_blank" rel="noopener noreferrer">
-                      <MessageCircle className="h-4 w-4 mr-2" />
-                      LINEで予約
+                    <a href="https://lin.ee/HQX3Ezq" target="_blank" rel="noopener noreferrer" className="flex items-center justify-center">
+                      <MessageCircle className="h-4 w-4 mr-2 flex-shrink-0" />
+                      <span>LINEで予約</span>
                     </a>
                   </Button>
                 </div>
@@ -113,9 +127,9 @@ export default function BookingMethodsPage() {
                     </p>
                   </div>
                   <Button asChild className="w-full bg-purple-600 hover:bg-purple-700">
-                    <Link href="/reservation">
-                      <Globe className="h-4 w-4 mr-2" />
-                      Web予約フォーム
+                    <Link href="/reservation" className="flex items-center justify-center">
+                      <Globe className="h-4 w-4 mr-2 flex-shrink-0" />
+                      <span>Web予約フォーム</span>
                     </Link>
                   </Button>
                 </div>
