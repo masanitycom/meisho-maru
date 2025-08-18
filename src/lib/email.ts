@@ -51,7 +51,7 @@ export const createReservationEmailHtml = (data: {
       
       <p style="color: #333; line-height: 1.6;">
         ${data.name} 様<br><br>
-        この度は明勝丸をご予約いただき、誠にありがとうございます。<br>
+        この度は明勝丸をご予約いただき、誠にありがとうございます。明勝丸船長の綿田です。<br>
         下記の内容でご予約を承りました。
       </p>
 
@@ -95,7 +95,9 @@ export const createReservationEmailHtml = (data: {
       <div style="background-color: #f7f7f7; padding: 20px; margin: 20px 0; border-radius: 5px;">
         <h3 style="color: #1e3a8a; margin: 0 0 15px 0; font-size: 18px;">集合場所</h3>
         <p style="color: #333; line-height: 1.6; margin: 0;">
-          鳥取県東伯郡琴浦町大字別所１１２８番地<br>
+          <strong>目印住所：</strong>鳥取県東伯郡琴浦町大字別所１１２８番地<br><br>
+          <strong style="color: #dc2626;">★乗船場所に正確な番地がありませんので、上記住所を参考にお越しください。</strong><br><br>
+          乗船場所は、<strong>【株式会社　鳥取林養魚場】の建物裏手</strong>にあります。<br>
           赤碕港
         </p>
       </div>
@@ -105,6 +107,7 @@ export const createReservationEmailHtml = (data: {
         <p style="color: #333; line-height: 1.8; margin: 0;">
           ご不明な点がございましたら、お気軽にお問い合わせください。<br><br>
           <strong>電話：</strong> 090-4695-3087<br>
+          <strong>LINE：</strong> <a href="https://lin.ee/HQX3Ezq" style="color: #1e3a8a; text-decoration: none;">https://lin.ee/HQX3Ezq</a><br>
           <strong>LINE ID：</strong> @707ejlid<br>
           <strong>メール：</strong> ikameishomaru@gmail.com
         </p>
