@@ -176,7 +176,7 @@ export default function RootLayout({
                       "name": "田中様"
                     },
                     "reviewBody": "初めての白いか釣りでしたが、船長さんが丁寧に教えてくださり、たくさん釣ることができました。",
-                    "datePublished": "2025-01-15"
+                    "datePublished": "2025-08-15"
                   },
                   {
                     "@type": "Review",
@@ -189,8 +189,8 @@ export default function RootLayout({
                       "@type": "Person",
                       "name": "山田様"
                     },
-                    "reviewBody": "設備も整っていて、白いかの釣果も素晴らしかったです。また利用したいと思います。",
-                    "datePublished": "2025-01-10"
+                    "reviewBody": "友人と参加しました。船長の経験豊富な判断で良いポイントに連れて行ってもらい、大満足の釣果でした。",
+                    "datePublished": "2025-07-20"
                   },
                   {
                     "@type": "Review",
@@ -203,8 +203,8 @@ export default function RootLayout({
                       "@type": "Person",
                       "name": "佐藤様"
                     },
-                    "reviewBody": "船長さんの指導が分かりやすく、初心者でも楽しめました。夜釣りの雰囲気も最高でした。",
-                    "datePublished": "2025-01-05"
+                    "reviewBody": "夏の夜釣りは格別ですね。船長さんの豊富な経験で良いポイントに案内していただき、大量の白いかを釣ることができました。",
+                    "datePublished": "2025-08-10"
                   }
                 ],
                 "hasOfferCatalog": {
