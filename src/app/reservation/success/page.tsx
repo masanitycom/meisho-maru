@@ -1,13 +1,13 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { CheckCircle, Calendar, Phone, MessageCircle, Share2, Instagram } from 'lucide-react';
 
-export default function ReservationSuccessPage() {
+function ReservationSuccessContent() {
   const searchParams = useSearchParams();
   const [reservationData, setReservationData] = useState<{
     name: string | null;
@@ -221,5 +221,26 @@ export default function ReservationSuccessPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function ReservationSuccessPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white pt-24 pb-12">
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto text-center">
+            <div className="inline-flex items-center justify-center w-20 h-20 bg-blue-100 rounded-full mb-6">
+              <Calendar className="w-12 h-12 text-blue-600" />
+            </div>
+            <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+              読み込み中...
+            </h1>
+          </div>
+        </div>
+      </div>
+    }>
+      <ReservationSuccessContent />
+    </Suspense>
   );
 }
