@@ -113,17 +113,27 @@ function ReservationForm() {
         const emailResult = await emailResponse.json();
         
         if (emailResult.success) {
-          alert('予約を受け付けました。確認メールをお送りしました。');
+          console.log('メール送信成功');
         } else {
           console.error('メール送信エラー:', emailResult);
-          alert('予約を受け付けましたが、確認メールの送信に失敗しました。');
         }
       } catch (emailError) {
         console.error('メール送信エラー:', emailError);
-        alert('予約を受け付けましたが、確認メールの送信に失敗しました。');
       }
       
-      router.push('/');
+      // 予約詳細をURLパラメータとして渡してサンクスページにリダイレクト
+      const params = new URLSearchParams({
+        name: formData.name,
+        email: formData.email || '',
+        phone: formData.phone,
+        date: formData.date,
+        time: formData.tripNumber === '1' ? '1便（17:30過ぎ～23:30頃）' : '2便（24:00頃～5:30頃）',
+        people: formData.peopleCount,
+        rodRental: formData.rodRental,
+        rodRentalCount: formData.rodRentalCount,
+      });
+      
+      router.push(`/reservation/success?${params.toString()}`);
       
     } catch (error) {
       console.error('予約エラー:', error);

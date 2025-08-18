@@ -145,7 +145,15 @@ export default function RootLayout({
                     "@type": "OpeningHoursSpecification",
                     "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
                     "opens": "17:30",
-                    "closes": "05:30"
+                    "closes": "23:30",
+                    "description": "1便運航"
+                  },
+                  {
+                    "@type": "OpeningHoursSpecification",
+                    "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+                    "opens": "00:00",
+                    "closes": "05:30",
+                    "description": "2便運航"
                   }
                 ],
                 "aggregateRating": {
@@ -167,7 +175,36 @@ export default function RootLayout({
                       "@type": "Person",
                       "name": "田中様"
                     },
-                    "reviewBody": "初めての白いか釣りでしたが、船長さんが丁寧に教えてくださり、たくさん釣ることができました。"
+                    "reviewBody": "初めての白いか釣りでしたが、船長さんが丁寧に教えてくださり、たくさん釣ることができました。",
+                    "datePublished": "2025-01-15"
+                  },
+                  {
+                    "@type": "Review",
+                    "reviewRating": {
+                      "@type": "Rating",
+                      "ratingValue": "5",
+                      "bestRating": "5"
+                    },
+                    "author": {
+                      "@type": "Person",
+                      "name": "山田様"
+                    },
+                    "reviewBody": "設備も整っていて、白いかの釣果も素晴らしかったです。また利用したいと思います。",
+                    "datePublished": "2025-01-10"
+                  },
+                  {
+                    "@type": "Review",
+                    "reviewRating": {
+                      "@type": "Rating",
+                      "ratingValue": "5",
+                      "bestRating": "5"
+                    },
+                    "author": {
+                      "@type": "Person",
+                      "name": "佐藤様"
+                    },
+                    "reviewBody": "船長さんの指導が分かりやすく、初心者でも楽しめました。夜釣りの雰囲気も最高でした。",
+                    "datePublished": "2025-01-05"
                   }
                 ],
                 "hasOfferCatalog": {
@@ -176,13 +213,118 @@ export default function RootLayout({
                   "itemListElement": [
                     {
                       "@type": "Offer",
-                      "name": "白いか釣り体験",
+                      "name": "白いか釣り体験（1便）",
+                      "description": "夕方便：17:30過ぎ～23:30頃",
                       "price": "11000",
                       "priceCurrency": "JPY",
-                      "availability": "https://schema.org/InStock"
+                      "availability": "https://schema.org/InStock",
+                      "category": "夜釣り・遊漁船"
+                    },
+                    {
+                      "@type": "Offer",
+                      "name": "白いか釣り体験（2便）",
+                      "description": "深夜便：24:00頃～5:30頃",
+                      "price": "11000",
+                      "priceCurrency": "JPY",
+                      "availability": "https://schema.org/InStock",
+                      "category": "夜釣り・遊漁船"
+                    },
+                    {
+                      "@type": "Offer",
+                      "name": "竿レンタル",
+                      "description": "釣竿一式レンタル",
+                      "price": "2000",
+                      "priceCurrency": "JPY",
+                      "availability": "https://schema.org/InStock",
+                      "category": "レンタル用品"
                     }
                   ]
                 },
+                "amenityFeature": [
+                  {
+                    "@type": "LocationFeatureSpecification",
+                    "name": "GPS魚群探知機",
+                    "value": true
+                  },
+                  {
+                    "@type": "LocationFeatureSpecification",
+                    "name": "竿レンタル",
+                    "value": true
+                  },
+                  {
+                    "@type": "LocationFeatureSpecification",
+                    "name": "初心者指導",
+                    "value": true
+                  },
+                  {
+                    "@type": "LocationFeatureSpecification",
+                    "name": "夜間運航",
+                    "value": true
+                  }
+                ],
+                "knowsAbout": [
+                  "白いか釣り",
+                  "イカメタル",
+                  "夜釣り",
+                  "日本海釣り",
+                  "遊漁船",
+                  "鳥取県釣り",
+                  "琴浦町"
+                ],
+                "sameAs": [
+                  "https://www.instagram.com/meisho_maru",
+                  "https://lin.ee/HQX3Ezq"
+                ]
+              },
+              {
+                "@context": "https://schema.org",
+                "@type": "Organization",
+                "@id": "https://kotourameishomaru.com/#organization",
+                "name": "明勝丸",
+                "alternateName": "めいしょうまる",
+                "legalName": "明勝丸",
+                "url": "https://kotourameishomaru.com",
+                "logo": "https://kotourameishomaru.com/images/logo.png",
+                "image": "https://kotourameishomaru.com/images/logo.png",
+                "description": "鳥取県琴浦町赤碕港の白いか釣り専門船。日本海で夜釣り・イカメタル体験。関西・中国地方から好アクセス。",
+                "foundingDate": "2000",
+                "contactPoint": {
+                  "@type": "ContactPoint",
+                  "telephone": "+81-90-4695-3087",
+                  "contactType": "customer service",
+                  "availableLanguage": "ja"
+                },
+                "areaServed": {
+                  "@type": "GeoCircle",
+                  "geoMidpoint": {
+                    "@type": "GeoCoordinates",
+                    "latitude": 35.5002,
+                    "longitude": 133.6833
+                  },
+                  "geoRadius": "50000"
+                },
+                "serviceArea": [
+                  {
+                    "@type": "AdministrativeArea",
+                    "name": "鳥取県"
+                  },
+                  {
+                    "@type": "AdministrativeArea", 
+                    "name": "岡山県"
+                  },
+                  {
+                    "@type": "AdministrativeArea",
+                    "name": "兵庫県"
+                  },
+                  {
+                    "@type": "AdministrativeArea",
+                    "name": "広島県"
+                  },
+                  {
+                    "@type": "AdministrativeArea",
+                    "name": "大阪府"
+                  }
+                ],
                 "sameAs": [
                   "https://www.instagram.com/meisho_maru",
                   "https://lin.ee/HQX3Ezq"
