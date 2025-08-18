@@ -14,7 +14,7 @@ export default function NotFound() {
             <div className="inline-block relative mb-6">
               <Image
                 src="/images/logo.png"
-                alt="明勝丸ロゴ"
+                alt="明勝丸404ページロゴ - 鳥取県琴浦町の白いか釣り専門船・遊漁船・日本海夜釣り"
                 width={200}
                 height={200}
                 className="mx-auto opacity-50"

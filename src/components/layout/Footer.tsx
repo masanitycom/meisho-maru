@@ -13,7 +13,7 @@ export function Footer() {
             <div className="mb-4">
               <Image
                 src="/images/headlogo.png"
-                alt="明勝丸 - 鳥取県琴浦町の白いか釣り遊漁船"
+                alt="明勝丸フッターロゴ - 鳥取県琴浦町の白いか釣り遊漁船・夜釣り専門・初心者歓迎"
                 width={192}
                 height={192}
                 className="h-48 w-48 object-contain"

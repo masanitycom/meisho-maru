@@ -125,7 +125,9 @@ export default function RootLayout({
                 "priceRange": "¥11,000-¥13,000",
                 "image": [
                   "https://kotourameishomaru.com/images/logo.png",
-                  "https://kotourameishomaru.com/images/slider/slide-1.jpg"
+                  "https://kotourameishomaru.com/images/slider/slide-1.jpg",
+                  "https://kotourameishomaru.com/images/slider/slide-2.jpg",
+                  "https://kotourameishomaru.com/images/slider/slide-4.jpg"
                 ],
                 "address": {
                   "@type": "PostalAddress",

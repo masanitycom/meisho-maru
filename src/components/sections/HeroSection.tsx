@@ -36,7 +36,7 @@ export function HeroSection() {
               <div className="relative">
                 <Image
                   src="/images/logo.png"
-                  alt="明勝丸 - 鳥取県琴浦町の白いか釣り専門遊漁船ロゴ"
+                  alt="明勝丸公式ロゴ - 鳥取県琴浦町赤碕港の白いか釣り専門遊漁船・夜釣り・イカメタル体験"
                   width={448}
                   height={448}
                   priority

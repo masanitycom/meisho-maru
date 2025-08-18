@@ -44,7 +44,7 @@ export function Header() {
             <div className="relative">
               <Image
                 src="/images/headlogo.png"
-                alt="明勝丸 - 鳥取県琴浦町赤碕港の白いか釣り船"
+                alt="明勝丸ヘッダーロゴ - 鳥取県琴浦町赤碕港の白いか釣り専門船・日本海遊漁船"
                 width={192}
                 height={80}
                 priority
