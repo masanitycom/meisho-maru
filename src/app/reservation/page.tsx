@@ -71,39 +71,35 @@ function ReservationForm() {
       
       await createReservation(reservationData);
       
-      // メール送信
-      if (formData.email) {
-        try {
-          const emailResponse = await fetch('/api/send-email', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              to: formData.email,
-              subject: '【明勝丸】ご予約ありがとうございます',
-              reservationData: {
-                name: formData.name,
-                date: formData.date,
-                trip_number: parseInt(formData.tripNumber),
-                people_count: parseInt(formData.peopleCount),
-                phone: formData.phone,
-                email: formData.email,
-                rod_rental: formData.rodRental === 'true',
-                notes: formData.notes
-              }
-            })
-          });
-          
-          if (emailResponse.ok) {
-            alert('予約を受け付けました。確認メールをお送りしました。');
-          } else {
-            alert('予約を受け付けましたが、確認メールの送信に失敗しました。');
-          }
-        } catch (emailError) {
-          console.error('メール送信エラー:', emailError);
+      // メール送信（お客様＋管理者）
+      try {
+        const emailResponse = await fetch('/api/send-email', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            email: formData.email,
+            name: formData.name,
+            nameKana: formData.nameKana,
+            date: formData.date,
+            tripNumber: parseInt(formData.tripNumber),
+            peopleCount: parseInt(formData.peopleCount),
+            rodRental: formData.rodRental === 'true',
+            phone: formData.phone,
+            notes: formData.notes
+          })
+        });
+        
+        const emailResult = await emailResponse.json();
+        
+        if (emailResult.success) {
+          alert('予約を受け付けました。確認メールをお送りしました。');
+        } else {
+          console.error('メール送信エラー:', emailResult);
           alert('予約を受け付けましたが、確認メールの送信に失敗しました。');
         }
-      } else {
-        alert('予約を受け付けました。');
+      } catch (emailError) {
+        console.error('メール送信エラー:', emailError);
+        alert('予約を受け付けましたが、確認メールの送信に失敗しました。');
       }
       
       router.push('/');

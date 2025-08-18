@@ -1,4 +1,6 @@
-import nodemailer from 'nodemailer';
+// Note: nodemailerはサーバーサイドでのみ使用可能
+// この関数はAPI routesでのみ呼び出される想定
+const nodemailer = require('nodemailer');
 
 // Gmail SMTPトランスポーターの作成
 const createTransporter = () => {
