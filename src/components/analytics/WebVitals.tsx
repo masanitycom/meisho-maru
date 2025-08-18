@@ -57,15 +57,35 @@ export function WebVitals({ onCLS, onFID, onFCP, onLCP, onTTFB }: WebVitalsProps
   return null; // このコンポーネントは何もレンダリングしない
 }
 
+interface WebVitalsMetric {
+  id: string;
+  name: string;
+  value: number;
+  delta: number;
+  entries: PerformanceEntry[];
+  navigationType?: string;
+}
+
+interface WindowWithGtag extends Window {
+  gtag?: (
+    command: string,
+    action: string,
+    parameters: Record<string, unknown>
+  ) => void;
+}
+
 // パフォーマンス最適化のヘルパー関数
-export function reportWebVitals(metric: any) {
+export function reportWebVitals(metric: WebVitalsMetric) {
   // Google Analytics 4 にメトリクスを送信
-  if (typeof window !== 'undefined' && (window as any).gtag) {
-    (window as any).gtag('event', metric.name, {
-      custom_parameter_1: metric.value,
-      custom_parameter_2: metric.id,
-      custom_parameter_3: metric.name,
-    });
+  if (typeof window !== 'undefined') {
+    const windowWithGtag = window as WindowWithGtag;
+    if (windowWithGtag.gtag) {
+      windowWithGtag.gtag('event', metric.name, {
+        custom_parameter_1: metric.value,
+        custom_parameter_2: metric.id,
+        custom_parameter_3: metric.name,
+      });
+    }
   }
   
   // 開発環境でのログ出力
