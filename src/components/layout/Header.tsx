@@ -60,7 +60,7 @@ export function Header() {
               { href: '/#schedule', label: '運航スケジュール' },
               { href: '/#info', label: '料金・設備' },
               { href: '/#access', label: 'アクセス' },
-              { href: '/#results', label: '釣果情報' },
+              { href: '/#regulations', label: '業務規定' },
             ].map((item) => (
               <Link
                 key={item.href}
@@ -119,7 +119,7 @@ export function Header() {
                 { href: '/#schedule', label: '運航スケジュール' },
                 { href: '/#info', label: '料金・設備' },
                 { href: '/#access', label: 'アクセス' },
-                { href: '/#results', label: '釣果情報' },
+                { href: '/#regulations', label: '業務規定' },
               ].map((item) => (
                 <Link
                   key={item.href}

@@ -6,6 +6,7 @@ import { InfoSection } from '@/components/sections/InfoSection';
 import { ImportantNoticeSection } from '@/components/sections/ImportantNoticeSection';
 import { TestimonialsSection } from '@/components/sections/TestimonialsSection';
 import { AccessSection } from '@/components/sections/AccessSection';
+import { RegulationsSection } from '@/components/sections/RegulationsSection';
 import { InstagramBanner } from '@/components/sections/InstagramBanner';
 
 export default function Home() {
@@ -19,6 +20,7 @@ export default function Home() {
       <ImportantNoticeSection />
       <TestimonialsSection />
       <AccessSection />
+      <RegulationsSection />
       <InstagramBanner />
     </main>
   );
