@@ -89,7 +89,7 @@ export function Header() {
               className="bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white shadow-lg transform hover:scale-105 transition-all duration-300 inline-flex items-center"
               asChild
             >
-              <Link href="/reservation" className="inline-flex items-center">
+              <Link href="/booking-methods" className="inline-flex items-center">
                 <Calendar className="mr-2 h-4 w-4 flex-shrink-0" />
                 <span>予約する</span>
               </Link>
@@ -139,7 +139,7 @@ export function Header() {
                   className="w-full bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white inline-flex items-center justify-center"
                   asChild
                 >
-                  <Link href="/reservation" className="inline-flex items-center justify-center w-full">
+                  <Link href="/booking-methods" className="inline-flex items-center justify-center w-full">
                     <Calendar className="mr-2 h-4 w-4 flex-shrink-0" />
                     <span>予約する</span>
                   </Link>

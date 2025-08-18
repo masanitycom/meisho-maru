@@ -68,7 +68,7 @@ export function HeroSection() {
               className="bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white px-8 py-6 text-lg font-bold shadow-2xl transform hover:scale-105 transition-all duration-300 inline-flex items-center"
               asChild
             >
-              <Link href="/reservation" className="inline-flex items-center justify-center w-full">
+              <Link href="/booking-methods" className="inline-flex items-center justify-center w-full">
                 <Calendar className="mr-2 h-6 w-6 flex-shrink-0" />
                 <span>予約はこちら</span>
               </Link>
