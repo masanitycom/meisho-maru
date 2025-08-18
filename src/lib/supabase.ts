@@ -88,9 +88,6 @@ export const getSchedules = async (startDate?: string, endDate?: string) => {
 // 予約可能席数を計算（キャッシュ無効化オプション付き）
 export const getAvailableSeats = async (date: string, tripNumber: number, noCache = false) => {
   try {
-    // キャッシュ無効化のためタイムスタンプを追加
-    const cacheKey = noCache ? `_t=${Date.now()}` : '';
-    
     // スケジュールから定員と運航状態を取得
     const { data: schedule, error: scheduleError } = await supabase
       .from('schedules')

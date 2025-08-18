@@ -20,7 +20,6 @@ import {
   Sun,
   AlertCircle,
   RefreshCw,
-  Ship,
   Users,
   Save
 } from 'lucide-react';
@@ -119,7 +118,7 @@ export default function ScheduleManagePage() {
 
   useEffect(() => {
     loadSchedules(true);
-  }, []);
+  }, [loadSchedules]);
 
   // ローカルで予約人数変更（リアルタイム更新）
   const changeReservationsLocal = (date: string, tripNumber: number, change: number) => {

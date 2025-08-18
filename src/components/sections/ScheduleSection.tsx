@@ -90,18 +90,7 @@ export function ScheduleSection() {
     loadDates();
   }, [mounted]);
 
-  const getStatusIcon = (seats: number) => {
-    if (seats === -1) return <XCircle className="h-5 w-5 text-gray-500" />; // 休漁日
-    if (seats === 0) return <XCircle className="h-5 w-5 text-red-500" />; // 満席
-    if (seats <= 2) return <AlertCircle className="h-5 w-5 text-orange-500" />; // 残りわずか
-    return <CheckCircle className="h-5 w-5 text-green-500" />; // 空席あり
-  };
-
-  const getStatusText = (seats: number) => {
-    if (seats === -1) return '休漁日';
-    if (seats === 0) return '満席';
-    return `空席${seats}席`;
-  };
+  // 未使用関数を削除（getStatusBadgeで統合済み）
 
   const getStatusColor = (seats: number) => {
     if (seats === -1) return 'text-gray-700 bg-gray-200 border-gray-300'; // 休漁日
