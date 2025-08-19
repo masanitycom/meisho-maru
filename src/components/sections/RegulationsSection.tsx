@@ -61,29 +61,33 @@ export function RegulationsSection() {
               <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <FileText className="h-8 w-8 text-green-600" />
               </div>
-              <CardTitle className="text-xl">遊漁船業登録票</CardTitle>
+              <CardTitle className="text-xl">遊漁船業者登録票</CardTitle>
             </CardHeader>
             <CardContent className="text-center space-y-4">
               <p className="text-gray-600 text-sm">
-                鳥取県知事による正式な遊漁船業の登録証です。
+                鳥取県知事による正式な遊漁船業者の登録票です。
                 <br />
-                適法に営業していることを証明する書類です。
+                適法に営業していることを証明する公式書類です。
               </p>
-              <div className="bg-orange-50 p-3 rounded-lg">
-                <div className="flex items-center justify-center text-orange-700 text-sm mb-2">
-                  <Clock className="h-4 w-4 mr-1" />
-                  <span className="font-medium">準備中</span>
+              <div className="bg-green-50 p-3 rounded-lg">
+                <div className="flex items-center justify-center text-green-700 text-sm mb-2">
+                  <Shield className="h-4 w-4 mr-1" />
+                  <span className="font-medium">正式登録済み</span>
                 </div>
-                <p className="text-xs text-orange-600">
-                  まもなく公開予定です
+                <p className="text-xs text-green-600">
+                  鳥取県知事認可の遊漁船業者です
                 </p>
               </div>
-              <Button 
-                className="w-full bg-gray-400 hover:bg-gray-400 cursor-not-allowed"
-                disabled
-              >
-                <Clock className="h-4 w-4 mr-2 flex-shrink-0" />
-                <span>準備中</span>
+              <Button asChild className="w-full bg-green-600 hover:bg-green-700">
+                <a 
+                  href="/pdf/RecreationalFishingBoatOperatorRegistrationForm.pdf" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-center"
+                >
+                  <Download className="h-4 w-4 mr-2 flex-shrink-0" />
+                  <span>登録票を見る</span>
+                </a>
               </Button>
             </CardContent>
           </Card>

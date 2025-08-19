@@ -267,6 +267,16 @@ export default function RootLayout({
                     "@type": "LocationFeatureSpecification",
                     "name": "夜間運航",
                     "value": true
+                  },
+                  {
+                    "@type": "LocationFeatureSpecification",
+                    "name": "遊漁船業者登録済み",
+                    "value": true
+                  },
+                  {
+                    "@type": "LocationFeatureSpecification",
+                    "name": "損害賠償責任保険加入",
+                    "value": true
                   }
                 ],
                 "knowsAbout": [
