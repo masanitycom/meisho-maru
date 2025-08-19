@@ -1,20 +1,23 @@
 'use client';
 
 import { useSearchParams } from 'next/navigation';
-import { Suspense } from 'react';
+import { Suspense, useEffect } from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { FileText, Download, ArrowLeft, Shield, CheckCircle } from 'lucide-react';
 
-export const metadata = {
-  title: '遊漁船業務規定・登録票 | 明勝丸 - 鳥取県琴浦町',
-  description: '明勝丸の遊漁船業者登録票と業務規程。鳥取県知事認可の正式登録書類と安全運航基準をご確認いただけます。',
-};
-
 function PDFViewerContent() {
   const searchParams = useSearchParams();
   const pdfType = searchParams.get('type');
+
+  // 動的にページタイトルを設定
+  useEffect(() => {
+    const title = pdfType === 'registration' 
+      ? '遊漁船業者登録票 | 明勝丸 - 鳥取県琴浦町'
+      : '遊漁船業務規程 | 明勝丸 - 鳥取県琴浦町';
+    document.title = title;
+  }, [pdfType]);
 
   const pdfInfo = {
     registration: {
@@ -68,11 +71,11 @@ function PDFViewerContent() {
 
           {/* PDFカード */}
           <Card className="shadow-xl">
-            <CardHeader className={`bg-${currentPdf.color}-50 border-b`}>
+            <CardHeader className={currentPdf.color === 'green' ? 'bg-green-50 border-b' : 'bg-blue-50 border-b'}>
               <div className="flex items-center justify-between">
                 <div className="flex items-start gap-4">
-                  <div className={`w-16 h-16 bg-${currentPdf.color}-100 rounded-full flex items-center justify-center`}>
-                    <IconComponent className={`h-8 w-8 text-${currentPdf.color}-600`} />
+                  <div className={currentPdf.color === 'green' ? 'w-16 h-16 bg-green-100 rounded-full flex items-center justify-center' : 'w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center'}>
+                    <IconComponent className={currentPdf.color === 'green' ? 'h-8 w-8 text-green-600' : 'h-8 w-8 text-blue-600'} />
                   </div>
                   <div>
                     <CardTitle className="text-2xl mb-2">{currentPdf.title}</CardTitle>
@@ -91,15 +94,15 @@ function PDFViewerContent() {
                 </div>
 
                 {/* 詳細情報 */}
-                <div className={`bg-${currentPdf.color}-50 p-6 rounded-lg`}>
+                <div className={currentPdf.color === 'green' ? 'bg-green-50 p-6 rounded-lg' : 'bg-blue-50 p-6 rounded-lg'}>
                   <h3 className="font-semibold mb-4 flex items-center">
-                    <CheckCircle className={`h-5 w-5 mr-2 text-${currentPdf.color}-600`} />
+                    <CheckCircle className={currentPdf.color === 'green' ? 'h-5 w-5 mr-2 text-green-600' : 'h-5 w-5 mr-2 text-blue-600'} />
                     文書内容
                   </h3>
                   <ul className="space-y-2">
                     {currentPdf.details.map((detail, index) => (
                       <li key={index} className="flex items-start">
-                        <span className={`mr-2 text-${currentPdf.color}-600`}>•</span>
+                        <span className={currentPdf.color === 'green' ? 'mr-2 text-green-600' : 'mr-2 text-blue-600'}>•</span>
                         <span className="text-gray-700">{detail}</span>
                       </li>
                     ))}
@@ -111,7 +114,7 @@ function PDFViewerContent() {
                   <Button
                     asChild
                     size="lg"
-                    className={`flex-1 bg-${currentPdf.color}-600 hover:bg-${currentPdf.color}-700`}
+                    className={currentPdf.color === 'green' ? 'flex-1 bg-green-600 hover:bg-green-700' : 'flex-1 bg-blue-600 hover:bg-blue-700'}
                   >
                     <a
                       href={currentPdf.pdfUrl}
