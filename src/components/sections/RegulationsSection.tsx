@@ -7,12 +7,26 @@ import { FileText, Download, Clock, Shield } from 'lucide-react';
 
 export function RegulationsSection() {
   return (
-    <section id="regulations" className="py-16 md:py-24 bg-gradient-to-br from-emerald-50 via-white to-teal-50 relative overflow-hidden">
-      {/* Background Pattern */}
-      <div className="absolute inset-0 opacity-20" aria-hidden="true">
-        <div className="absolute top-16 right-16 w-28 h-28 bg-emerald-200 rounded-full blur-2xl"></div>
-        <div className="absolute bottom-32 left-16 w-36 h-36 bg-teal-200 rounded-full blur-3xl"></div>
-        <div className="absolute top-1/2 left-1/2 w-20 h-20 bg-green-200 rounded-full blur-xl"></div>
+    <section id="regulations" className="py-16 md:py-24 bg-emerald-50 relative overflow-hidden">
+      {/* 和紙風幾何学パターン */}
+      <div className="absolute inset-0" aria-hidden="true">
+        <svg className="absolute inset-0 w-full h-full" viewBox="0 0 1000 1000" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <pattern id="hexagon-pattern" x="0" y="0" width="120" height="104" patternUnits="userSpaceOnUse">
+              <polygon points="60,8 90,26 90,62 60,80 30,62 30,26" 
+                       fill="none" stroke="rgb(16 185 129 / 0.08)" strokeWidth="1" />
+              <polygon points="60,20 80,30 80,50 60,60 40,50 40,30" 
+                       fill="rgb(16 185 129 / 0.05)" stroke="rgb(16 185 129 / 0.1)" strokeWidth="0.5" />
+            </pattern>
+            <linearGradient id="emerald-fade" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="rgb(16 185 129 / 0.1)" />
+              <stop offset="50%" stopColor="rgb(16 185 129 / 0.05)" />
+              <stop offset="100%" stopColor="rgb(16 185 129 / 0.02)" />
+            </linearGradient>
+          </defs>
+          <rect width="100%" height="100%" fill="url(#hexagon-pattern)" />
+          <rect x="0" y="0" width="100%" height="100%" fill="url(#emerald-fade)" />
+        </svg>
       </div>
       <div className="container mx-auto px-4 relative z-10">
         <div className="text-center mb-12">

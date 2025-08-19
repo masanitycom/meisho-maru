@@ -4,12 +4,24 @@ import { PRICES } from '@/lib/constants';
 
 export function InfoSection() {
   return (
-    <section id="info" className="py-20 bg-gradient-to-br from-purple-50 via-indigo-50 to-blue-50 relative overflow-hidden">
-      {/* Background Pattern */}
-      <div className="absolute inset-0 opacity-20" aria-hidden="true">
-        <div className="absolute top-24 right-12 w-40 h-40 bg-purple-200 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-24 left-12 w-32 h-32 bg-indigo-200 rounded-full blur-2xl"></div>
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-28 h-28 bg-blue-200 rounded-full blur-xl"></div>
+    <section id="info" className="py-20 bg-white relative overflow-hidden">
+      {/* ドットグリッドパターン */}
+      <div className="absolute inset-0" aria-hidden="true">
+        <svg className="absolute inset-0 w-full h-full" viewBox="0 0 1000 1000" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <pattern id="dot-grid" x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse">
+              <circle cx="20" cy="20" r="1.5" fill="rgb(99 102 241 / 0.15)" />
+              <circle cx="20" cy="20" r="0.8" fill="rgb(99 102 241 / 0.25)" />
+            </pattern>
+            <radialGradient id="center-fade">
+              <stop offset="0%" stopColor="rgb(99 102 241 / 0.08)" />
+              <stop offset="70%" stopColor="rgb(99 102 241 / 0.03)" />
+              <stop offset="100%" stopColor="rgb(99 102 241 / 0.01)" />
+            </radialGradient>
+          </defs>
+          <rect width="100%" height="100%" fill="url(#dot-grid)" />
+          <ellipse cx="500" cy="500" rx="400" ry="300" fill="url(#center-fade)" />
+        </svg>
       </div>
       <div className="container mx-auto px-4 relative z-10">
         <div className="text-center mb-12">

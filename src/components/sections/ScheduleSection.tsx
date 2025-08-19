@@ -148,12 +148,26 @@ export function ScheduleSection() {
   };
 
   return (
-    <section id="schedule" className="py-20 bg-gradient-to-br from-blue-50 via-slate-50 to-gray-100 relative overflow-hidden">
-      {/* Background Pattern */}
-      <div className="absolute inset-0 opacity-30" aria-hidden="true">
-        <div className="absolute top-10 left-10 w-32 h-32 bg-blue-200 rounded-full blur-3xl"></div>
-        <div className="absolute top-32 right-20 w-24 h-24 bg-cyan-200 rounded-full blur-2xl"></div>
-        <div className="absolute bottom-20 left-1/3 w-40 h-40 bg-slate-200 rounded-full blur-3xl"></div>
+    <section id="schedule" className="py-20 bg-slate-50 relative overflow-hidden">
+      {/* 海の波紋パターン */}
+      <div className="absolute inset-0" aria-hidden="true">
+        <svg className="absolute inset-0 w-full h-full" viewBox="0 0 1000 1000" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <pattern id="wave-pattern" x="0" y="0" width="200" height="200" patternUnits="userSpaceOnUse">
+              <circle cx="100" cy="100" r="80" fill="none" stroke="rgb(59 130 246 / 0.08)" strokeWidth="2" />
+              <circle cx="100" cy="100" r="50" fill="none" stroke="rgb(59 130 246 / 0.12)" strokeWidth="1.5" />
+              <circle cx="100" cy="100" r="20" fill="none" stroke="rgb(59 130 246 / 0.16)" strokeWidth="1" />
+            </pattern>
+            <radialGradient id="fade-gradient">
+              <stop offset="0%" stopColor="rgb(59 130 246 / 0.15)" />
+              <stop offset="100%" stopColor="rgb(59 130 246 / 0.03)" />
+            </radialGradient>
+          </defs>
+          <rect width="100%" height="100%" fill="url(#wave-pattern)" />
+          <circle cx="200" cy="150" r="120" fill="url(#fade-gradient)" />
+          <circle cx="800" cy="300" r="100" fill="url(#fade-gradient)" />
+          <circle cx="400" cy="700" r="140" fill="url(#fade-gradient)" />
+        </svg>
       </div>
       <div className="container mx-auto px-4 relative z-10">
         <div className="text-center mb-12">

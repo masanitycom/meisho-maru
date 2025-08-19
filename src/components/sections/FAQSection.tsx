@@ -22,12 +22,26 @@ const popularQuestions = [
 
 export function FAQSection() {
   return (
-    <section className="py-16 md:py-20 bg-gradient-to-br from-rose-50 via-pink-50 to-red-50 relative overflow-hidden">
-      {/* Background Pattern */}
-      <div className="absolute inset-0 opacity-25" aria-hidden="true">
-        <div className="absolute top-12 left-16 w-28 h-28 bg-rose-200 rounded-full blur-2xl"></div>
-        <div className="absolute bottom-20 right-20 w-36 h-36 bg-pink-200 rounded-full blur-3xl"></div>
-        <div className="absolute top-2/3 left-1/4 w-20 h-20 bg-red-200 rounded-full blur-xl"></div>
+    <section className="py-16 md:py-20 bg-gray-50 relative overflow-hidden">
+      {/* 線形パターン */}
+      <div className="absolute inset-0" aria-hidden="true">
+        <svg className="absolute inset-0 w-full h-full" viewBox="0 0 1000 1000" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <pattern id="line-pattern" x="0" y="0" width="60" height="60" patternUnits="userSpaceOnUse">
+              <path d="M0,60 L60,0" stroke="rgb(239 68 68 / 0.08)" strokeWidth="1" fill="none" />
+              <path d="M0,0 L60,60" stroke="rgb(239 68 68 / 0.06)" strokeWidth="0.8" fill="none" />
+            </pattern>
+            <filter id="soft-blur">
+              <feGaussianBlur stdDeviation="1" />
+            </filter>
+          </defs>
+          <rect width="100%" height="100%" fill="url(#line-pattern)" />
+          <g filter="url(#soft-blur)">
+            <circle cx="200" cy="200" r="60" fill="none" stroke="rgb(239 68 68 / 0.12)" strokeWidth="2" />
+            <circle cx="800" cy="300" r="80" fill="none" stroke="rgb(239 68 68 / 0.1)" strokeWidth="1.5" />
+            <circle cx="400" cy="750" r="100" fill="none" stroke="rgb(239 68 68 / 0.08)" strokeWidth="1" />
+          </g>
+        </svg>
       </div>
       <div className="container mx-auto px-4 relative z-10">
         <div className="text-center mb-10">

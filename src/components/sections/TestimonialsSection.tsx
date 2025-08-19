@@ -54,12 +54,29 @@ const testimonials = [
 
 export function TestimonialsSection() {
   return (
-    <section id="testimonials" className="py-20 bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50 relative overflow-hidden">
-      {/* Background Pattern */}
-      <div className="absolute inset-0 opacity-25" aria-hidden="true">
-        <div className="absolute top-20 left-20 w-36 h-36 bg-amber-200 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-16 right-24 w-32 h-32 bg-orange-200 rounded-full blur-2xl"></div>
-        <div className="absolute top-1/3 right-1/3 w-24 h-24 bg-yellow-200 rounded-full blur-xl"></div>
+    <section id="testimonials" className="py-20 bg-amber-50 relative overflow-hidden">
+      {/* 星座パターン */}
+      <div className="absolute inset-0" aria-hidden="true">
+        <svg className="absolute inset-0 w-full h-full" viewBox="0 0 1000 1000" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <pattern id="star-pattern" x="0" y="0" width="150" height="150" patternUnits="userSpaceOnUse">
+              <polygon points="75,25 85,55 115,55 93,75 103,105 75,85 47,105 57,75 35,55 65,55" 
+                       fill="rgb(251 191 36 / 0.12)" stroke="rgb(251 191 36 / 0.2)" strokeWidth="0.5" />
+            </pattern>
+            <filter id="glow">
+              <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+              <feMerge> 
+                <feMergeNode in="coloredBlur"/>
+                <feMergeNode in="SourceGraphic"/> 
+              </feMerge>
+            </filter>
+          </defs>
+          <rect width="100%" height="100%" fill="url(#star-pattern)" />
+          <circle cx="150" cy="200" r="4" fill="rgb(251 191 36 / 0.3)" filter="url(#glow)" />
+          <circle cx="750" cy="150" r="3" fill="rgb(251 191 36 / 0.4)" filter="url(#glow)" />
+          <circle cx="300" cy="600" r="5" fill="rgb(251 191 36 / 0.25)" filter="url(#glow)" />
+          <circle cx="850" cy="700" r="3.5" fill="rgb(251 191 36 / 0.35)" filter="url(#glow)" />
+        </svg>
       </div>
       <div className="container mx-auto px-4 relative z-10">
         <div className="text-center mb-12">
