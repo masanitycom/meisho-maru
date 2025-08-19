@@ -291,7 +291,21 @@ export default function RootLayout({
                 "sameAs": [
                   "https://www.instagram.com/meisho_maru",
                   "https://lin.ee/HQX3Ezq"
-                ]
+                ],
+                "hasCredential": [
+                  {
+                    "@type": "EducationalOccupationalCredential",
+                    "credentialCategory": "license",
+                    "name": "遊漁船業者登録",
+                    "description": "鳥取県知事による遊漁船業者の正式登録",
+                    "issuedBy": {
+                      "@type": "Organization",
+                      "name": "鳥取県"
+                    },
+                    "url": "https://kotourameishomaru.com/pdf/RecreationalFishingBoatOperatorRegistrationForm.pdf"
+                  }
+                ],
+                "publishingPrinciples": "https://kotourameishomaru.com/pdf/businessregulations.pdf"
               },
               {
                 "@context": "https://schema.org",
@@ -376,6 +390,38 @@ export default function RootLayout({
                     }
                   }
                 ]
+              },
+              {
+                "@context": "https://schema.org",
+                "@type": "DigitalDocument",
+                "name": "明勝丸 遊漁船業者登録票",
+                "description": "鳥取県知事認可の遊漁船業者正式登録票",
+                "url": "https://kotourameishomaru.com/pdf/RecreationalFishingBoatOperatorRegistrationForm.pdf",
+                "encodingFormat": "application/pdf",
+                "publisher": {
+                  "@type": "Organization",
+                  "name": "鳥取県"
+                },
+                "isPartOf": {
+                  "@type": "WebSite",
+                  "url": "https://kotourameishomaru.com"
+                }
+              },
+              {
+                "@context": "https://schema.org",
+                "@type": "DigitalDocument",
+                "name": "明勝丸 遊漁船業務規程",
+                "description": "安全運航基準・料金規定・運航ルール",
+                "url": "https://kotourameishomaru.com/pdf/businessregulations.pdf",
+                "encodingFormat": "application/pdf",
+                "publisher": {
+                  "@type": "Organization",
+                  "name": "明勝丸"
+                },
+                "isPartOf": {
+                  "@type": "WebSite",
+                  "url": "https://kotourameishomaru.com"
+                }
               },
               {
                 "@context": "https://schema.org",

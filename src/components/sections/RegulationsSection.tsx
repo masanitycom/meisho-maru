@@ -47,6 +47,8 @@ export function RegulationsSection() {
                   target="_blank" 
                   rel="noopener noreferrer"
                   className="flex items-center justify-center"
+                  title="明勝丸 遊漁船業務規程 - 鳥取県琴浦町の白いか釣り専門船の安全運航基準・料金規定PDF"
+                  aria-label="明勝丸の遊漁船業務規程PDFをダウンロード"
                 >
                   <Download className="h-4 w-4 mr-2 flex-shrink-0" />
                   <span>業務規程を見る</span>
@@ -84,6 +86,8 @@ export function RegulationsSection() {
                   target="_blank" 
                   rel="noopener noreferrer"
                   className="flex items-center justify-center"
+                  title="明勝丸 遊漁船業者登録票 - 鳥取県知事認可 正式登録番号記載 白いか釣り専門船PDF"
+                  aria-label="明勝丸の遊漁船業者登録票PDFをダウンロード（鳥取県知事認可）"
                 >
                   <Download className="h-4 w-4 mr-2 flex-shrink-0" />
                   <span>登録票を見る</span>
