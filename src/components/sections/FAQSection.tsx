@@ -22,8 +22,14 @@ const popularQuestions = [
 
 export function FAQSection() {
   return (
-    <section className="py-16 md:py-20 bg-gradient-to-b from-white to-blue-50">
-      <div className="container mx-auto px-4">
+    <section className="py-16 md:py-20 bg-gradient-to-br from-rose-50 via-pink-50 to-red-50 relative overflow-hidden">
+      {/* Background Pattern */}
+      <div className="absolute inset-0 opacity-25" aria-hidden="true">
+        <div className="absolute top-12 left-16 w-28 h-28 bg-rose-200 rounded-full blur-2xl"></div>
+        <div className="absolute bottom-20 right-20 w-36 h-36 bg-pink-200 rounded-full blur-3xl"></div>
+        <div className="absolute top-2/3 left-1/4 w-20 h-20 bg-red-200 rounded-full blur-xl"></div>
+      </div>
+      <div className="container mx-auto px-4 relative z-10">
         <div className="text-center mb-10">
           <h2 className="text-3xl md:text-4xl font-bold mb-4">よくあるご質問</h2>
           <p className="text-lg text-gray-600">

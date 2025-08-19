@@ -4,8 +4,14 @@ import { PRICES } from '@/lib/constants';
 
 export function InfoSection() {
   return (
-    <section id="info" className="py-20 bg-white">
-      <div className="container mx-auto px-4">
+    <section id="info" className="py-20 bg-gradient-to-br from-purple-50 via-indigo-50 to-blue-50 relative overflow-hidden">
+      {/* Background Pattern */}
+      <div className="absolute inset-0 opacity-20" aria-hidden="true">
+        <div className="absolute top-24 right-12 w-40 h-40 bg-purple-200 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-24 left-12 w-32 h-32 bg-indigo-200 rounded-full blur-2xl"></div>
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-28 h-28 bg-blue-200 rounded-full blur-xl"></div>
+      </div>
+      <div className="container mx-auto px-4 relative z-10">
         <div className="text-center mb-12">
           <h2 className="text-4xl font-bold mb-4">料金・設備</h2>
           <p className="text-xl text-gray-600">

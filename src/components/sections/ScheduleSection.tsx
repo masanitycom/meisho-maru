@@ -148,8 +148,14 @@ export function ScheduleSection() {
   };
 
   return (
-    <section id="schedule" className="py-20 bg-gray-50">
-      <div className="container mx-auto px-4">
+    <section id="schedule" className="py-20 bg-gradient-to-br from-blue-50 via-slate-50 to-gray-100 relative overflow-hidden">
+      {/* Background Pattern */}
+      <div className="absolute inset-0 opacity-30" aria-hidden="true">
+        <div className="absolute top-10 left-10 w-32 h-32 bg-blue-200 rounded-full blur-3xl"></div>
+        <div className="absolute top-32 right-20 w-24 h-24 bg-cyan-200 rounded-full blur-2xl"></div>
+        <div className="absolute bottom-20 left-1/3 w-40 h-40 bg-slate-200 rounded-full blur-3xl"></div>
+      </div>
+      <div className="container mx-auto px-4 relative z-10">
         <div className="text-center mb-12">
           <h2 className="text-4xl font-bold mb-4">運航スケジュール</h2>
           <p className="text-xl text-gray-600">
@@ -187,7 +193,8 @@ export function ScheduleSection() {
               <button
                 onClick={() => scroll('left')}
                 className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white/90 backdrop-blur-sm rounded-full p-2 shadow-lg hover:bg-gray-100 transition-colors hidden sm:block"
-                aria-label="前へ"
+                aria-label="前の運航スケジュールを表示"
+                type="button"
               >
                 <ChevronLeft className="h-6 w-6" />
               </button>
@@ -196,7 +203,8 @@ export function ScheduleSection() {
               <button
                 onClick={() => scroll('right')}
                 className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white/90 backdrop-blur-sm rounded-full p-2 shadow-lg hover:bg-gray-100 transition-colors hidden sm:block"
-                aria-label="次へ"
+                aria-label="次の運航スケジュールを表示"
+                type="button"
               >
                 <ChevronRight className="h-6 w-6" />
               </button>
@@ -223,6 +231,15 @@ export function ScheduleSection() {
                         dateInfo.isToday ? 'border-blue-500 border-3 shadow-lg' : 'border-gray-200'
                       }`}
                       onClick={() => setSelectedDate(dateInfo.dateStr)}
+                      role="button"
+                      tabIndex={0}
+                      aria-label={`${dateInfo.date.getMonth() + 1}月${dateInfo.date.getDate()}日の運航スケジュールを選択`}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          e.preventDefault();
+                          setSelectedDate(dateInfo.dateStr);
+                        }
+                      }}
                     >
                       <CardHeader className="pb-3">
                         <div className="flex justify-between items-center">

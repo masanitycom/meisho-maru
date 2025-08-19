@@ -57,11 +57,11 @@ export function ImageSlider() {
   }, [emblaApi]);
 
   return (
-    <section className="relative py-8 md:py-12 bg-gradient-to-b from-gray-50 to-white">
-      <div className="container mx-auto px-4">
+    <section className="relative bg-gradient-to-b from-gray-50 to-white">
+      <div className="w-full">
         {/* スライダー本体 */}
-        <div className="relative max-w-6xl mx-auto">
-          <div className="overflow-hidden rounded-xl shadow-2xl" ref={emblaRef}>
+        <div className="relative w-full">
+          <div className="overflow-hidden" ref={emblaRef}>
             <div className="flex">
               {slideImages.map((slide, index) => (
                 <div
@@ -88,7 +88,8 @@ export function ImageSlider() {
           <button
             onClick={scrollPrev}
             className="absolute left-2 md:left-4 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white backdrop-blur-sm rounded-full p-2 md:p-3 shadow-lg transition-all hover:scale-110 z-10"
-            aria-label="前の画像"
+            aria-label="前の画像スライドを表示"
+            type="button"
           >
             <ChevronLeft className="h-5 w-5 md:h-6 md:w-6 text-gray-800" />
           </button>
@@ -97,19 +98,21 @@ export function ImageSlider() {
           <button
             onClick={scrollNext}
             className="absolute right-2 md:right-4 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white backdrop-blur-sm rounded-full p-2 md:p-3 shadow-lg transition-all hover:scale-110 z-10"
-            aria-label="次の画像"
+            aria-label="次の画像スライドを表示"
+            type="button"
           >
             <ChevronRight className="h-5 w-5 md:h-6 md:w-6 text-gray-800" />
           </button>
 
           {/* ドットインジケーター（オプション） */}
-          <div className="flex justify-center gap-2 mt-4">
+          <div className="flex justify-center gap-2 mt-6 container mx-auto px-4">
             {slideImages.map((_, index) => (
               <button
                 key={index}
-                className="w-2 h-2 rounded-full bg-gray-400 hover:bg-gray-600 transition-colors"
+                className="w-3 h-3 rounded-full bg-gray-400 hover:bg-gray-600 transition-colors"
                 onClick={() => emblaApi?.scrollTo(index)}
                 aria-label={`画像${index + 1}へ移動`}
+                type="button"
               />
             ))}
           </div>

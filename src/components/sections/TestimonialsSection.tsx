@@ -54,8 +54,14 @@ const testimonials = [
 
 export function TestimonialsSection() {
   return (
-    <section id="testimonials" className="py-20 bg-gradient-to-b from-blue-50 to-white">
-      <div className="container mx-auto px-4">
+    <section id="testimonials" className="py-20 bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50 relative overflow-hidden">
+      {/* Background Pattern */}
+      <div className="absolute inset-0 opacity-25" aria-hidden="true">
+        <div className="absolute top-20 left-20 w-36 h-36 bg-amber-200 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-16 right-24 w-32 h-32 bg-orange-200 rounded-full blur-2xl"></div>
+        <div className="absolute top-1/3 right-1/3 w-24 h-24 bg-yellow-200 rounded-full blur-xl"></div>
+      </div>
+      <div className="container mx-auto px-4 relative z-10">
         <div className="text-center mb-12">
           <h2 className="text-4xl font-bold mb-4">お客様の声</h2>
           <p className="text-xl text-gray-600">

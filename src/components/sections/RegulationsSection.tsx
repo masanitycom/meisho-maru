@@ -7,8 +7,14 @@ import { FileText, Download, Clock, Shield } from 'lucide-react';
 
 export function RegulationsSection() {
   return (
-    <section id="regulations" className="py-16 md:py-24 bg-gradient-to-b from-gray-50 to-white">
-      <div className="container mx-auto px-4">
+    <section id="regulations" className="py-16 md:py-24 bg-gradient-to-br from-emerald-50 via-white to-teal-50 relative overflow-hidden">
+      {/* Background Pattern */}
+      <div className="absolute inset-0 opacity-20" aria-hidden="true">
+        <div className="absolute top-16 right-16 w-28 h-28 bg-emerald-200 rounded-full blur-2xl"></div>
+        <div className="absolute bottom-32 left-16 w-36 h-36 bg-teal-200 rounded-full blur-3xl"></div>
+        <div className="absolute top-1/2 left-1/2 w-20 h-20 bg-green-200 rounded-full blur-xl"></div>
+      </div>
+      <div className="container mx-auto px-4 relative z-10">
         <div className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-bold mb-4">遊漁船業務規定について</h2>
           <p className="text-lg text-gray-600 max-w-3xl mx-auto">

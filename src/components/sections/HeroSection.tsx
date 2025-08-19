@@ -10,7 +10,7 @@ export function HeroSection() {
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-b from-slate-900 via-blue-900 to-blue-800 pt-24 md:pt-20">
       {/* 波のアニメーション背景 */}
-      <div className="absolute inset-0 opacity-30">
+      <div className="absolute inset-0 opacity-30" aria-hidden="true">
         <svg className="absolute bottom-0 w-full h-96" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">
           <path fill="#ffffff" fillOpacity="0.3" d="M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,112C672,96,768,96,864,112C960,128,1056,160,1152,160C1248,160,1344,128,1392,112L1440,96L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
         </svg>
@@ -20,7 +20,7 @@ export function HeroSection() {
       </div>
 
       {/* 和風の装飾パターン */}
-      <div className="absolute top-0 left-0 w-full h-full opacity-10">
+      <div className="absolute top-0 left-0 w-full h-full opacity-10" aria-hidden="true">
         <div className="absolute top-10 left-10 w-32 h-32 border-4 border-white rounded-full animate-spin-slow"></div>
         <div className="absolute bottom-20 right-20 w-40 h-40 border-4 border-white rounded-full animate-spin-slow"></div>
       </div>
@@ -78,7 +78,7 @@ export function HeroSection() {
               className="bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white px-8 py-6 text-lg font-bold shadow-2xl transform hover:scale-105 transition-all duration-300 inline-flex items-center"
               asChild
             >
-              <Link href="/booking-methods" className="inline-flex items-center justify-center w-full">
+              <Link href="/booking-methods" className="inline-flex items-center justify-center w-full" aria-label="明勝丸の予約ページへ移動">
                 <Calendar className="mr-2 h-6 w-6 flex-shrink-0" />
                 <span>予約はこちら</span>
               </Link>
@@ -89,7 +89,7 @@ export function HeroSection() {
               className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white border-2 border-orange-400 px-8 py-6 text-lg font-bold transform hover:scale-105 transition-all duration-300 inline-flex items-center shadow-2xl"
               asChild
             >
-              <a href={`tel:${SITE_CONFIG.contact.phone}`} className="inline-flex items-center justify-center w-full">
+              <a href={`tel:${SITE_CONFIG.contact.phone}`} className="inline-flex items-center justify-center w-full" aria-label="明勝丸に電話で予約・問い合わせ">
                 <Phone className="mr-2 h-6 w-6 flex-shrink-0" />
                 <span>今すぐ電話</span>
               </a>
@@ -97,28 +97,28 @@ export function HeroSection() {
           </div>
 
           {/* 特徴カード */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 max-w-5xl mx-auto animate-fade-in mb-12 md:mb-16">
-            <div className="bg-white/10 backdrop-blur-md rounded-xl p-6 transform hover:scale-105 transition-all duration-300 border border-white/20">
-              <Fish className="h-10 w-10 mb-3 text-yellow-300 mx-auto" />
-              <h3 className="text-xl font-bold mb-2">豊富な漁獲量</h3>
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 max-w-5xl mx-auto animate-fade-in mb-12 md:mb-16" role="region" aria-label="明勝丸の主な特徴">
+            <div className="bg-white/10 backdrop-blur-md rounded-xl p-6 transform hover:scale-105 transition-all duration-300 border border-white/20" role="article" aria-labelledby="feature-1">
+              <Fish className="h-10 w-10 mb-3 text-yellow-300 mx-auto" aria-hidden="true" />
+              <h3 id="feature-1" className="text-xl font-bold mb-2">豊富な漁獲量</h3>
               <p className="text-sm text-blue-100">日本海屈指の好漁場</p>
             </div>
 
-            <div className="bg-white/10 backdrop-blur-md rounded-xl p-6 transform hover:scale-105 transition-all duration-300 border border-white/20">
-              <Anchor className="h-10 w-10 mb-3 text-yellow-300 mx-auto" />
-              <h3 className="text-xl font-bold mb-2">最新設備</h3>
+            <div className="bg-white/10 backdrop-blur-md rounded-xl p-6 transform hover:scale-105 transition-all duration-300 border border-white/20" role="article" aria-labelledby="feature-2">
+              <Anchor className="h-10 w-10 mb-3 text-yellow-300 mx-auto" aria-hidden="true" />
+              <h3 id="feature-2" className="text-xl font-bold mb-2">最新設備</h3>
               <p className="text-sm text-blue-100">GPS魚群探知機完備</p>
             </div>
 
-            <div className="bg-white/10 backdrop-blur-md rounded-xl p-6 transform hover:scale-105 transition-all duration-300 border border-white/20">
-              <MapPin className="h-10 w-10 mb-3 text-yellow-300 mx-auto" />
-              <h3 className="text-xl font-bold mb-2">赤碕港出港</h3>
+            <div className="bg-white/10 backdrop-blur-md rounded-xl p-6 transform hover:scale-105 transition-all duration-300 border border-white/20" role="article" aria-labelledby="feature-3">
+              <MapPin className="h-10 w-10 mb-3 text-yellow-300 mx-auto" aria-hidden="true" />
+              <h3 id="feature-3" className="text-xl font-bold mb-2">赤碕港出港</h3>
               <p className="text-sm text-blue-100">琴浦町から日本海へ</p>
             </div>
 
-            <div className="bg-white/10 backdrop-blur-md rounded-xl p-6 transform hover:scale-105 transition-all duration-300 border border-white/20">
-              <Clock className="h-10 w-10 mb-3 text-yellow-300 mx-auto" />
-              <h3 className="text-xl font-bold mb-2">1日2便運航</h3>
+            <div className="bg-white/10 backdrop-blur-md rounded-xl p-6 transform hover:scale-105 transition-all duration-300 border border-white/20" role="article" aria-labelledby="feature-4">
+              <Clock className="h-10 w-10 mb-3 text-yellow-300 mx-auto" aria-hidden="true" />
+              <h3 id="feature-4" className="text-xl font-bold mb-2">1日2便運航</h3>
               <p className="text-sm text-blue-100">夕方便・深夜便</p>
             </div>
           </div>
