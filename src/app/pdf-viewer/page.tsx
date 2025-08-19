@@ -60,11 +60,11 @@ function PDFViewerContent() {
       <div className="container mx-auto px-4">
         <div className="max-w-4xl mx-auto">
           {/* 戻るボタン */}
-          <div className="mb-6">
-            <Button asChild variant="ghost" size="sm">
-              <Link href="/#regulations" className="flex items-center">
-                <ArrowLeft className="mr-2 h-4 w-4" />
-                業務規定に戻る
+          <div className="mb-4 sm:mb-6">
+            <Button asChild variant="ghost" size="lg" className="h-12 px-4 -ml-2 touch-manipulation">
+              <Link href="/#regulations" className="flex items-center gap-2">
+                <ArrowLeft className="h-5 w-5 flex-shrink-0" />
+                <span className="text-base font-medium">業務規定に戻る</span>
               </Link>
             </Button>
           </div>
@@ -72,19 +72,19 @@ function PDFViewerContent() {
           {/* PDFカード */}
           <Card className="shadow-xl">
             <CardHeader className={currentPdf.color === 'green' ? 'bg-green-50 border-b' : 'bg-blue-50 border-b'}>
-              <div className="flex items-center justify-between">
+              <div className="flex flex-col sm:flex-row sm:items-center gap-4">
                 <div className="flex items-start gap-4">
-                  <div className={currentPdf.color === 'green' ? 'w-16 h-16 bg-green-100 rounded-full flex items-center justify-center' : 'w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center'}>
-                    <IconComponent className={currentPdf.color === 'green' ? 'h-8 w-8 text-green-600' : 'h-8 w-8 text-blue-600'} />
+                  <div className={currentPdf.color === 'green' ? 'w-12 h-12 sm:w-16 sm:h-16 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0' : 'w-12 h-12 sm:w-16 sm:h-16 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0'}>
+                    <IconComponent className={currentPdf.color === 'green' ? 'h-6 w-6 sm:h-8 sm:w-8 text-green-600' : 'h-6 w-6 sm:h-8 sm:w-8 text-blue-600'} />
                   </div>
-                  <div>
-                    <CardTitle className="text-2xl mb-2">{currentPdf.title}</CardTitle>
-                    <p className="text-gray-600">{currentPdf.subtitle}</p>
+                  <div className="min-w-0 flex-1">
+                    <CardTitle className="text-lg sm:text-2xl mb-1 sm:mb-2 leading-tight">{currentPdf.title}</CardTitle>
+                    <p className="text-sm sm:text-base text-gray-600">{currentPdf.subtitle}</p>
                   </div>
                 </div>
               </div>
             </CardHeader>
-            <CardContent className="p-8">
+            <CardContent className="p-4 sm:p-8">
               <div className="space-y-6">
                 {/* 説明 */}
                 <div>
@@ -110,37 +110,37 @@ function PDFViewerContent() {
                 </div>
 
                 {/* ダウンロードボタン */}
-                <div className="flex flex-col sm:flex-row gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                   <Button
                     asChild
                     size="lg"
-                    className={currentPdf.color === 'green' ? 'flex-1 bg-green-600 hover:bg-green-700' : 'flex-1 bg-blue-600 hover:bg-blue-700'}
+                    className={`${currentPdf.color === 'green' ? 'bg-green-600 hover:bg-green-700' : 'bg-blue-600 hover:bg-blue-700'} h-14 sm:h-12 text-base font-semibold`}
                   >
                     <a
                       href={currentPdf.pdfUrl}
                       target="_blank"
                       rel="noopener noreferrer"
                       download={currentPdf.fileName}
-                      className="flex items-center justify-center"
+                      className="flex items-center justify-center gap-3 w-full h-full touch-manipulation"
                     >
-                      <Download className="mr-2 h-5 w-5" />
-                      PDFをダウンロード
+                      <Download className="h-5 w-5 sm:h-4 sm:w-4 flex-shrink-0" />
+                      <span>PDFダウンロード</span>
                     </a>
                   </Button>
                   <Button
                     asChild
                     size="lg"
                     variant="outline"
-                    className="flex-1"
+                    className="h-14 sm:h-12 text-base font-semibold border-2"
                   >
                     <a
                       href={currentPdf.pdfUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center justify-center"
+                      className="flex items-center justify-center gap-3 w-full h-full touch-manipulation"
                     >
-                      <FileText className="mr-2 h-5 w-5" />
-                      ブラウザで開く
+                      <FileText className="h-5 w-5 sm:h-4 sm:w-4 flex-shrink-0" />
+                      <span>ブラウザで開く</span>
                     </a>
                   </Button>
                 </div>
@@ -148,12 +148,45 @@ function PDFViewerContent() {
                 {/* iframe埋め込み */}
                 <div className="mt-8">
                   <h3 className="font-semibold mb-4">プレビュー</h3>
-                  <div className="border-2 border-gray-200 rounded-lg overflow-hidden">
-                    <iframe
-                      src={`${currentPdf.pdfUrl}#toolbar=0`}
-                      className="w-full h-[600px]"
-                      title={currentPdf.title}
-                    />
+                  <div className="bg-gray-100 p-4 rounded-lg">
+                    <p className="text-sm text-gray-600 mb-4">
+                      モバイルでは「ブラウザで開く」ボタンで閲覧することをおすすめします。
+                    </p>
+                    <div className="border-2 border-gray-200 rounded-lg overflow-hidden bg-white">
+                      <div className="block sm:hidden">
+                        {/* モバイル用の簡易プレビュー */}
+                        <div className="p-6 text-center">
+                          <div className={`inline-flex items-center justify-center w-16 h-16 rounded-full mb-4 ${currentPdf.color === 'green' ? 'bg-green-100' : 'bg-blue-100'}`}>
+                            <IconComponent className={`h-8 w-8 ${currentPdf.color === 'green' ? 'text-green-600' : 'text-blue-600'}`} />
+                          </div>
+                          <h4 className="font-semibold text-lg mb-2">{currentPdf.title}</h4>
+                          <p className="text-gray-600 text-sm mb-4">{currentPdf.description}</p>
+                          <Button
+                            asChild
+                            className={`${currentPdf.color === 'green' ? 'bg-green-600 hover:bg-green-700' : 'bg-blue-600 hover:bg-blue-700'} w-full h-12 text-base`}
+                          >
+                            <a
+                              href={currentPdf.pdfUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="flex items-center justify-center gap-2 touch-manipulation"
+                            >
+                              <FileText className="h-5 w-5" />
+                              <span>PDFを開いて閲覧</span>
+                            </a>
+                          </Button>
+                        </div>
+                      </div>
+                      <div className="hidden sm:block">
+                        {/* デスクトップ用iframe */}
+                        <iframe
+                          src={`${currentPdf.pdfUrl}#toolbar=0&navpanes=0&scrollbar=0`}
+                          className="w-full h-[500px] lg:h-[600px]"
+                          title={currentPdf.title}
+                          style={{ border: 'none' }}
+                        />
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
