@@ -34,14 +34,14 @@ export const metadata: Metadata = {
     address: true,
     email: true,
   },
-  metadataBase: new URL("https://meisho-maru.com"),
+  metadataBase: new URL("https://kotourameishomaru.com"),
   alternates: {
     canonical: "/",
   },
   openGraph: {
     title: "鳥取・琴浦町 白いか釣り船明勝丸 | 日本海遊漁船・夜釣り専門",
     description: "鳥取県琴浦町赤碕港の白いか釣り専門船「明勝丸」。日本海で夜釣り・イカメタル体験。関西・中国地方から好アクセス。初心者歓迎、竿レンタル完備。船長歴30年のベテランが案内する本格白いか釣り。",
-    url: "https://meisho-maru.com",
+    url: "https://kotourameishomaru.com",
     siteName: "明勝丸 - 鳥取県琴浦町の遊漁船",
     images: [
       {

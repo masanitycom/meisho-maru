@@ -14,6 +14,6 @@ export default function robots(): MetadataRoute.Robots {
         disallow: ['/admin/', '/api/'],
       },
     ],
-    sitemap: 'https://meisho-maru.com/sitemap.xml',
+    sitemap: 'https://kotourameishomaru.com/sitemap.xml',
   };
 }
