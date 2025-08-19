@@ -22,25 +22,61 @@ const popularQuestions = [
 
 export function FAQSection() {
   return (
-    <section className="py-16 md:py-20 bg-gray-50 relative overflow-hidden">
-      {/* 線形パターン */}
+    <section className="py-16 md:py-20 bg-gradient-to-b from-slate-50 to-gray-100 relative overflow-hidden">
+      {/* コンパスと羽根 */}
       <div className="absolute inset-0" aria-hidden="true">
-        <svg className="absolute inset-0 w-full h-full" viewBox="0 0 1000 1000" xmlns="http://www.w3.org/2000/svg">
+        <svg className="absolute inset-0 w-full h-full" viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
           <defs>
-            <pattern id="line-pattern" x="0" y="0" width="60" height="60" patternUnits="userSpaceOnUse">
-              <path d="M0,60 L60,0" stroke="rgb(239 68 68 / 0.08)" strokeWidth="1" fill="none" />
-              <path d="M0,0 L60,60" stroke="rgb(239 68 68 / 0.06)" strokeWidth="0.8" fill="none" />
+            {/* 海図グリッド */}
+            <pattern id="nautical-chart" x="0" y="0" width="80" height="80" patternUnits="userSpaceOnUse">
+              <path d="M0,40 L80,40 M40,0 L40,80" stroke="rgb(75 85 99 / 0.06)" strokeWidth="0.8" />
+              <path d="M0,20 L80,20 M0,60 L80,60 M20,0 L20,80 M60,0 L60,80" stroke="rgb(75 85 99 / 0.04)" strokeWidth="0.5" />
             </pattern>
-            <filter id="soft-blur">
-              <feGaussianBlur stdDeviation="1" />
-            </filter>
+            
+            {/* コンパス */}
+            <g id="compass">
+              <circle cx="20" cy="20" r="18" fill="none" stroke="rgb(75 85 99 / 0.12)" strokeWidth="1.5" />
+              <circle cx="20" cy="20" r="12" fill="none" stroke="rgb(75 85 99 / 0.08)" strokeWidth="1" />
+              <path d="M20,2 L22,18 L20,20 L18,18 Z" fill="rgb(239 68 68 / 0.2)" />
+              <path d="M20,38 L18,22 L20,20 L22,22 Z" fill="rgb(75 85 99 / 0.15)" />
+              <text x="20" y="5" textAnchor="middle" fontSize="4" fill="rgb(75 85 99 / 0.3)">N</text>
+            </g>
+            
+            {/* カモメの羽根 */}
+            <g id="seagull">
+              <path d="M0,5 Q5,0 10,3 Q15,0 20,5" fill="none" stroke="rgb(148 163 184 / 0.15)" strokeWidth="1.5" />
+              <path d="M8,3 Q10,1 12,3" fill="none" stroke="rgb(148 163 184 / 0.12)" strokeWidth="1" />
+            </g>
+            
+            {/* 灯台 */}
+            <g id="lighthouse">
+              <rect x="8" y="5" width="4" height="15" fill="rgb(239 68 68 / 0.1)" />
+              <polygon points="6,5 14,5 12,0 8,0" fill="rgb(239 68 68 / 0.15)" />
+              <path d="M10,2 Q15,2 20,5" fill="none" stroke="rgb(251 191 36 / 0.2)" strokeWidth="1" />
+            </g>
           </defs>
-          <rect width="100%" height="100%" fill="url(#line-pattern)" />
-          <g filter="url(#soft-blur)">
-            <circle cx="200" cy="200" r="60" fill="none" stroke="rgb(239 68 68 / 0.12)" strokeWidth="2" />
-            <circle cx="800" cy="300" r="80" fill="none" stroke="rgb(239 68 68 / 0.1)" strokeWidth="1.5" />
-            <circle cx="400" cy="750" r="100" fill="none" stroke="rgb(239 68 68 / 0.08)" strokeWidth="1" />
-          </g>
+          
+          {/* 海図グリッド背景 */}
+          <rect width="100%" height="100%" fill="url(#nautical-chart)" />
+          
+          {/* コンパスの配置 */}
+          <use href="#compass" x="150" y="120" opacity="0.4" />
+          <use href="#compass" x="800" y="300" transform="scale(1.2)" opacity="0.3" />
+          <use href="#compass" x="500" y="500" transform="scale(0.8)" opacity="0.5" />
+          
+          {/* カモメの配置 */}
+          <use href="#seagull" x="300" y="100" transform="scale(1.5)" opacity="0.4" />
+          <use href="#seagull" x="320" y="110" transform="scale(1.2)" opacity="0.3" />
+          <use href="#seagull" x="340" y="120" opacity="0.5" />
+          <use href="#seagull" x="700" y="200" transform="scale(1.3) rotate(10)" opacity="0.3" />
+          <use href="#seagull" x="900" y="400" transform="scale(1.1) rotate(-15)" opacity="0.4" />
+          
+          {/* 灯台の配置 */}
+          <use href="#lighthouse" x="100" y="350" transform="scale(1.5)" opacity="0.25" />
+          <use href="#lighthouse" x="950" y="150" transform="scale(1.2) rotate(5)" opacity="0.3" />
+          
+          {/* 航路 */}
+          <path d="M200,200 Q400,300 700,250 Q900,200 1100,300" fill="none" stroke="rgb(59 130 246 / 0.08)" strokeWidth="2" strokeDasharray="8,4" />
         </svg>
       </div>
       <div className="container mx-auto px-4 relative z-10">

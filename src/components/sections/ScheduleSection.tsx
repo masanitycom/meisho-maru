@@ -148,25 +148,47 @@ export function ScheduleSection() {
   };
 
   return (
-    <section id="schedule" className="py-20 bg-slate-50 relative overflow-hidden">
-      {/* 海の波紋パターン */}
+    <section id="schedule" className="py-20 bg-gradient-to-b from-blue-50 to-cyan-50 relative overflow-hidden">
+      {/* 青海波模様と魚影 */}
       <div className="absolute inset-0" aria-hidden="true">
-        <svg className="absolute inset-0 w-full h-full" viewBox="0 0 1000 1000" xmlns="http://www.w3.org/2000/svg">
+        <svg className="absolute inset-0 w-full h-full" viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
           <defs>
-            <pattern id="wave-pattern" x="0" y="0" width="200" height="200" patternUnits="userSpaceOnUse">
-              <circle cx="100" cy="100" r="80" fill="none" stroke="rgb(59 130 246 / 0.08)" strokeWidth="2" />
-              <circle cx="100" cy="100" r="50" fill="none" stroke="rgb(59 130 246 / 0.12)" strokeWidth="1.5" />
-              <circle cx="100" cy="100" r="20" fill="none" stroke="rgb(59 130 246 / 0.16)" strokeWidth="1" />
+            {/* 青海波パターン */}
+            <pattern id="seigaiha" x="0" y="0" width="120" height="60" patternUnits="userSpaceOnUse">
+              <path d="M0,60 Q30,30 60,60 Q90,30 120,60" fill="none" stroke="rgb(59 130 246 / 0.08)" strokeWidth="1.5" />
+              <path d="M0,45 Q30,15 60,45 Q90,15 120,45" fill="none" stroke="rgb(59 130 246 / 0.06)" strokeWidth="1" />
+              <path d="M0,30 Q30,0 60,30 Q90,0 120,30" fill="none" stroke="rgb(59 130 246 / 0.04)" strokeWidth="0.8" />
             </pattern>
-            <radialGradient id="fade-gradient">
-              <stop offset="0%" stopColor="rgb(59 130 246 / 0.15)" />
-              <stop offset="100%" stopColor="rgb(59 130 246 / 0.03)" />
-            </radialGradient>
+            
+            {/* 魚影シルエット */}
+            <g id="fish-silhouette">
+              <path d="M0,10 Q5,5 15,8 Q25,10 30,10 Q25,12 15,12 Q5,15 0,10 Z M25,10 L35,5 M25,10 L35,15" 
+                    fill="rgb(59 130 246 / 0.12)" stroke="none" />
+            </g>
+            
+            {/* 釣り針 */}
+            <g id="fishing-hook">
+              <path d="M5,0 L5,15 Q5,20 10,20 Q15,20 15,15" fill="none" stroke="rgb(75 85 99 / 0.1)" strokeWidth="1.5" />
+              <circle cx="12" cy="17" r="1" fill="rgb(75 85 99 / 0.15)" />
+            </g>
           </defs>
-          <rect width="100%" height="100%" fill="url(#wave-pattern)" />
-          <circle cx="200" cy="150" r="120" fill="url(#fade-gradient)" />
-          <circle cx="800" cy="300" r="100" fill="url(#fade-gradient)" />
-          <circle cx="400" cy="700" r="140" fill="url(#fade-gradient)" />
+          
+          {/* 青海波背景 */}
+          <rect width="100%" height="100%" fill="url(#seigaiha)" />
+          
+          {/* 魚影の配置 */}
+          <use href="#fish-silhouette" x="150" y="120" transform="scale(0.8)" opacity="0.6" />
+          <use href="#fish-silhouette" x="800" y="200" transform="scale(1.2) rotate(15)" opacity="0.4" />
+          <use href="#fish-silhouette" x="400" y="350" transform="scale(0.6) rotate(-10)" opacity="0.5" />
+          <use href="#fish-silhouette" x="950" y="450" transform="scale(0.9) rotate(20)" opacity="0.3" />
+          
+          {/* 釣り針の配置 */}
+          <use href="#fishing-hook" x="300" y="100" transform="rotate(15)" opacity="0.4" />
+          <use href="#fishing-hook" x="700" y="380" transform="rotate(-20)" opacity="0.3" />
+          
+          {/* 釣り糸 */}
+          <path d="M310,100 Q350,150 400,350" fill="none" stroke="rgb(75 85 99 / 0.08)" strokeWidth="1" strokeDasharray="3,3" />
+          <path d="M715,380 Q750,420 800,500" fill="none" stroke="rgb(75 85 99 / 0.06)" strokeWidth="1" strokeDasharray="3,3" />
         </svg>
       </div>
       <div className="container mx-auto px-4 relative z-10">

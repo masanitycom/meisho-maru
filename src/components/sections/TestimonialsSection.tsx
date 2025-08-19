@@ -54,28 +54,50 @@ const testimonials = [
 
 export function TestimonialsSection() {
   return (
-    <section id="testimonials" className="py-20 bg-amber-50 relative overflow-hidden">
-      {/* 星座パターン */}
+    <section id="testimonials" className="py-20 bg-gradient-to-b from-orange-50 to-amber-50 relative overflow-hidden">
+      {/* 海面のキラキラと魚群 */}
       <div className="absolute inset-0" aria-hidden="true">
-        <svg className="absolute inset-0 w-full h-full" viewBox="0 0 1000 1000" xmlns="http://www.w3.org/2000/svg">
+        <svg className="absolute inset-0 w-full h-full" viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
           <defs>
-            <pattern id="star-pattern" x="0" y="0" width="150" height="150" patternUnits="userSpaceOnUse">
-              <polygon points="75,25 85,55 115,55 93,75 103,105 75,85 47,105 57,75 35,55 65,55" 
-                       fill="rgb(251 191 36 / 0.12)" stroke="rgb(251 191 36 / 0.2)" strokeWidth="0.5" />
-            </pattern>
-            <filter id="glow">
-              <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
-              <feMerge> 
+            {/* 海面のキラメキ */}
+            <filter id="sparkle">
+              <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+              <feMerge>
                 <feMergeNode in="coloredBlur"/>
-                <feMergeNode in="SourceGraphic"/> 
+                <feMergeNode in="SourceGraphic"/>
               </feMerge>
             </filter>
+            
+            {/* イカのシルエット */}
+            <g id="squid-silhouette">
+              <ellipse cx="15" cy="8" rx="6" ry="8" fill="rgb(251 191 36 / 0.15)" />
+              <path d="M9,16 Q12,22 15,20 Q18,22 21,16" fill="none" stroke="rgb(251 191 36 / 0.2)" strokeWidth="1" />
+              <path d="M12,16 Q14,24 16,22 Q18,24 18,16" fill="none" stroke="rgb(251 191 36 / 0.15)" strokeWidth="0.8" />
+            </g>
+            
+            {/* 海波パターン */}
+            <pattern id="wave-texture" x="0" y="0" width="80" height="40" patternUnits="userSpaceOnUse">
+              <path d="M0,20 Q20,10 40,20 Q60,30 80,20" fill="none" stroke="rgb(59 130 246 / 0.05)" strokeWidth="1" />
+            </pattern>
           </defs>
-          <rect width="100%" height="100%" fill="url(#star-pattern)" />
-          <circle cx="150" cy="200" r="4" fill="rgb(251 191 36 / 0.3)" filter="url(#glow)" />
-          <circle cx="750" cy="150" r="3" fill="rgb(251 191 36 / 0.4)" filter="url(#glow)" />
-          <circle cx="300" cy="600" r="5" fill="rgb(251 191 36 / 0.25)" filter="url(#glow)" />
-          <circle cx="850" cy="700" r="3.5" fill="rgb(251 191 36 / 0.35)" filter="url(#glow)" />
+          
+          {/* 海波背景 */}
+          <rect width="100%" height="100%" fill="url(#wave-texture)" />
+          
+          {/* キラキラ效果 */}
+          <circle cx="200" cy="150" r="2" fill="rgb(251 191 36 / 0.4)" filter="url(#sparkle)" />
+          <circle cx="800" cy="200" r="1.5" fill="rgb(251 191 36 / 0.5)" filter="url(#sparkle)" />
+          <circle cx="400" cy="300" r="2.5" fill="rgb(251 191 36 / 0.3)" filter="url(#sparkle)" />
+          <circle cx="900" cy="400" r="1.8" fill="rgb(251 191 36 / 0.45)" filter="url(#sparkle)" />
+          <circle cx="150" cy="500" r="1.2" fill="rgb(251 191 36 / 0.6)" filter="url(#sparkle)" />
+          <circle cx="700" cy="600" r="2.2" fill="rgb(251 191 36 / 0.35)" filter="url(#sparkle)" />
+          
+          {/* イカの群れ */}
+          <use href="#squid-silhouette" x="300" y="180" transform="rotate(10)" opacity="0.6" />
+          <use href="#squid-silhouette" x="320" y="200" transform="rotate(-5) scale(0.8)" opacity="0.4" />
+          <use href="#squid-silhouette" x="340" y="190" transform="rotate(15) scale(1.1)" opacity="0.5" />
+          <use href="#squid-silhouette" x="750" y="350" transform="rotate(-10)" opacity="0.3" />
+          <use href="#squid-silhouette" x="770" y="370" transform="rotate(20) scale(0.9)" opacity="0.4" />
         </svg>
       </div>
       <div className="container mx-auto px-4 relative z-10">

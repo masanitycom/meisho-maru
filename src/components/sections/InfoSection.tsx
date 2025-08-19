@@ -4,23 +4,60 @@ import { PRICES } from '@/lib/constants';
 
 export function InfoSection() {
   return (
-    <section id="info" className="py-20 bg-white relative overflow-hidden">
-      {/* ドットグリッドパターン */}
+    <section id="info" className="py-20 bg-gradient-to-b from-blue-50 to-indigo-50 relative overflow-hidden">
+      {/* 船の設備と海底 */}
       <div className="absolute inset-0" aria-hidden="true">
-        <svg className="absolute inset-0 w-full h-full" viewBox="0 0 1000 1000" xmlns="http://www.w3.org/2000/svg">
+        <svg className="absolute inset-0 w-full h-full" viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
           <defs>
-            <pattern id="dot-grid" x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse">
-              <circle cx="20" cy="20" r="1.5" fill="rgb(99 102 241 / 0.15)" />
-              <circle cx="20" cy="20" r="0.8" fill="rgb(99 102 241 / 0.25)" />
+            {/* 波紋パターン */}
+            <pattern id="ocean-floor" x="0" y="0" width="100" height="30" patternUnits="userSpaceOnUse">
+              <path d="M0,15 Q25,5 50,15 Q75,25 100,15" fill="none" stroke="rgb(99 102 241 / 0.06)" strokeWidth="1" />
+              <path d="M0,20 Q25,10 50,20 Q75,30 100,20" fill="none" stroke="rgb(99 102 241 / 0.04)" strokeWidth="0.8" />
             </pattern>
-            <radialGradient id="center-fade">
-              <stop offset="0%" stopColor="rgb(99 102 241 / 0.08)" />
-              <stop offset="70%" stopColor="rgb(99 102 241 / 0.03)" />
-              <stop offset="100%" stopColor="rgb(99 102 241 / 0.01)" />
-            </radialGradient>
+            
+            {/* 船のシルエット */}
+            <g id="boat-silhouette">
+              <path d="M0,8 Q10,0 30,0 Q50,0 60,8 L55,12 Q30,15 5,12 Z" fill="rgb(99 102 241 / 0.12)" />
+              <rect x="25" y="0" width="2" height="-8" fill="rgb(99 102 241 / 0.15)" />
+              <path d="M20,-8 L30,-8 L25,-12 Z" fill="rgb(99 102 241 / 0.1)" />
+            </g>
+            
+            {/* GPS電波 */}
+            <g id="gps-signal">
+              <circle cx="10" cy="10" r="8" fill="none" stroke="rgb(34 197 94 / 0.15)" strokeWidth="1" />
+              <circle cx="10" cy="10" r="5" fill="none" stroke="rgb(34 197 94 / 0.2)" strokeWidth="1" />
+              <circle cx="10" cy="10" r="2" fill="rgb(34 197 94 / 0.25)" />
+            </g>
+            
+            {/* 魚群探知機の音波 */}
+            <g id="sonar-waves">
+              <path d="M10,0 Q15,10 10,20 Q5,10 10,0" fill="rgb(6 182 212 / 0.08)" />
+              <path d="M8,5 Q12,10 8,15" fill="none" stroke="rgb(6 182 212 / 0.15)" strokeWidth="1" />
+              <path d="M12,5 Q16,10 12,15" fill="none" stroke="rgb(6 182 212 / 0.12)" strokeWidth="0.8" />
+            </g>
           </defs>
-          <rect width="100%" height="100%" fill="url(#dot-grid)" />
-          <ellipse cx="500" cy="500" rx="400" ry="300" fill="url(#center-fade)" />
+          
+          {/* 海底背景 */}
+          <rect width="100%" height="100%" fill="url(#ocean-floor)" />
+          
+          {/* 船の配置 */}
+          <use href="#boat-silhouette" x="200" y="100" transform="scale(1.2)" opacity="0.3" />
+          <use href="#boat-silhouette" x="800" y="150" transform="scale(0.8) rotate(5)" opacity="0.4" />
+          
+          {/* GPS信号 */}
+          <use href="#gps-signal" x="250" y="80" opacity="0.5" />
+          <use href="#gps-signal" x="830" y="130" transform="scale(0.7)" opacity="0.6" />
+          
+          {/* 魚群探知機の音波 */}
+          <use href="#sonar-waves" x="270" y="200" opacity="0.4" />
+          <use href="#sonar-waves" x="280" y="210" transform="scale(1.2)" opacity="0.3" />
+          <use href="#sonar-waves" x="850" y="250" transform="scale(0.9)" opacity="0.5" />
+          <use href="#sonar-waves" x="860" y="260" transform="scale(1.1)" opacity="0.4" />
+          
+          {/* 魚影 */}
+          <ellipse cx="400" cy="400" rx="8" ry="3" fill="rgb(6 182 212 / 0.2)" transform="rotate(15)" />
+          <ellipse cx="420" cy="410" rx="6" ry="2" fill="rgb(6 182 212 / 0.15)" transform="rotate(-10)" />
+          <ellipse cx="700" cy="350" rx="10" ry="4" fill="rgb(6 182 212 / 0.18)" transform="rotate(25)" />
         </svg>
       </div>
       <div className="container mx-auto px-4 relative z-10">

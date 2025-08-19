@@ -7,25 +7,50 @@ import { FileText, Download, Clock, Shield } from 'lucide-react';
 
 export function RegulationsSection() {
   return (
-    <section id="regulations" className="py-16 md:py-24 bg-emerald-50 relative overflow-hidden">
-      {/* 和紙風幾何学パターン */}
+    <section id="regulations" className="py-16 md:py-24 bg-gradient-to-b from-emerald-50 to-teal-50 relative overflow-hidden">
+      {/* 網目パターンと魚籠 */}
       <div className="absolute inset-0" aria-hidden="true">
-        <svg className="absolute inset-0 w-full h-full" viewBox="0 0 1000 1000" xmlns="http://www.w3.org/2000/svg">
+        <svg className="absolute inset-0 w-full h-full" viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
           <defs>
-            <pattern id="hexagon-pattern" x="0" y="0" width="120" height="104" patternUnits="userSpaceOnUse">
-              <polygon points="60,8 90,26 90,62 60,80 30,62 30,26" 
-                       fill="none" stroke="rgb(16 185 129 / 0.08)" strokeWidth="1" />
-              <polygon points="60,20 80,30 80,50 60,60 40,50 40,30" 
-                       fill="rgb(16 185 129 / 0.05)" stroke="rgb(16 185 129 / 0.1)" strokeWidth="0.5" />
+            {/* 漁網パターン */}
+            <pattern id="fishing-net" x="0" y="0" width="60" height="60" patternUnits="userSpaceOnUse">
+              <path d="M0,30 L30,0 L60,30 L30,60 Z" fill="none" stroke="rgb(16 185 129 / 0.08)" strokeWidth="1" />
+              <circle cx="30" cy="30" r="2" fill="rgb(16 185 129 / 0.12)" />
+              <circle cx="0" cy="30" r="1" fill="rgb(16 185 129 / 0.1)" />
+              <circle cx="60" cy="30" r="1" fill="rgb(16 185 129 / 0.1)" />
+              <circle cx="30" cy="0" r="1" fill="rgb(16 185 129 / 0.1)" />
+              <circle cx="30" cy="60" r="1" fill="rgb(16 185 129 / 0.1)" />
             </pattern>
-            <linearGradient id="emerald-fade" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="rgb(16 185 129 / 0.1)" />
-              <stop offset="50%" stopColor="rgb(16 185 129 / 0.05)" />
-              <stop offset="100%" stopColor="rgb(16 185 129 / 0.02)" />
-            </linearGradient>
+            
+            {/* 魚籠のシルエット */}
+            <g id="fish-trap">
+              <rect x="0" y="5" width="25" height="15" rx="3" fill="none" stroke="rgb(16 185 129 / 0.15)" strokeWidth="1.5" />
+              <path d="M5,5 L5,20 M10,5 L10,20 M15,5 L15,20 M20,5 L20,20" stroke="rgb(16 185 129 / 0.1)" strokeWidth="0.8" />
+              <circle cx="2" cy="12" r="1" fill="rgb(16 185 129 / 0.2)" />
+            </g>
+            
+            {/* アンカー */}
+            <g id="anchor">
+              <path d="M10,0 L10,18 M5,15 Q10,20 15,15 M3,8 L17,8" stroke="rgb(75 85 99 / 0.12)" strokeWidth="2" fill="none" />
+              <circle cx="10" cy="3" r="2" fill="none" stroke="rgb(75 85 99 / 0.12)" strokeWidth="1.5" />
+            </g>
           </defs>
-          <rect width="100%" height="100%" fill="url(#hexagon-pattern)" />
-          <rect x="0" y="0" width="100%" height="100%" fill="url(#emerald-fade)" />
+          
+          {/* 網目背景 */}
+          <rect width="100%" height="100%" fill="url(#fishing-net)" />
+          
+          {/* 魚籠の配置 */}
+          <use href="#fish-trap" x="200" y="150" transform="rotate(15)" opacity="0.4" />
+          <use href="#fish-trap" x="800" y="300" transform="rotate(-10) scale(1.2)" opacity="0.3" />
+          <use href="#fish-trap" x="500" y="500" transform="rotate(25) scale(0.8)" opacity="0.5" />
+          
+          {/* アンカーの配置 */}
+          <use href="#anchor" x="150" y="400" transform="rotate(20)" opacity="0.25" />
+          <use href="#anchor" x="900" y="200" transform="rotate(-15) scale(1.1)" opacity="0.2" />
+          
+          {/* 網の線 */}
+          <path d="M220,150 Q300,200 500,500" fill="none" stroke="rgb(16 185 129 / 0.06)" strokeWidth="1.5" strokeDasharray="5,5" />
+          <path d="M815,300 Q700,350 220,180" fill="none" stroke="rgb(16 185 129 / 0.05)" strokeWidth="1" strokeDasharray="3,3" />
         </svg>
       </div>
       <div className="container mx-auto px-4 relative z-10">
