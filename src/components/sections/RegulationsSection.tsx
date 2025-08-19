@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { FileText, Download, Clock, Shield } from 'lucide-react';
@@ -42,17 +43,15 @@ export function RegulationsSection() {
                 </p>
               </div>
               <Button asChild className="w-full bg-blue-600 hover:bg-blue-700">
-                <a 
-                  href="/pdf/businessregulations.pdf" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
+                <Link 
+                  href="/pdf-viewer?type=regulations"
                   className="flex items-center justify-center"
-                  title="明勝丸 遊漁船業務規程 - 鳥取県琴浦町の白いか釣り専門船の安全運航基準・料金規定PDF"
-                  aria-label="明勝丸の遊漁船業務規程PDFをダウンロード"
+                  title="明勝丸 遊漁船業務規程 - 鳥取県琴浦町の白いか釣り専門船の安全運航基準・料金規定"
+                  aria-label="明勝丸の遊漁船業務規程を表示"
                 >
                   <Download className="h-4 w-4 mr-2 flex-shrink-0" />
                   <span>業務規程を見る</span>
-                </a>
+                </Link>
               </Button>
             </CardContent>
           </Card>
@@ -81,17 +80,15 @@ export function RegulationsSection() {
                 </p>
               </div>
               <Button asChild className="w-full bg-green-600 hover:bg-green-700">
-                <a 
-                  href="/pdf/RecreationalFishingBoatOperatorRegistrationForm.pdf" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
+                <Link 
+                  href="/pdf-viewer?type=registration"
                   className="flex items-center justify-center"
-                  title="明勝丸 遊漁船業者登録票 - 鳥取県知事認可 正式登録番号記載 白いか釣り専門船PDF"
-                  aria-label="明勝丸の遊漁船業者登録票PDFをダウンロード（鳥取県知事認可）"
+                  title="明勝丸 遊漁船業者登録票 - 鳥取県知事認可 正式登録番号記載 白いか釣り専門船"
+                  aria-label="明勝丸の遊漁船業者登録票を表示（鳥取県知事認可）"
                 >
                   <Download className="h-4 w-4 mr-2 flex-shrink-0" />
                   <span>登録票を見る</span>
-                </a>
+                </Link>
               </Button>
             </CardContent>
           </Card>
