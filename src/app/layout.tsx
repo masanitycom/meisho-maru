@@ -60,18 +60,7 @@ export const metadata: Metadata = {
     description: "鳥取県琴浦町赤碕港の白いか釣り専門船。日本海で夜釣り・イカメタル体験。関西・中国地方から好アクセス。初心者歓迎、竿レンタル完備。",
     images: ["/images/logo.png"],
   },
-  icons: {
-    icon: [
-      { url: "/favicon.ico", sizes: "48x48" },
-      { url: "/icon.png", type: "image/png", sizes: "32x32" },
-      { url: "/images/logo.png", type: "image/png", sizes: "192x192" }
-    ],
-    apple: [
-      { url: "/apple-icon.png", type: "image/png", sizes: "180x180" },
-      { url: "/apple-touch-icon.png", type: "image/png", sizes: "180x180" }
-    ],
-    shortcut: "/favicon.ico",
-  },
+  // ファビコンはsrc/app/icon.tsxとapple-icon.tsxで自動生成
   robots: {
     index: true,
     follow: true,
@@ -93,12 +82,7 @@ export default function RootLayout({
   return (
     <html lang="ja">
       <head>
-        <link rel="icon" href="/favicon.ico" sizes="48x48" />
-        <link rel="icon" href="/icon.png" type="image/png" sizes="32x32" />
-        <link rel="icon" href="/images/logo.png" type="image/png" sizes="192x192" />
-        <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180" />
-        <link rel="apple-touch-icon" href="/apple-icon.png" sizes="180x180" />
-        <link rel="shortcut icon" href="/favicon.ico" />
+        {/* ファビコンはNext.js 13+のicon.tsxとapple-icon.tsxで自動生成 */}
         <link rel="manifest" href="/manifest.json" />
         <meta name="theme-color" content="#1e3a8a" />
         <meta name="msapplication-TileColor" content="#1e3a8a" />
