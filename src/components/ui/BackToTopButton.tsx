@@ -34,15 +34,15 @@ export function BackToTopButton() {
       {isVisible && (
         <button
           onClick={scrollToTop}
-          className="fixed bottom-6 right-6 z-50 w-16 h-16 md:w-20 md:h-20 transform hover:scale-110 transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-blue-300 touch-manipulation"
+          className="hidden md:block fixed bottom-6 right-6 z-50 w-32 h-32 lg:w-40 lg:h-40 transform hover:scale-110 transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-blue-300"
           aria-label="ページトップへ戻る"
           title="ページトップへ戻る"
         >
           <Image
             src="/images/TOP.png"
             alt="TOPへ戻る"
-            width={80}
-            height={80}
+            width={160}
+            height={160}
             className="w-full h-full object-contain drop-shadow-lg hover:drop-shadow-xl transition-all duration-300"
             priority={false}
           />
