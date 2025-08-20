@@ -73,27 +73,23 @@ export function HeroSection() {
 
           {/* CTA ボタン */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12 animate-fade-in-up">
-            <Button 
-              size="lg" 
-              className="bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white px-8 py-6 text-lg font-bold shadow-2xl transform hover:scale-105 transition-all duration-300 inline-flex items-center"
-              asChild
+            <Link 
+              href="/booking-methods" 
+              className="bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white px-8 py-6 text-lg font-bold shadow-2xl transform hover:scale-105 transition-all duration-300 inline-flex items-center justify-center rounded-md h-14 w-full sm:w-auto"
+              aria-label="明勝丸の予約ページへ移動"
             >
-              <Link href="/booking-methods" className="inline-flex items-center justify-center w-full" aria-label="明勝丸の予約ページへ移動">
-                <Calendar className="mr-2 h-6 w-6 flex-shrink-0" />
-                <span>予約はこちら</span>
-              </Link>
-            </Button>
+              <Calendar className="mr-2 h-6 w-6 flex-shrink-0" />
+              <span>予約はこちら</span>
+            </Link>
             
-            <Button 
-              size="lg" 
-              className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white border-2 border-orange-400 px-8 py-6 text-lg font-bold transform hover:scale-105 transition-all duration-300 inline-flex items-center shadow-2xl"
-              asChild
+            <a 
+              href={`tel:${SITE_CONFIG.contact.phone}`} 
+              className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white border-2 border-orange-400 px-8 py-6 text-lg font-bold transform hover:scale-105 transition-all duration-300 inline-flex items-center justify-center shadow-2xl rounded-md h-14 w-full sm:w-auto"
+              aria-label="明勝丸に電話で予約・問い合わせ"
             >
-              <a href={`tel:${SITE_CONFIG.contact.phone}`} className="inline-flex items-center justify-center w-full" aria-label="明勝丸に電話で予約・問い合わせ">
-                <Phone className="mr-2 h-6 w-6 flex-shrink-0" />
-                <span>今すぐ電話</span>
-              </a>
-            </Button>
+              <Phone className="mr-2 h-6 w-6 flex-shrink-0" />
+              <span>今すぐ電話</span>
+            </a>
           </div>
 
           {/* 特徴カード */}

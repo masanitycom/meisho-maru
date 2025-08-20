@@ -20,22 +20,16 @@ export function InstagramBanner() {
             </div>
 
             {/* 右側：ボタン */}
-            <Button
-              size="lg"
-              className="bg-white hover:bg-gray-100 text-pink-600 font-bold px-6 py-3 shadow-xl hover:shadow-2xl transition-all hover:scale-105"
-              asChild
+            <a
+              href="https://www.instagram.com/meisho_maru"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="bg-white hover:bg-gray-100 text-pink-600 font-bold px-6 py-3 shadow-xl hover:shadow-2xl transition-all hover:scale-105 inline-flex items-center rounded-md h-12"
             >
-              <a
-                href="https://www.instagram.com/meisho_maru"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center"
-              >
-                <Instagram className="mr-2 h-5 w-5" />
-                Instagramで見る
-                <ExternalLink className="ml-2 h-4 w-4" />
-              </a>
-            </Button>
+              <Instagram className="mr-2 h-5 w-5" />
+              Instagramで見る
+              <ExternalLink className="ml-2 h-4 w-4" />
+            </a>
           </div>
         </div>
       </div>

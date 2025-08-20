@@ -92,15 +92,13 @@ export function Header() {
               <Phone className="h-5 w-5 flex-shrink-0" />
               <span className="whitespace-nowrap">{SITE_CONFIG.contact.phone}</span>
             </a>
-            <Button 
-              className="bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white shadow-lg transform hover:scale-105 transition-all duration-300 inline-flex items-center"
-              asChild
+            <Link 
+              href="/booking-methods" 
+              className="bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white shadow-lg transform hover:scale-105 transition-all duration-300 inline-flex items-center rounded-md px-4 py-2 h-10 font-medium"
             >
-              <Link href="/booking-methods" className="inline-flex items-center">
-                <Calendar className="mr-2 h-4 w-4 flex-shrink-0" />
-                <span>予約する</span>
-              </Link>
-            </Button>
+              <Calendar className="mr-2 h-4 w-4 flex-shrink-0" />
+              <span>予約する</span>
+            </Link>
           </div>
 
           <button
@@ -142,15 +140,13 @@ export function Header() {
                   <Phone className="h-5 w-5 flex-shrink-0" />
                   <span className="whitespace-nowrap">{SITE_CONFIG.contact.phone}</span>
                 </a>
-                <Button 
-                  className="w-full bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white inline-flex items-center justify-center"
-                  asChild
+                <Link 
+                  href="/booking-methods" 
+                  className="w-full bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white inline-flex items-center justify-center rounded-md px-4 py-2 h-10 font-medium transition-colors"
                 >
-                  <Link href="/booking-methods" className="inline-flex items-center justify-center w-full">
-                    <Calendar className="mr-2 h-4 w-4 flex-shrink-0" />
-                    <span>予約する</span>
-                  </Link>
-                </Button>
+                  <Calendar className="mr-2 h-4 w-4 flex-shrink-0" />
+                  <span>予約する</span>
+                </Link>
               </div>
             </nav>
           </div>

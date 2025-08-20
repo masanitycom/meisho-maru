@@ -30,20 +30,15 @@ export function LineReservation() {
                   24時間受付可能<br />
                   お気軽にお問い合わせください
                 </p>
-                <Button 
-                  className="w-full bg-green-500 hover:bg-green-600 text-white"
-                  asChild
+                <a
+                  href="https://lin.ee/HQX3Ezq"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full bg-green-500 hover:bg-green-600 text-white inline-flex items-center justify-center rounded-md px-4 py-2 h-10 transition-colors font-medium"
                 >
-                  <a
-                    href="https://lin.ee/HQX3Ezq"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center justify-center"
-                  >
-                    <MessageCircle className="mr-2 h-5 w-5" />
-                    LINE友だち追加
-                  </a>
-                </Button>
+                  <MessageCircle className="mr-2 h-5 w-5" />
+                  LINE友だち追加
+                </a>
                 <p className="text-sm text-gray-500 mt-2">
                   @707ejlid
                 </p>
@@ -61,18 +56,13 @@ export function LineReservation() {
                   受付時間 9:00〜17:00<br />
                   直接お話しできます
                 </p>
-                <Button 
-                  className="w-full bg-blue-500 hover:bg-blue-600 text-white"
-                  asChild
+                <a
+                  href="tel:090-4695-3087"
+                  className="w-full bg-blue-500 hover:bg-blue-600 text-white inline-flex items-center justify-center rounded-md px-4 py-2 h-10 transition-colors font-medium"
                 >
-                  <a
-                    href="tel:090-4695-3087"
-                    className="inline-flex items-center justify-center"
-                  >
-                    <Phone className="mr-2 h-5 w-5" />
-                    090-4695-3087
-                  </a>
-                </Button>
+                  <Phone className="mr-2 h-5 w-5" />
+                  090-4695-3087
+                </a>
                 <p className="text-sm text-gray-500 mt-2">
                   クリックで発信
                 </p>
@@ -90,18 +80,13 @@ export function LineReservation() {
                   24時間受付可能<br />
                   空席確認も即座に可能
                 </p>
-                <Button 
-                  className="w-full bg-red-500 hover:bg-red-600 text-white"
-                  asChild
+                <a
+                  href="/reservation"
+                  className="w-full bg-red-500 hover:bg-red-600 text-white inline-flex items-center justify-center rounded-md px-4 py-2 h-10 transition-colors font-medium"
                 >
-                  <a
-                    href="/reservation"
-                    className="inline-flex items-center justify-center"
-                  >
-                    <Calendar className="mr-2 h-5 w-5" />
-                    Web予約フォーム
-                  </a>
-                </Button>
+                  <Calendar className="mr-2 h-5 w-5" />
+                  Web予約フォーム
+                </a>
                 <p className="text-sm text-gray-500 mt-2">
                   空席確認・即予約
                 </p>
