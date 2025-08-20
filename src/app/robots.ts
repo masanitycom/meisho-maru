@@ -15,5 +15,6 @@ export default function robots(): MetadataRoute.Robots {
       },
     ],
     sitemap: 'https://kotourameishomaru.com/sitemap.xml',
+    host: 'https://kotourameishomaru.com',
   };
 }
