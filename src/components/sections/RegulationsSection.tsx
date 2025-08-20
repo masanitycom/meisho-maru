@@ -65,14 +65,14 @@ export function RegulationsSection() {
 
         <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
           {/* 業務規程 */}
-          <Card className="hover:shadow-lg transition-shadow duration-300">
+          <Card className="hover:shadow-lg transition-shadow duration-300 overflow-hidden">
             <CardHeader className="text-center pb-4">
               <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <FileText className="h-8 w-8 text-blue-600" />
               </div>
               <CardTitle className="text-xl">業務規程</CardTitle>
             </CardHeader>
-            <CardContent className="text-center space-y-4">
+            <CardContent className="text-center space-y-4 px-4 pb-6">
               <p className="text-gray-600 text-sm">
                 遊漁船業の適正な運営のための規程です。
                 <br />
@@ -87,14 +87,14 @@ export function RegulationsSection() {
                   お客様の安全を最優先に運航しています
                 </p>
               </div>
-              <Button asChild className="w-full bg-blue-600 hover:bg-blue-700">
+              <Button asChild className="w-full bg-blue-600 hover:bg-blue-700 h-12 sm:h-11 text-base sm:text-sm font-semibold touch-manipulation">
                 <Link 
                   href="/pdf-viewer?type=regulations"
-                  className="flex items-center justify-center"
+                  className="flex items-center justify-center gap-2 px-4 py-3 w-full h-full"
                   title="明勝丸 遊漁船業務規程 - 鳥取県琴浦町の白いか釣り専門船の安全運航基準・料金規定"
                   aria-label="明勝丸の遊漁船業務規程を表示"
                 >
-                  <Download className="h-4 w-4 mr-2 flex-shrink-0" />
+                  <Download className="h-5 w-5 sm:h-4 sm:w-4 flex-shrink-0" />
                   <span>業務規程を見る</span>
                 </Link>
               </Button>
@@ -102,14 +102,14 @@ export function RegulationsSection() {
           </Card>
 
           {/* 遊漁船業登録票 */}
-          <Card className="hover:shadow-lg transition-shadow duration-300">
+          <Card className="hover:shadow-lg transition-shadow duration-300 overflow-hidden">
             <CardHeader className="text-center pb-4">
               <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <FileText className="h-8 w-8 text-green-600" />
               </div>
               <CardTitle className="text-xl">遊漁船業者登録票</CardTitle>
             </CardHeader>
-            <CardContent className="text-center space-y-4">
+            <CardContent className="text-center space-y-4 px-4 pb-6">
               <p className="text-gray-600 text-sm">
                 鳥取県知事による正式な遊漁船業者の登録票です。
                 <br />
@@ -124,14 +124,14 @@ export function RegulationsSection() {
                   鳥取県知事認可の遊漁船業者です
                 </p>
               </div>
-              <Button asChild className="w-full bg-green-600 hover:bg-green-700">
+              <Button asChild className="w-full bg-green-600 hover:bg-green-700 h-12 sm:h-11 text-base sm:text-sm font-semibold touch-manipulation">
                 <Link 
                   href="/pdf-viewer?type=registration"
-                  className="flex items-center justify-center"
+                  className="flex items-center justify-center gap-2 px-4 py-3 w-full h-full"
                   title="明勝丸 遊漁船業者登録票 - 鳥取県知事認可 正式登録番号記載 白いか釣り専門船"
                   aria-label="明勝丸の遊漁船業者登録票を表示（鳥取県知事認可）"
                 >
-                  <Download className="h-4 w-4 mr-2 flex-shrink-0" />
+                  <Download className="h-5 w-5 sm:h-4 sm:w-4 flex-shrink-0" />
                   <span>登録票を見る</span>
                 </Link>
               </Button>
