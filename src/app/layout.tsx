@@ -60,7 +60,11 @@ export const metadata: Metadata = {
     description: "鳥取県琴浦町赤碕港の白いか釣り専門船。日本海で夜釣り・イカメタル体験。関西・中国地方から好アクセス。初心者歓迎、竿レンタル完備。",
     images: ["/images/logo.png"],
   },
-  // ファビコンはsrc/app/icon.tsxとapple-icon.tsxで自動生成
+  icons: {
+    icon: '/favicon.ico',
+    shortcut: '/favicon.ico',
+    apple: '/favicon.ico',
+  },
   robots: {
     index: true,
     follow: true,
@@ -82,7 +86,8 @@ export default function RootLayout({
   return (
     <html lang="ja">
       <head>
-        {/* ファビコンはNext.js 13+のicon.tsxとapple-icon.tsxで自動生成 */}
+        <link rel="icon" href="/favicon.ico" sizes="any" />
+        <link rel="shortcut icon" href="/favicon.ico" />
         <link rel="manifest" href="/manifest.json" />
         <meta name="theme-color" content="#1e3a8a" />
         <meta name="msapplication-TileColor" content="#1e3a8a" />
