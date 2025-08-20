@@ -17,6 +17,22 @@ const nextConfig: NextConfig = {
   compress: true,
   // Static Generation最適化
   trailingSlash: false,
+  // リダイレクト設定
+  async redirects() {
+    return [
+      {
+        source: '/:path*',
+        has: [
+          {
+            type: 'host',
+            value: 'www.kotourameishomaru.com',
+          },
+        ],
+        destination: 'https://kotourameishomaru.com/:path*',
+        permanent: true,
+      },
+    ];
+  },
   // Bundle分析
   webpack: (config, { dev, isServer }) => {
     // プロダクションビルドでのみBundle Analyzerを有効化
