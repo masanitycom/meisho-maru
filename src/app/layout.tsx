@@ -4,6 +4,7 @@ import "./globals.css";
 import "./critical.css";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
+import { BackToTopButton } from "@/components/ui/BackToTopButton";
 
 const notoSansJP = Noto_Sans_JP({
   subsets: ["latin"],
@@ -101,6 +102,7 @@ export default function RootLayout({
         <Header />
         {children}
         <Footer />
+        <BackToTopButton />
         
         {/* 構造化データ（JSON-LD） */}
         <script
