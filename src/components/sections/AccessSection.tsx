@@ -61,7 +61,7 @@ export function AccessSection() {
                     <div>
                       <h4 className="font-semibold text-sm mb-2">関西・中国地方から</h4>
                       <ul className="space-y-1 text-sm">
-                        <li>• <strong>大阪・京都から</strong>：中国自動車道→院庄IC→国道179号→国道9号（約3時間）</li>
+                        <li>• <strong>大阪・京都から</strong>：中国自動車道→鳥取道→国道9号（約3時間）</li>
                         <li>• <strong>広島から</strong>：山陽自動車道→落合JCT→中国自動車道→院庄IC（約2.5時間）</li>
                         <li>• <strong>岡山から</strong>：国道53号→鳥取→国道9号（約2時間）</li>
                       </ul>
@@ -69,7 +69,7 @@ export function AccessSection() {
                     <div>
                       <h4 className="font-semibold text-sm mb-2">東海地方から</h4>
                       <ul className="space-y-1 text-sm">
-                        <li>• <strong>名古屋から</strong>：名神高速→中国自動車道→院庄IC→国道179号（約4時間）</li>
+                        <li>• <strong>名古屋から</strong>：名神高速→中国自動車道→鳥取道→国道9号（約4時間）</li>
                       </ul>
                     </div>
                     <div className="bg-blue-50 p-3 rounded-lg">
