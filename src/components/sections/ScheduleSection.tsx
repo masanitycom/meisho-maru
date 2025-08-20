@@ -311,19 +311,20 @@ export function ScheduleSection() {
                           {/* 予約ボタン */}
                           <div className="text-center">
                             {dateInfo.trip1Seats > 0 ? (
-                              <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2" asChild>
-                                <Link href={`/reservation?date=${dateInfo.dateStr}&trip=1`}>
-                                  この便を予約する
-                                </Link>
-                              </Button>
+                              <Link 
+                                href={`/reservation?date=${dateInfo.dateStr}&trip=1`}
+                                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 inline-flex items-center justify-center rounded-md h-10 transition-colors"
+                              >
+                                この便を予約する
+                              </Link>
                             ) : dateInfo.trip1Seats === 0 ? (
-                              <Button disabled className="w-full bg-gray-300 text-gray-500 py-2">
+                              <div className="w-full bg-gray-300 text-gray-500 py-2 inline-flex items-center justify-center rounded-md h-10 cursor-not-allowed">
                                 満席のため予約不可
-                              </Button>
+                              </div>
                             ) : (
-                              <Button disabled className="w-full bg-gray-300 text-gray-500 py-2">
+                              <div className="w-full bg-gray-300 text-gray-500 py-2 inline-flex items-center justify-center rounded-md h-10 cursor-not-allowed">
                                 運航なし
-                              </Button>
+                              </div>
                             )}
                           </div>
                         </div>
@@ -345,19 +346,20 @@ export function ScheduleSection() {
                           {/* 予約ボタン */}
                           <div className="text-center">
                             {dateInfo.trip2Seats > 0 ? (
-                              <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2" asChild>
-                                <Link href={`/reservation?date=${dateInfo.dateStr}&trip=2`}>
-                                  この便を予約する
-                                </Link>
-                              </Button>
+                              <Link 
+                                href={`/reservation?date=${dateInfo.dateStr}&trip=2`}
+                                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 inline-flex items-center justify-center rounded-md h-10 transition-colors"
+                              >
+                                この便を予約する
+                              </Link>
                             ) : dateInfo.trip2Seats === 0 ? (
-                              <Button disabled className="w-full bg-gray-300 text-gray-500 py-2">
+                              <div className="w-full bg-gray-300 text-gray-500 py-2 inline-flex items-center justify-center rounded-md h-10 cursor-not-allowed">
                                 満席のため予約不可
-                              </Button>
+                              </div>
                             ) : (
-                              <Button disabled className="w-full bg-gray-300 text-gray-500 py-2">
+                              <div className="w-full bg-gray-300 text-gray-500 py-2 inline-flex items-center justify-center rounded-md h-10 cursor-not-allowed">
                                 運航なし
-                              </Button>
+                              </div>
                             )}
                           </div>
                         </div>
@@ -369,12 +371,13 @@ export function ScheduleSection() {
             </div>
 
             <div className="mt-8 flex justify-center">
-              <Button size="lg" className="inline-flex items-center" asChild>
-                <Link href="/reservation" className="inline-flex items-center">
-                  <Calendar className="mr-2 h-5 w-5 flex-shrink-0" />
-                  <span>予約画面へ進む</span>
-                </Link>
-              </Button>
+              <Link 
+                href="/reservation" 
+                className="bg-blue-600 hover:bg-blue-700 text-white inline-flex items-center justify-center rounded-md px-6 py-3 h-12 font-medium transition-colors"
+              >
+                <Calendar className="mr-2 h-5 w-5 flex-shrink-0" />
+                <span>予約画面へ進む</span>
+              </Link>
             </div>
           </CardContent>
         </Card>
