@@ -13,19 +13,24 @@ export default function AppleIcon() {
     (
       <div
         style={{
-          fontSize: 120,
-          background: 'linear-gradient(135deg, #1e40af 0%, #3b82f6 50%, #06b6d4 100%)',
           width: '100%',
           height: '100%',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          color: 'white',
-          fontWeight: 'bold',
+          background: 'white',
           borderRadius: '20px',
         }}
       >
-        明
+        <img
+          src="https://kotourameishomaru.com/images/logo.png"
+          alt="明勝丸ロゴ"
+          width="160"
+          height="160"
+          style={{
+            borderRadius: '10px',
+          }}
+        />
       </div>
     ),
     {

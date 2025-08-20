@@ -13,19 +13,24 @@ export default function Icon() {
     (
       <div
         style={{
-          fontSize: 24,
-          background: 'linear-gradient(135deg, #1e40af 0%, #3b82f6 50%, #06b6d4 100%)',
           width: '100%',
           height: '100%',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          color: 'white',
-          fontWeight: 'bold',
-          borderRadius: '6px',
+          background: 'white',
+          borderRadius: '4px',
         }}
       >
-        明
+        <img
+          src="https://kotourameishomaru.com/images/logo.png"
+          alt="明勝丸ロゴ"
+          width="28"
+          height="28"
+          style={{
+            borderRadius: '2px',
+          }}
+        />
       </div>
     ),
     {
