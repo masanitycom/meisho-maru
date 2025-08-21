@@ -111,6 +111,13 @@ export function ScheduleSection() {
     return '🟢';
   };
 
+  const getStatusDot = (seats: number) => {
+    if (seats === -1) return 'bg-gray-400';
+    if (seats === 0) return 'bg-red-500';
+    if (seats <= 2) return 'bg-yellow-500';
+    return 'bg-green-500';
+  };
+
   const changeMonth = (direction: 'prev' | 'next') => {
     setCurrentMonth(prev => {
       const newMonth = new Date(prev);
@@ -188,22 +195,22 @@ export function ScheduleSection() {
             </div>
             
             {/* 凡例 */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-4 text-sm">
-              <span className="flex items-center gap-2 bg-green-50 p-2 rounded-lg">
-                <span className="text-lg">🟢</span>
-                <span className="font-medium">空席あり</span>
+            <div className="flex flex-wrap gap-4 mt-4 text-sm">
+              <span className="flex items-center gap-2">
+                <span className="w-3 h-3 bg-green-500 rounded-full"></span>
+                <span className="text-gray-700">空席あり</span>
               </span>
-              <span className="flex items-center gap-2 bg-yellow-50 p-2 rounded-lg">
-                <span className="text-lg">🟡</span>
-                <span className="font-medium">残りわずか</span>
+              <span className="flex items-center gap-2">
+                <span className="w-3 h-3 bg-yellow-500 rounded-full"></span>
+                <span className="text-gray-700">残りわずか</span>
               </span>
-              <span className="flex items-center gap-2 bg-red-50 p-2 rounded-lg">
-                <span className="text-lg">🔴</span>
-                <span className="font-medium">満席</span>
+              <span className="flex items-center gap-2">
+                <span className="w-3 h-3 bg-red-500 rounded-full"></span>
+                <span className="text-gray-700">満席</span>
               </span>
-              <span className="flex items-center gap-2 bg-gray-50 p-2 rounded-lg">
-                <span className="text-lg">⚫</span>
-                <span className="font-medium">休漁日</span>
+              <span className="flex items-center gap-2">
+                <span className="w-3 h-3 bg-gray-400 rounded-full"></span>
+                <span className="text-gray-700">休漁日</span>
               </span>
             </div>
           </CardHeader>
@@ -263,58 +270,61 @@ export function ScheduleSection() {
                       {dateInfo ? (
                         <button
                           onClick={() => setSelectedDate(dateInfo.dateStr)}
-                          className={`w-full h-full p-0.5 sm:p-1 md:p-2 border-2 rounded-lg transition-all hover:shadow-lg relative ${
+                          className={`w-full h-full p-1 sm:p-2 border rounded-lg transition-all hover:shadow-md relative ${
                             dateInfo.isToday 
-                              ? 'border-blue-500 bg-gradient-to-br from-blue-50 to-blue-100 shadow-md' 
+                              ? 'border-blue-500 bg-blue-50' 
                               : selectedDate === dateInfo.dateStr
-                              ? 'border-purple-500 bg-gradient-to-br from-purple-50 to-purple-100 shadow-md'
-                              : 'border-gray-200 hover:border-gray-400 bg-white hover:bg-gray-50'
+                              ? 'border-blue-400 bg-blue-100'
+                              : 'border-gray-200 hover:border-gray-300 bg-white hover:bg-gray-50'
                           }`}
                         >
-                          <div className="text-center h-full flex flex-col justify-between p-1 overflow-hidden">
-                            {/* 今日マーク */}
-                            {dateInfo.isToday && (
-                              <div className="absolute top-0 left-0 bg-red-500 text-white text-xs px-1 rounded-br">
-                                今
-                              </div>
-                            )}
-                            
-                            {/* 日付 */}
-                            <div className={`font-bold text-sm sm:text-base leading-none ${
+                          <div className="h-full flex flex-col">
+                            {/* 日付 - PC版では大きく表示 */}
+                            <div className={`font-medium text-sm sm:text-base md:text-lg mb-1 ${
                               dateInfo.date.getDay() === 0 ? 'text-red-600' : 
                               dateInfo.date.getDay() === 6 ? 'text-blue-600' : 
-                              'text-gray-800'
+                              'text-gray-900'
                             }`}>
                               {dateInfo.date.getDate()}
                             </div>
                             
-                            {/* 状況表示 - 大きくして見やすく */}
-                            <div className="flex flex-col space-y-0.5 w-full">
+                            {/* PC版: テキスト表示 */}
+                            <div className="hidden md:flex flex-col space-y-1 text-xs">
                               {/* 1便 */}
-                              <div className="flex items-center justify-center gap-1">
-                                <span className="text-lg" title={`1便 ${
-                                  dateInfo.trip1Seats === -1 ? '休漁日' :
-                                  dateInfo.trip1Seats === 0 ? '満席' :
-                                  dateInfo.trip1Seats <= 2 ? `残り${dateInfo.trip1Seats}席` :
-                                  '空席あり'
-                                }`}>
-                                  {getStatusEmoji(dateInfo.trip1Seats)}
-                                </span>
-                                <span className="text-xs font-bold">1</span>
+                              <div className="flex items-center justify-between px-1">
+                                <span className="text-gray-600">1便</span>
+                                {dateInfo.trip1Seats === -1 ? (
+                                  <span className="text-gray-400">休</span>
+                                ) : dateInfo.trip1Seats === 0 ? (
+                                  <span className="text-red-600 font-bold">満</span>
+                                ) : (
+                                  <span className={`font-bold ${dateInfo.trip1Seats <= 2 ? 'text-orange-600' : 'text-green-600'}`}>
+                                    {dateInfo.trip1Seats}席
+                                  </span>
+                                )}
                               </div>
                               
                               {/* 2便 */}
-                              <div className="flex items-center justify-center gap-1">
-                                <span className="text-lg" title={`2便 ${
-                                  dateInfo.trip2Seats === -1 ? '休漁日' :
-                                  dateInfo.trip2Seats === 0 ? '満席' :
-                                  dateInfo.trip2Seats <= 2 ? `残り${dateInfo.trip2Seats}席` :
-                                  '空席あり'
-                                }`}>
-                                  {getStatusEmoji(dateInfo.trip2Seats)}
-                                </span>
-                                <span className="text-xs font-bold">2</span>
+                              <div className="flex items-center justify-between px-1">
+                                <span className="text-gray-600">2便</span>
+                                {dateInfo.trip2Seats === -1 ? (
+                                  <span className="text-gray-400">休</span>
+                                ) : dateInfo.trip2Seats === 0 ? (
+                                  <span className="text-red-600 font-bold">満</span>
+                                ) : (
+                                  <span className={`font-bold ${dateInfo.trip2Seats <= 2 ? 'text-orange-600' : 'text-green-600'}`}>
+                                    {dateInfo.trip2Seats}席
+                                  </span>
+                                )}
                               </div>
+                            </div>
+
+                            {/* モバイル版: ドット表示 */}
+                            <div className="md:hidden flex justify-center gap-2 mt-auto">
+                              <div className={`w-2 h-2 rounded-full ${getStatusDot(dateInfo.trip1Seats)}`} 
+                                   title={`1便: ${dateInfo.trip1Seats === -1 ? '休漁日' : dateInfo.trip1Seats === 0 ? '満席' : `${dateInfo.trip1Seats}席`}`}></div>
+                              <div className={`w-2 h-2 rounded-full ${getStatusDot(dateInfo.trip2Seats)}`}
+                                   title={`2便: ${dateInfo.trip2Seats === -1 ? '休漁日' : dateInfo.trip2Seats === 0 ? '満席' : `${dateInfo.trip2Seats}席`}`}></div>
                             </div>
                           </div>
                         </button>
@@ -327,73 +337,72 @@ export function ScheduleSection() {
               </div>
             ) : (
               /* リストビュー */
-              <div className="space-y-3 max-h-[600px] overflow-y-auto">
+              <div className="space-y-2 max-h-[600px] overflow-y-auto">
                 {dates.map((dateInfo) => (
                   <div
                     key={dateInfo.dateStr}
-                    className={`border-2 rounded-xl p-4 sm:p-6 hover:shadow-lg transition-all cursor-pointer relative ${
+                    className={`border rounded-lg p-3 sm:p-4 hover:shadow-md transition-all cursor-pointer ${
                       dateInfo.isToday 
-                        ? 'border-blue-500 bg-gradient-to-r from-blue-50 to-blue-100 shadow-md' 
+                        ? 'border-blue-500 bg-blue-50' 
                         : selectedDate === dateInfo.dateStr
-                        ? 'border-purple-500 bg-gradient-to-r from-purple-50 to-purple-100 shadow-md'
+                        ? 'border-blue-400 bg-blue-100'
                         : 'border-gray-200 bg-white hover:bg-gray-50'
                     }`}
                     onClick={() => setSelectedDate(dateInfo.dateStr)}
                   >
-                    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                    <div className="flex justify-between items-center">
                       <div className="flex items-center gap-3">
-                        <div>
-                          <div className="font-bold text-lg sm:text-xl lg:text-2xl">
-                            {dateInfo.date.getMonth() + 1}月{dateInfo.date.getDate()}日
-                            <span className={`ml-2 text-sm sm:text-base ${
-                              dateInfo.date.getDay() === 0 ? 'text-red-600 bg-red-100 px-2 py-1 rounded-full' : 
-                              dateInfo.date.getDay() === 6 ? 'text-blue-600 bg-blue-100 px-2 py-1 rounded-full' : 
-                              'text-gray-600'
-                            }`}>
-                              ({dateInfo.dayOfWeek})
-                            </span>
+                        <div className="text-center">
+                          <div className={`text-2xl font-bold ${
+                            dateInfo.date.getDay() === 0 ? 'text-red-600' : 
+                            dateInfo.date.getDay() === 6 ? 'text-blue-600' : 
+                            'text-gray-900'
+                          }`}>
+                            {dateInfo.date.getDate()}
+                          </div>
+                          <div className="text-xs text-gray-500">
+                            {dateInfo.dayOfWeek}
+                          </div>
+                        </div>
+                        <div className="border-l pl-3">
+                          <div className="text-sm text-gray-600">
+                            {dateInfo.date.getMonth() + 1}月
                           </div>
                           {dateInfo.isToday && (
-                            <span className="inline-block mt-1 text-sm font-semibold text-white bg-red-500 px-2 py-1 rounded-full">本日</span>
+                            <span className="text-xs font-semibold text-blue-600">本日</span>
                           )}
                         </div>
                       </div>
                       
-                      <div className="flex gap-3 sm:gap-4 w-full sm:w-auto">
+                      <div className="flex gap-4">
                         {/* 1便 */}
-                        <div className="flex-1 sm:flex-initial bg-white p-3 rounded-lg border border-gray-200">
-                          <div className="text-xs sm:text-sm text-gray-600 mb-2 font-medium">1便 (17:30〜23:30)</div>
-                          <div className="flex items-center gap-2">
-                            {dateInfo.trip1Seats > 0 ? (
-                              <Link
-                                href={`/reservation?date=${dateInfo.dateStr}&trip=1`}
-                                className="text-blue-600 hover:text-blue-700 font-bold text-sm sm:text-base underline decoration-2"
-                              >
-                                予約可能（残{dateInfo.trip1Seats}席）
-                              </Link>
+                        <div className="text-center">
+                          <div className="text-xs text-gray-500 mb-1">1便</div>
+                          <div className="font-bold">
+                            {dateInfo.trip1Seats === -1 ? (
+                              <span className="text-gray-400">休</span>
                             ) : dateInfo.trip1Seats === 0 ? (
-                              <span className="text-red-600 font-bold text-sm sm:text-base bg-red-100 px-2 py-1 rounded">満席</span>
+                              <span className="text-red-600">満席</span>
                             ) : (
-                              <span className="text-gray-500 font-medium text-sm sm:text-base bg-gray-100 px-2 py-1 rounded">休漁日</span>
+                              <span className={dateInfo.trip1Seats <= 2 ? 'text-orange-600' : 'text-green-600'}>
+                                {dateInfo.trip1Seats}席
+                              </span>
                             )}
                           </div>
                         </div>
                         
                         {/* 2便 */}
-                        <div className="flex-1 sm:flex-initial bg-white p-3 rounded-lg border border-gray-200">
-                          <div className="text-xs sm:text-sm text-gray-600 mb-2 font-medium">2便 (24:00〜5:30)</div>
-                          <div className="flex items-center gap-2">
-                            {dateInfo.trip2Seats > 0 ? (
-                              <Link
-                                href={`/reservation?date=${dateInfo.dateStr}&trip=2`}
-                                className="text-blue-600 hover:text-blue-700 font-bold text-sm sm:text-base underline decoration-2"
-                              >
-                                予約可能（残{dateInfo.trip2Seats}席）
-                              </Link>
+                        <div className="text-center">
+                          <div className="text-xs text-gray-500 mb-1">2便</div>
+                          <div className="font-bold">
+                            {dateInfo.trip2Seats === -1 ? (
+                              <span className="text-gray-400">休</span>
                             ) : dateInfo.trip2Seats === 0 ? (
-                              <span className="text-red-600 font-bold text-sm sm:text-base bg-red-100 px-2 py-1 rounded">満席</span>
+                              <span className="text-red-600">満席</span>
                             ) : (
-                              <span className="text-gray-500 font-medium text-sm sm:text-base bg-gray-100 px-2 py-1 rounded">休漁日</span>
+                              <span className={dateInfo.trip2Seats <= 2 ? 'text-orange-600' : 'text-green-600'}>
+                                {dateInfo.trip2Seats}席
+                              </span>
                             )}
                           </div>
                         </div>
