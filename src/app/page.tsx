@@ -2,6 +2,7 @@ import { HeroSection } from '@/components/sections/HeroSection';
 import { ImageSlider } from '@/components/sections/ImageSlider';
 import { LineReservation } from '@/components/sections/LineReservation';
 import { ScheduleSection } from '@/components/sections/ScheduleSection';
+import { ScheduleSectionNew } from '@/components/sections/ScheduleSectionNew';
 import { InfoSection } from '@/components/sections/InfoSection';
 import { ImportantNoticeSection } from '@/components/sections/ImportantNoticeSection';
 import { TestimonialsSection } from '@/components/sections/TestimonialsSection';
@@ -22,7 +23,16 @@ export default function Home() {
         <LineReservation />
       </LazySection>
       <LazySection>
-        <ScheduleSection />
+        <ScheduleSectionNew />
+      </LazySection>
+      {/* 旧カレンダー（比較用） */}
+      <LazySection>
+        <div className="bg-red-50 py-4">
+          <div className="container mx-auto px-4">
+            <h3 className="text-center text-lg font-bold text-red-600 mb-4">【比較用】旧カレンダー</h3>
+          </div>
+          <ScheduleSection />
+        </div>
       </LazySection>
       <LazySection>
         <InfoSection />
