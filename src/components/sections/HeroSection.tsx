@@ -2,7 +2,6 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { Button } from '@/components/ui/button';
 import { Calendar, Phone, Anchor, Fish, MapPin, Clock } from 'lucide-react';
 import { SITE_CONFIG } from '@/lib/constants';
 

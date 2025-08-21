@@ -4,7 +4,6 @@ import { useState, useRef, useEffect } from 'react';
 import { getAvailableSeats } from '@/lib/supabase';
 import { getJSTDate } from '@/lib/date-utils';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
 import { Calendar, Clock, ChevronLeft, ChevronRight, CheckCircle, AlertCircle, XCircle } from 'lucide-react';
 import Link from 'next/link';
 

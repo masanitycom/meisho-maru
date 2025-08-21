@@ -5,7 +5,6 @@ import Image from 'next/image';
 import { useState, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 import { Menu, X, Phone, Calendar, Anchor } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 import { SITE_CONFIG } from '@/lib/constants';
 
 export function Header() {

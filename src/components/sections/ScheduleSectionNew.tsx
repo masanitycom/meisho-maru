@@ -118,10 +118,10 @@ export function ScheduleSectionNew() {
   };
 
   // カレンダーグリッド用の日付配列を生成
-  const getCalendarGrid = () => {
+  const getCalendarGrid = (): (DateInfo | null)[] => {
     const firstDay = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1);
     const startDay = firstDay.getDay();
-    const grid = [];
+    const grid: (DateInfo | null)[] = [];
     
     // 前月の空白
     for (let i = 0; i < startDay; i++) {
