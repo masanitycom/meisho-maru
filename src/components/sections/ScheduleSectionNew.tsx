@@ -203,25 +203,25 @@ export function ScheduleSectionNew() {
           
           <CardContent>
             {/* 月切り替え */}
-            <div className="flex justify-between items-center mb-6">
+            <div className="flex justify-between items-center mb-6 bg-gradient-to-r from-blue-50 to-purple-50 p-4 rounded-lg">
               <button
                 onClick={() => changeMonth('prev')}
-                className="p-2 rounded-full hover:bg-gray-100 transition-colors"
+                className="p-2 sm:p-3 rounded-full bg-white hover:bg-blue-50 transition-colors shadow-md"
                 aria-label="前月"
               >
-                <ChevronLeft className="h-6 w-6" />
+                <ChevronLeft className="h-5 w-5 sm:h-6 sm:w-6 text-blue-600" />
               </button>
               
-              <h3 className="text-xl font-bold">
+              <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-800 bg-white px-4 py-2 rounded-lg shadow-sm">
                 {currentMonth.getFullYear()}年{currentMonth.getMonth() + 1}月
               </h3>
               
               <button
                 onClick={() => changeMonth('next')}
-                className="p-2 rounded-full hover:bg-gray-100 transition-colors"
+                className="p-2 sm:p-3 rounded-full bg-white hover:bg-blue-50 transition-colors shadow-md"
                 aria-label="翌月"
               >
-                <ChevronRight className="h-6 w-6" />
+                <ChevronRight className="h-5 w-5 sm:h-6 sm:w-6 text-blue-600" />
               </button>
             </div>
 
@@ -234,12 +234,14 @@ export function ScheduleSectionNew() {
               /* カレンダービュー */
               <div>
                 {/* 曜日ヘッダー */}
-                <div className="grid grid-cols-7 gap-1 mb-2">
+                <div className="grid grid-cols-7 gap-1 sm:gap-2 mb-2">
                   {['日', '月', '火', '水', '木', '金', '土'].map((day, index) => (
                     <div 
                       key={day} 
-                      className={`text-center text-sm font-bold p-2 ${
-                        index === 0 ? 'text-red-500' : index === 6 ? 'text-blue-500' : 'text-gray-700'
+                      className={`text-center text-sm sm:text-base lg:text-lg font-bold p-2 rounded-lg ${
+                        index === 0 ? 'text-red-600 bg-red-50' : 
+                        index === 6 ? 'text-blue-600 bg-blue-50' : 
+                        'text-gray-700 bg-gray-50'
                       }`}
                     >
                       {day}
@@ -248,43 +250,61 @@ export function ScheduleSectionNew() {
                 </div>
                 
                 {/* カレンダーグリッド */}
-                <div className="grid grid-cols-7 gap-1">
+                <div className="grid grid-cols-7 gap-1 sm:gap-2">
                   {calendarGrid.map((dateInfo, index) => (
                     <div key={index} className="aspect-square">
                       {dateInfo ? (
                         <button
                           onClick={() => setSelectedDate(dateInfo.dateStr)}
-                          className={`w-full h-full p-1 border-2 rounded-lg transition-all hover:shadow-lg ${
+                          className={`w-full h-full p-1 sm:p-2 border-2 rounded-lg transition-all hover:shadow-lg relative ${
                             dateInfo.isToday 
-                              ? 'border-blue-500 bg-blue-50' 
+                              ? 'border-blue-500 bg-gradient-to-br from-blue-50 to-blue-100 shadow-md' 
                               : selectedDate === dateInfo.dateStr
-                              ? 'border-primary bg-primary/10'
-                              : 'border-gray-200 hover:border-gray-300'
+                              ? 'border-purple-500 bg-gradient-to-br from-purple-50 to-purple-100 shadow-md'
+                              : 'border-gray-200 hover:border-gray-400 bg-white hover:bg-gray-50'
                           }`}
                         >
-                          <div className="text-center">
-                            <div className={`font-bold text-sm sm:text-base ${
-                              dateInfo.date.getDay() === 0 ? 'text-red-500' : 
-                              dateInfo.date.getDay() === 6 ? 'text-blue-500' : 
+                          <div className="text-center h-full flex flex-col justify-between">
+                            {/* 日付 */}
+                            <div className={`font-bold text-xs sm:text-base lg:text-lg ${
+                              dateInfo.date.getDay() === 0 ? 'text-red-600' : 
+                              dateInfo.date.getDay() === 6 ? 'text-blue-600' : 
                               'text-gray-800'
                             }`}>
                               {dateInfo.date.getDate()}
                             </div>
                             
-                            {/* 1便 */}
-                            <div className="flex items-center justify-center gap-1 mt-1">
-                              <span className="text-xs text-gray-600">1便</span>
-                              <span className={`font-bold text-sm ${getStatusColor(dateInfo.trip1Seats)}`}>
-                                {getStatusText(dateInfo.trip1Seats)}
-                              </span>
-                            </div>
+                            {/* 今日マーク */}
+                            {dateInfo.isToday && (
+                              <div className="absolute -top-1 -right-1 bg-red-500 text-white text-xs px-1 rounded-full">
+                                今日
+                              </div>
+                            )}
                             
-                            {/* 2便 */}
-                            <div className="flex items-center justify-center gap-1">
-                              <span className="text-xs text-gray-600">2便</span>
-                              <span className={`font-bold text-sm ${getStatusColor(dateInfo.trip2Seats)}`}>
-                                {getStatusText(dateInfo.trip2Seats)}
-                              </span>
+                            <div className="space-y-0.5">
+                              {/* 1便 */}
+                              <div className="flex items-center justify-center">
+                                <div className={`w-full rounded px-1 py-0.5 text-xs sm:text-sm font-bold ${
+                                  dateInfo.trip1Seats === -1 ? 'bg-gray-200 text-gray-500' :
+                                  dateInfo.trip1Seats === 0 ? 'bg-red-100 text-red-600' :
+                                  dateInfo.trip1Seats <= 2 ? 'bg-orange-100 text-orange-600' :
+                                  'bg-green-100 text-green-600'
+                                }`}>
+                                  1便{getStatusText(dateInfo.trip1Seats)}
+                                </div>
+                              </div>
+                              
+                              {/* 2便 */}
+                              <div className="flex items-center justify-center">
+                                <div className={`w-full rounded px-1 py-0.5 text-xs sm:text-sm font-bold ${
+                                  dateInfo.trip2Seats === -1 ? 'bg-gray-200 text-gray-500' :
+                                  dateInfo.trip2Seats === 0 ? 'bg-red-100 text-red-600' :
+                                  dateInfo.trip2Seats <= 2 ? 'bg-orange-100 text-orange-600' :
+                                  'bg-green-100 text-green-600'
+                                }`}>
+                                  2便{getStatusText(dateInfo.trip2Seats)}
+                                </div>
+                              </div>
                             </div>
                           </div>
                         </button>
@@ -297,75 +317,73 @@ export function ScheduleSectionNew() {
               </div>
             ) : (
               /* リストビュー */
-              <div className="space-y-2 max-h-[600px] overflow-y-auto">
+              <div className="space-y-3 max-h-[600px] overflow-y-auto">
                 {dates.map((dateInfo) => (
                   <div
                     key={dateInfo.dateStr}
-                    className={`border-2 rounded-lg p-4 hover:shadow-lg transition-all cursor-pointer ${
+                    className={`border-2 rounded-xl p-4 sm:p-6 hover:shadow-lg transition-all cursor-pointer relative ${
                       dateInfo.isToday 
-                        ? 'border-blue-500 bg-blue-50' 
+                        ? 'border-blue-500 bg-gradient-to-r from-blue-50 to-blue-100 shadow-md' 
                         : selectedDate === dateInfo.dateStr
-                        ? 'border-primary bg-primary/10'
-                        : 'border-gray-200'
+                        ? 'border-purple-500 bg-gradient-to-r from-purple-50 to-purple-100 shadow-md'
+                        : 'border-gray-200 bg-white hover:bg-gray-50'
                     }`}
                     onClick={() => setSelectedDate(dateInfo.dateStr)}
                   >
                     <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                       <div className="flex items-center gap-3">
                         <div>
-                          <div className="font-bold text-lg">
+                          <div className="font-bold text-lg sm:text-xl lg:text-2xl">
                             {dateInfo.date.getMonth() + 1}月{dateInfo.date.getDate()}日
-                            <span className={`ml-2 text-sm ${
-                              dateInfo.date.getDay() === 0 ? 'text-red-500' : 
-                              dateInfo.date.getDay() === 6 ? 'text-blue-500' : 
+                            <span className={`ml-2 text-sm sm:text-base ${
+                              dateInfo.date.getDay() === 0 ? 'text-red-600 bg-red-100 px-2 py-1 rounded-full' : 
+                              dateInfo.date.getDay() === 6 ? 'text-blue-600 bg-blue-100 px-2 py-1 rounded-full' : 
                               'text-gray-600'
                             }`}>
                               ({dateInfo.dayOfWeek})
                             </span>
                           </div>
                           {dateInfo.isToday && (
-                            <span className="text-sm text-blue-600 font-semibold">本日</span>
+                            <span className="inline-block mt-1 text-sm font-semibold text-white bg-red-500 px-2 py-1 rounded-full">本日</span>
                           )}
                         </div>
                       </div>
                       
-                      <div className="flex gap-4 w-full sm:w-auto">
+                      <div className="flex gap-3 sm:gap-4 w-full sm:w-auto">
                         {/* 1便 */}
-                        <div className="flex-1 sm:flex-initial">
-                          <div className="text-sm text-gray-600 mb-1">1便 (17:30〜23:30)</div>
+                        <div className="flex-1 sm:flex-initial bg-white p-3 rounded-lg border border-gray-200">
+                          <div className="text-xs sm:text-sm text-gray-600 mb-2 font-medium">1便 (17:30〜23:30)</div>
                           <div className="flex items-center gap-2">
-                            {getStatusIcon(dateInfo.trip1Seats)}
                             {dateInfo.trip1Seats > 0 ? (
                               <Link
                                 href={`/reservation?date=${dateInfo.dateStr}&trip=1`}
-                                className="text-blue-600 hover:text-blue-700 font-medium underline"
+                                className="text-blue-600 hover:text-blue-700 font-bold text-sm sm:text-base underline decoration-2"
                               >
                                 予約可能（残{dateInfo.trip1Seats}席）
                               </Link>
                             ) : dateInfo.trip1Seats === 0 ? (
-                              <span className="text-red-500">満席</span>
+                              <span className="text-red-600 font-bold text-sm sm:text-base bg-red-100 px-2 py-1 rounded">満席</span>
                             ) : (
-                              <span className="text-gray-500">休漁日</span>
+                              <span className="text-gray-500 font-medium text-sm sm:text-base bg-gray-100 px-2 py-1 rounded">休漁日</span>
                             )}
                           </div>
                         </div>
                         
                         {/* 2便 */}
-                        <div className="flex-1 sm:flex-initial">
-                          <div className="text-sm text-gray-600 mb-1">2便 (24:00〜5:30)</div>
+                        <div className="flex-1 sm:flex-initial bg-white p-3 rounded-lg border border-gray-200">
+                          <div className="text-xs sm:text-sm text-gray-600 mb-2 font-medium">2便 (24:00〜5:30)</div>
                           <div className="flex items-center gap-2">
-                            {getStatusIcon(dateInfo.trip2Seats)}
                             {dateInfo.trip2Seats > 0 ? (
                               <Link
                                 href={`/reservation?date=${dateInfo.dateStr}&trip=2`}
-                                className="text-blue-600 hover:text-blue-700 font-medium underline"
+                                className="text-blue-600 hover:text-blue-700 font-bold text-sm sm:text-base underline decoration-2"
                               >
                                 予約可能（残{dateInfo.trip2Seats}席）
                               </Link>
                             ) : dateInfo.trip2Seats === 0 ? (
-                              <span className="text-red-500">満席</span>
+                              <span className="text-red-600 font-bold text-sm sm:text-base bg-red-100 px-2 py-1 rounded">満席</span>
                             ) : (
-                              <span className="text-gray-500">休漁日</span>
+                              <span className="text-gray-500 font-medium text-sm sm:text-base bg-gray-100 px-2 py-1 rounded">休漁日</span>
                             )}
                           </div>
                         </div>
