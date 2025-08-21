@@ -1,10 +1,10 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { getAvailableSeats } from '@/lib/supabase';
 import { getJSTDate } from '@/lib/date-utils';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Calendar, Clock, ChevronLeft, ChevronRight, CheckCircle, AlertCircle, XCircle } from 'lucide-react';
+import { Calendar, Clock, ChevronLeft, ChevronRight, CheckCircle, AlertCircle, XCircle, Anchor } from 'lucide-react';
 import Link from 'next/link';
 
 interface DateInfo {
@@ -17,179 +17,128 @@ interface DateInfo {
 }
 
 export function ScheduleSection() {
-  const scrollRef = useRef<HTMLDivElement>(null);
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [dates, setDates] = useState<DateInfo[]>([]);
   const [loading, setLoading] = useState(true);
   const [mounted, setMounted] = useState(false);
+  const [currentMonth, setCurrentMonth] = useState(new Date());
+  const [viewMode, setViewMode] = useState<'calendar' | 'list'>('calendar');
 
-  // 今日から30日分のデータを生成（日本時間基準・並列処理で高速化）
-  const generateDates = async (): Promise<DateInfo[]> => {
-    console.log('フロントエンド JST今日:', getJSTDate(0).toISOString().split('T')[0]);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // 月間データを生成
+  const generateMonthDates = async (year: number, month: number): Promise<DateInfo[]> => {
+    const lastDay = new Date(year, month + 1, 0);
+    const daysInMonth = lastDay.getDate();
+    const today = getJSTDate(0);
     
-    // 全ての日付の空席数を並列で取得
-    const datePromises = Array.from({ length: 30 }, async (_, i) => {
-      const date = getJSTDate(i);
-      const dateStr = date.toISOString().split('T')[0];
+    const datePromises = Array.from({ length: daysInMonth }, async (_, i) => {
+      const date = new Date(year, month, i + 1);
+      const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(i + 1).padStart(2, '0')}`;
       
       try {
-        // 1便と2便を並列で取得
         const [trip1Seats, trip2Seats] = await Promise.all([
           getAvailableSeats(dateStr, 1),
           getAvailableSeats(dateStr, 2)
         ]);
         
         return {
-          date: date,
-          dateStr: dateStr,
-          trip1Seats: trip1Seats,
-          trip2Seats: trip2Seats,
+          date,
+          dateStr,
+          trip1Seats,
+          trip2Seats,
           dayOfWeek: ['日', '月', '火', '水', '木', '金', '土'][date.getDay()],
-          isToday: i === 0,
+          isToday: date.toDateString() === today.toDateString(),
         };
       } catch (error) {
-        console.error(`スケジュール取得エラー ${dateStr}:`, error);
-        // エラーの場合はデフォルト値（定員8名）
+        console.error(`Error fetching seats for ${dateStr}:`, error);
         return {
-          date: date,
-          dateStr: dateStr,
-          trip1Seats: 8,
-          trip2Seats: 8,
+          date,
+          dateStr,
+          trip1Seats: -1,
+          trip2Seats: -1,
           dayOfWeek: ['日', '月', '火', '水', '木', '金', '土'][date.getDay()],
-          isToday: i === 0,
+          isToday: date.toDateString() === today.toDateString(),
         };
       }
     });
-    
-    // 全ての日付のデータを並列で待機
-    const dateList = await Promise.all(datePromises);
-    
-    return dateList;
+
+    return Promise.all(datePromises);
   };
 
   useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  useEffect(() => {
-    if (!mounted) return;
-    
-    const loadDates = async () => {
+    const loadData = async () => {
       setLoading(true);
-      try {
-        const dateData = await generateDates();
-        setDates(dateData);
-      } catch (error) {
-        console.error('カレンダー読み込みエラー:', error);
-      } finally {
-        setLoading(false);
-      }
+      const year = currentMonth.getFullYear();
+      const month = currentMonth.getMonth();
+      const monthDates = await generateMonthDates(year, month);
+      setDates(monthDates);
+      setLoading(false);
     };
-    
-    loadDates();
-  }, [mounted]);
 
-  // 未使用関数を削除（getStatusBadgeで統合済み）
+    if (mounted) {
+      loadData();
+    }
+  }, [currentMonth, mounted]);
 
   const getStatusColor = (seats: number) => {
-    if (seats === -1) return 'text-gray-700 bg-gray-200 border-gray-300'; // 休漁日
-    if (seats === 0) return 'text-white bg-red-500 border-red-600'; // 満席
-    if (seats <= 2) return 'text-white bg-orange-500 border-orange-600'; // 残りわずか
-    return 'text-white bg-green-500 border-green-600'; // 空席あり
+    if (seats === -1) return 'text-gray-400';
+    if (seats === 0) return 'text-red-500';
+    if (seats <= 2) return 'text-orange-500';
+    return 'text-green-500';
   };
 
-  const getStatusBadge = (seats: number) => {
-    const baseClasses = "inline-flex items-center justify-center px-3 py-2 text-lg font-bold rounded-lg border-2 min-w-[100px]";
-    
-    if (seats === -1) {
-      return (
-        <div className={`${baseClasses} ${getStatusColor(seats)}`}>
-          <XCircle className="h-5 w-5 mr-2" />
-          休漁日
-        </div>
-      );
-    }
-    
-    if (seats === 0) {
-      return (
-        <div className={`${baseClasses} ${getStatusColor(seats)}`}>
-          <XCircle className="h-5 w-5 mr-2" />
-          満席
-        </div>
-      );
-    }
-    
-    if (seats <= 2) {
-      return (
-        <div className={`${baseClasses} ${getStatusColor(seats)}`}>
-          <AlertCircle className="h-5 w-5 mr-2" />
-          残り{seats}席
-        </div>
-      );
-    }
-    
-    return (
-      <div className={`${baseClasses} ${getStatusColor(seats)}`}>
-        <CheckCircle className="h-5 w-5 mr-2" />
-        空席{seats}席
-      </div>
-    );
+  const getStatusIcon = (seats: number) => {
+    if (seats === -1) return <XCircle className="h-4 w-4" />;
+    if (seats === 0) return <XCircle className="h-4 w-4" />;
+    if (seats <= 2) return <AlertCircle className="h-4 w-4" />;
+    return <CheckCircle className="h-4 w-4" />;
   };
 
-  const scroll = (direction: 'left' | 'right') => {
-    if (scrollRef.current) {
-      const scrollAmount = 320; // カード幅 + gap
-      scrollRef.current.scrollBy({
-        left: direction === 'left' ? -scrollAmount : scrollAmount,
-        behavior: 'smooth'
-      });
-    }
+  const getStatusText = (seats: number, isMobile: boolean = false) => {
+    if (seats === -1) return '休';
+    if (seats === 0) return '満';
+    if (seats <= 2) return `${seats}`;
+    return '○';
   };
+
+  const changeMonth = (direction: 'prev' | 'next') => {
+    setCurrentMonth(prev => {
+      const newMonth = new Date(prev);
+      if (direction === 'prev') {
+        newMonth.setMonth(prev.getMonth() - 1);
+      } else {
+        newMonth.setMonth(prev.getMonth() + 1);
+      }
+      return newMonth;
+    });
+  };
+
+  // カレンダーグリッド用の日付配列を生成
+  const getCalendarGrid = (): (DateInfo | null)[] => {
+    const firstDay = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1);
+    const startDay = firstDay.getDay();
+    const grid: (DateInfo | null)[] = [];
+    
+    // 前月の空白
+    for (let i = 0; i < startDay; i++) {
+      grid.push(null);
+    }
+    
+    // 当月の日付
+    dates.forEach(date => {
+      grid.push(date);
+    });
+    
+    return grid;
+  };
+
+  const calendarGrid = getCalendarGrid();
 
   return (
     <section id="schedule" className="py-20 bg-gradient-to-b from-blue-50 to-cyan-50 relative overflow-hidden">
-      {/* 青海波模様と魚影 */}
-      <div className="absolute inset-0" aria-hidden="true">
-        <svg className="absolute inset-0 w-full h-full" viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            {/* 青海波パターン */}
-            <pattern id="seigaiha" x="0" y="0" width="120" height="60" patternUnits="userSpaceOnUse">
-              <path d="M0,60 Q30,30 60,60 Q90,30 120,60" fill="none" stroke="rgb(59 130 246 / 0.08)" strokeWidth="1.5" />
-              <path d="M0,45 Q30,15 60,45 Q90,15 120,45" fill="none" stroke="rgb(59 130 246 / 0.06)" strokeWidth="1" />
-              <path d="M0,30 Q30,0 60,30 Q90,0 120,30" fill="none" stroke="rgb(59 130 246 / 0.04)" strokeWidth="0.8" />
-            </pattern>
-            
-            {/* 魚影シルエット */}
-            <g id="fish-silhouette">
-              <path d="M0,10 Q5,5 15,8 Q25,10 30,10 Q25,12 15,12 Q5,15 0,10 Z M25,10 L35,5 M25,10 L35,15" 
-                    fill="rgb(59 130 246 / 0.12)" stroke="none" />
-            </g>
-            
-            {/* 釣り針 */}
-            <g id="fishing-hook">
-              <path d="M5,0 L5,15 Q5,20 10,20 Q15,20 15,15" fill="none" stroke="rgb(75 85 99 / 0.1)" strokeWidth="1.5" />
-              <circle cx="12" cy="17" r="1" fill="rgb(75 85 99 / 0.15)" />
-            </g>
-          </defs>
-          
-          {/* 青海波背景 */}
-          <rect width="100%" height="100%" fill="url(#seigaiha)" />
-          
-          {/* 魚影の配置 */}
-          <use href="#fish-silhouette" x="150" y="120" transform="scale(0.8)" opacity="0.6" />
-          <use href="#fish-silhouette" x="800" y="200" transform="scale(1.2) rotate(15)" opacity="0.4" />
-          <use href="#fish-silhouette" x="400" y="350" transform="scale(0.6) rotate(-10)" opacity="0.5" />
-          <use href="#fish-silhouette" x="950" y="450" transform="scale(0.9) rotate(20)" opacity="0.3" />
-          
-          {/* 釣り針の配置 */}
-          <use href="#fishing-hook" x="300" y="100" transform="rotate(15)" opacity="0.4" />
-          <use href="#fishing-hook" x="700" y="380" transform="rotate(-20)" opacity="0.3" />
-          
-          {/* 釣り糸 */}
-          <path d="M310,100 Q350,150 400,350" fill="none" stroke="rgb(75 85 99 / 0.08)" strokeWidth="1" strokeDasharray="3,3" />
-          <path d="M715,380 Q750,420 800,500" fill="none" stroke="rgb(75 85 99 / 0.06)" strokeWidth="1" strokeDasharray="3,3" />
-        </svg>
-      </div>
       <div className="container mx-auto px-4 relative z-10">
         <div className="text-center mb-12">
           <h2 className="text-4xl font-bold mb-4">運航スケジュール</h2>
@@ -200,178 +149,308 @@ export function ScheduleSection() {
 
         <Card className="max-w-6xl mx-auto">
           <CardHeader>
-            <CardTitle className="text-xl sm:text-2xl flex items-center justify-between">
-              <span>予約状況</span>
-              <div className="flex gap-2 text-sm font-normal">
-                <span className="flex items-center gap-1">
-                  <CheckCircle className="h-4 w-4 text-green-500" />
-                  空席あり
-                </span>
-                <span className="flex items-center gap-1">
-                  <AlertCircle className="h-4 w-4 text-orange-500" />
-                  残りわずか
-                </span>
-                <span className="flex items-center gap-1">
-                  <XCircle className="h-4 w-4 text-red-500" />
-                  満席
-                </span>
-                <span className="flex items-center gap-1">
-                  <XCircle className="h-4 w-4 text-gray-500" />
-                  休漁日
-                </span>
+            <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
+              <CardTitle className="text-xl sm:text-2xl flex items-center">
+                <Calendar className="mr-2 h-6 w-6 text-primary" />
+                予約状況
+              </CardTitle>
+              
+              {/* ビュー切り替えボタン */}
+              <div className="flex gap-2">
+                <button
+                  onClick={() => setViewMode('calendar')}
+                  className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                    viewMode === 'calendar' 
+                      ? 'bg-blue-600 text-white' 
+                      : 'bg-gray-200 text-gray-600 hover:bg-gray-300'
+                  }`}
+                >
+                  カレンダー
+                </button>
+                <button
+                  onClick={() => setViewMode('list')}
+                  className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                    viewMode === 'list' 
+                      ? 'bg-blue-600 text-white' 
+                      : 'bg-gray-200 text-gray-600 hover:bg-gray-300'
+                  }`}
+                >
+                  リスト
+                </button>
               </div>
-            </CardTitle>
+            </div>
+            
+            {/* 凡例 */}
+            <div className="flex flex-wrap gap-3 mt-4 text-sm">
+              <span className="flex items-center gap-1">
+                <CheckCircle className="h-4 w-4 text-green-500" />
+                空席あり
+              </span>
+              <span className="flex items-center gap-1">
+                <AlertCircle className="h-4 w-4 text-orange-500" />
+                残りわずか
+              </span>
+              <span className="flex items-center gap-1">
+                <XCircle className="h-4 w-4 text-red-500" />
+                満席
+              </span>
+              <span className="flex items-center gap-1">
+                <XCircle className="h-4 w-4 text-gray-500" />
+                休漁日
+              </span>
+            </div>
           </CardHeader>
-          <CardContent className="px-3 sm:px-6">
-            <div className="relative">
-              {/* 左スクロールボタン */}
+          
+          <CardContent>
+            {/* 月切り替え */}
+            <div className="flex justify-between items-center mb-6 bg-gradient-to-r from-blue-50 to-purple-50 p-4 rounded-lg">
               <button
-                onClick={() => scroll('left')}
-                className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white/90 backdrop-blur-sm rounded-full p-2 shadow-lg hover:bg-gray-100 transition-colors hidden sm:block"
-                aria-label="前の運航スケジュールを表示"
-                type="button"
+                onClick={() => changeMonth('prev')}
+                className="p-2 sm:p-3 rounded-full bg-white hover:bg-blue-50 transition-colors shadow-md"
+                aria-label="前月"
               >
-                <ChevronLeft className="h-6 w-6" />
+                <ChevronLeft className="h-5 w-5 sm:h-6 sm:w-6 text-blue-600" />
               </button>
-
-              {/* 右スクロールボタン */}
+              
+              <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-800 bg-white px-4 py-2 rounded-lg shadow-sm">
+                {currentMonth.getFullYear()}年{currentMonth.getMonth() + 1}月
+              </h3>
+              
               <button
-                onClick={() => scroll('right')}
-                className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white/90 backdrop-blur-sm rounded-full p-2 shadow-lg hover:bg-gray-100 transition-colors hidden sm:block"
-                aria-label="次の運航スケジュールを表示"
-                type="button"
+                onClick={() => changeMonth('next')}
+                className="p-2 sm:p-3 rounded-full bg-white hover:bg-blue-50 transition-colors shadow-md"
+                aria-label="翌月"
               >
-                <ChevronRight className="h-6 w-6" />
+                <ChevronRight className="h-5 w-5 sm:h-6 sm:w-6 text-blue-600" />
               </button>
+            </div>
 
-              {/* カードスクロールエリア */}
-              <div 
-                ref={scrollRef}
-                className="flex gap-4 overflow-x-auto pb-4 px-1 sm:px-10 scrollbar-hide"
-                style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
-              >
-                {!mounted || loading ? (
-                  Array.from({ length: 5 }, (_, i) => (
-                    <div key={i} className="flex-shrink-0 w-72 sm:w-80 h-64 bg-gray-200 animate-pulse rounded-lg"></div>
-                  ))
-                ) : dates.map((dateInfo) => (
+            {loading ? (
+              <div className="text-center py-12">
+                <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+                <p className="mt-4 text-gray-600">読み込み中...</p>
+              </div>
+            ) : viewMode === 'calendar' ? (
+              /* カレンダービュー */
+              <div>
+                {/* 曜日ヘッダー */}
+                <div className="grid grid-cols-7 gap-1 sm:gap-2 mb-2">
+                  {['日', '月', '火', '水', '木', '金', '土'].map((day, index) => (
+                    <div 
+                      key={day} 
+                      className={`text-center text-sm sm:text-base lg:text-lg font-bold p-2 rounded-lg ${
+                        index === 0 ? 'text-red-600 bg-red-50' : 
+                        index === 6 ? 'text-blue-600 bg-blue-50' : 
+                        'text-gray-700 bg-gray-50'
+                      }`}
+                    >
+                      {day}
+                    </div>
+                  ))}
+                </div>
+                
+                {/* カレンダーグリッド */}
+                <div className="grid grid-cols-7 gap-1 sm:gap-2">
+                  {calendarGrid.map((dateInfo, index) => (
+                    <div key={index} className="aspect-square">
+                      {dateInfo ? (
+                        <button
+                          onClick={() => setSelectedDate(dateInfo.dateStr)}
+                          className={`w-full h-full p-0.5 sm:p-1 md:p-2 border-2 rounded-lg transition-all hover:shadow-lg relative ${
+                            dateInfo.isToday 
+                              ? 'border-blue-500 bg-gradient-to-br from-blue-50 to-blue-100 shadow-md' 
+                              : selectedDate === dateInfo.dateStr
+                              ? 'border-purple-500 bg-gradient-to-br from-purple-50 to-purple-100 shadow-md'
+                              : 'border-gray-200 hover:border-gray-400 bg-white hover:bg-gray-50'
+                          }`}
+                        >
+                          <div className="text-center h-full flex flex-col justify-center items-center overflow-hidden">
+                            {/* 今日マーク */}
+                            {dateInfo.isToday && (
+                              <div className="absolute top-0 left-0 bg-red-500 text-white text-xs px-1 rounded-br">
+                                今
+                              </div>
+                            )}
+                            
+                            {/* 日付 */}
+                            <div className={`font-bold text-xs leading-none mb-1 ${
+                              dateInfo.date.getDay() === 0 ? 'text-red-600' : 
+                              dateInfo.date.getDay() === 6 ? 'text-blue-600' : 
+                              'text-gray-800'
+                            }`}>
+                              {dateInfo.date.getDate()}
+                            </div>
+                            
+                            {/* 状況表示 - 1行に2つ */}
+                            <div className="grid grid-cols-2 gap-px w-full">
+                              {/* 1便 */}
+                              <div className={`rounded text-xs font-bold py-px ${
+                                dateInfo.trip1Seats === -1 ? 'bg-gray-200 text-gray-500' :
+                                dateInfo.trip1Seats === 0 ? 'bg-red-100 text-red-600' :
+                                dateInfo.trip1Seats <= 2 ? 'bg-orange-100 text-orange-600' :
+                                'bg-green-100 text-green-600'
+                              }`}>
+                                1{getStatusText(dateInfo.trip1Seats)}
+                              </div>
+                              
+                              {/* 2便 */}
+                              <div className={`rounded text-xs font-bold py-px ${
+                                dateInfo.trip2Seats === -1 ? 'bg-gray-200 text-gray-500' :
+                                dateInfo.trip2Seats === 0 ? 'bg-red-100 text-red-600' :
+                                dateInfo.trip2Seats <= 2 ? 'bg-orange-100 text-orange-600' :
+                                'bg-green-100 text-green-600'
+                              }`}>
+                                2{getStatusText(dateInfo.trip2Seats)}
+                              </div>
+                            </div>
+                          </div>
+                        </button>
+                      ) : (
+                        <div className="w-full h-full"></div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ) : (
+              /* リストビュー */
+              <div className="space-y-3 max-h-[600px] overflow-y-auto">
+                {dates.map((dateInfo) => (
                   <div
                     key={dateInfo.dateStr}
-                    className={`flex-shrink-0 w-80 sm:w-96 ${
-                      selectedDate === dateInfo.dateStr ? 'ring-2 ring-primary' : ''
+                    className={`border-2 rounded-xl p-4 sm:p-6 hover:shadow-lg transition-all cursor-pointer relative ${
+                      dateInfo.isToday 
+                        ? 'border-blue-500 bg-gradient-to-r from-blue-50 to-blue-100 shadow-md' 
+                        : selectedDate === dateInfo.dateStr
+                        ? 'border-purple-500 bg-gradient-to-r from-purple-50 to-purple-100 shadow-md'
+                        : 'border-gray-200 bg-white hover:bg-gray-50'
                     }`}
+                    onClick={() => setSelectedDate(dateInfo.dateStr)}
                   >
-                    <Card 
-                      className={`cursor-pointer hover:shadow-xl transition-all duration-200 min-h-[500px] ${
-                        dateInfo.isToday ? 'border-blue-500 border-3 shadow-lg' : 'border-gray-200'
-                      }`}
-                      onClick={() => setSelectedDate(dateInfo.dateStr)}
-                      role="button"
-                      tabIndex={0}
-                      aria-label={`${dateInfo.date.getMonth() + 1}月${dateInfo.date.getDate()}日の運航スケジュールを選択`}
-                      onKeyDown={(e) => {
-                        if (e.key === 'Enter' || e.key === ' ') {
-                          e.preventDefault();
-                          setSelectedDate(dateInfo.dateStr);
-                        }
-                      }}
-                    >
-                      <CardHeader className="pb-3">
-                        <div className="flex justify-between items-center">
-                          <div>
-                            <div className="text-2xl font-bold">
-                              {dateInfo.date.getMonth() + 1}月{dateInfo.date.getDate()}日
-                            </div>
-                            <div className="text-sm text-gray-600">
-                              {dateInfo.dayOfWeek}曜日
-                              {dateInfo.isToday && (
-                                <span className="ml-2 text-primary font-semibold">本日</span>
-                              )}
-                            </div>
+                    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                      <div className="flex items-center gap-3">
+                        <div>
+                          <div className="font-bold text-lg sm:text-xl lg:text-2xl">
+                            {dateInfo.date.getMonth() + 1}月{dateInfo.date.getDate()}日
+                            <span className={`ml-2 text-sm sm:text-base ${
+                              dateInfo.date.getDay() === 0 ? 'text-red-600 bg-red-100 px-2 py-1 rounded-full' : 
+                              dateInfo.date.getDay() === 6 ? 'text-blue-600 bg-blue-100 px-2 py-1 rounded-full' : 
+                              'text-gray-600'
+                            }`}>
+                              ({dateInfo.dayOfWeek})
+                            </span>
                           </div>
-                          <Calendar className="h-6 w-6 text-gray-400" />
+                          {dateInfo.isToday && (
+                            <span className="inline-block mt-1 text-sm font-semibold text-white bg-red-500 px-2 py-1 rounded-full">本日</span>
+                          )}
                         </div>
-                      </CardHeader>
-                      <CardContent className="space-y-4">
+                      </div>
+                      
+                      <div className="flex gap-3 sm:gap-4 w-full sm:w-auto">
                         {/* 1便 */}
-                        <div className="border-2 border-gray-200 rounded-lg p-4 bg-white">
-                          <div className="flex justify-between items-center mb-3">
-                            <div className="font-bold text-xl text-gray-800">1便</div>
-                            <div className="text-sm text-gray-600">
-                              17:30〜23:30
-                            </div>
-                          </div>
-                          
-                          {/* 空席数バッジ（大きく目立つ） */}
-                          <div className="flex justify-center mb-4">
-                            {getStatusBadge(dateInfo.trip1Seats)}
-                          </div>
-                          
-                          {/* 予約ボタン */}
-                          <div className="text-center">
+                        <div className="flex-1 sm:flex-initial bg-white p-3 rounded-lg border border-gray-200">
+                          <div className="text-xs sm:text-sm text-gray-600 mb-2 font-medium">1便 (17:30〜23:30)</div>
+                          <div className="flex items-center gap-2">
                             {dateInfo.trip1Seats > 0 ? (
-                              <Link 
+                              <Link
                                 href={`/reservation?date=${dateInfo.dateStr}&trip=1`}
-                                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 inline-flex items-center justify-center rounded-md h-10 transition-colors"
+                                className="text-blue-600 hover:text-blue-700 font-bold text-sm sm:text-base underline decoration-2"
                               >
-                                この便を予約する
+                                予約可能（残{dateInfo.trip1Seats}席）
                               </Link>
                             ) : dateInfo.trip1Seats === 0 ? (
-                              <div className="w-full bg-gray-300 text-gray-500 py-2 inline-flex items-center justify-center rounded-md h-10 cursor-not-allowed">
-                                満席のため予約不可
-                              </div>
+                              <span className="text-red-600 font-bold text-sm sm:text-base bg-red-100 px-2 py-1 rounded">満席</span>
                             ) : (
-                              <div className="w-full bg-gray-300 text-gray-500 py-2 inline-flex items-center justify-center rounded-md h-10 cursor-not-allowed">
-                                運航なし
-                              </div>
+                              <span className="text-gray-500 font-medium text-sm sm:text-base bg-gray-100 px-2 py-1 rounded">休漁日</span>
                             )}
                           </div>
                         </div>
-
+                        
                         {/* 2便 */}
-                        <div className="border-2 border-gray-200 rounded-lg p-4 bg-white">
-                          <div className="flex justify-between items-center mb-3">
-                            <div className="font-bold text-xl text-gray-800">2便</div>
-                            <div className="text-sm text-gray-600">
-                              24:00〜5:30
-                            </div>
-                          </div>
-                          
-                          {/* 空席数バッジ（大きく目立つ） */}
-                          <div className="flex justify-center mb-4">
-                            {getStatusBadge(dateInfo.trip2Seats)}
-                          </div>
-                          
-                          {/* 予約ボタン */}
-                          <div className="text-center">
+                        <div className="flex-1 sm:flex-initial bg-white p-3 rounded-lg border border-gray-200">
+                          <div className="text-xs sm:text-sm text-gray-600 mb-2 font-medium">2便 (24:00〜5:30)</div>
+                          <div className="flex items-center gap-2">
                             {dateInfo.trip2Seats > 0 ? (
-                              <Link 
+                              <Link
                                 href={`/reservation?date=${dateInfo.dateStr}&trip=2`}
-                                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 inline-flex items-center justify-center rounded-md h-10 transition-colors"
+                                className="text-blue-600 hover:text-blue-700 font-bold text-sm sm:text-base underline decoration-2"
                               >
-                                この便を予約する
+                                予約可能（残{dateInfo.trip2Seats}席）
                               </Link>
                             ) : dateInfo.trip2Seats === 0 ? (
-                              <div className="w-full bg-gray-300 text-gray-500 py-2 inline-flex items-center justify-center rounded-md h-10 cursor-not-allowed">
-                                満席のため予約不可
-                              </div>
+                              <span className="text-red-600 font-bold text-sm sm:text-base bg-red-100 px-2 py-1 rounded">満席</span>
                             ) : (
-                              <div className="w-full bg-gray-300 text-gray-500 py-2 inline-flex items-center justify-center rounded-md h-10 cursor-not-allowed">
-                                運航なし
-                              </div>
+                              <span className="text-gray-500 font-medium text-sm sm:text-base bg-gray-100 px-2 py-1 rounded">休漁日</span>
                             )}
                           </div>
                         </div>
-                      </CardContent>
-                    </Card>
+                      </div>
+                    </div>
                   </div>
                 ))}
               </div>
-            </div>
-
+            )}
+            
+            {/* 選択された日付の詳細 */}
+            {selectedDate && !loading && (
+              <div className="mt-6 p-4 bg-blue-50 rounded-lg">
+                {(() => {
+                  const selected = dates.find(d => d.dateStr === selectedDate);
+                  if (!selected) return null;
+                  
+                  return (
+                    <div>
+                      <h4 className="font-bold text-lg mb-3">
+                        {selected.date.getMonth() + 1}月{selected.date.getDate()}日({selected.dayOfWeek})の予約
+                      </h4>
+                      <div className="grid md:grid-cols-2 gap-4">
+                        <div className="bg-white p-4 rounded-lg">
+                          <div className="flex justify-between items-center mb-2">
+                            <span className="font-bold">1便</span>
+                            <span className="text-sm text-gray-600">17:30〜23:30</span>
+                          </div>
+                          {selected.trip1Seats > 0 ? (
+                            <Link
+                              href={`/reservation?date=${selectedDate}&trip=1`}
+                              className="w-full bg-blue-600 hover:bg-blue-700 text-white text-center py-2 rounded-md inline-block transition-colors"
+                            >
+                              予約する（残{selected.trip1Seats}席）
+                            </Link>
+                          ) : selected.trip1Seats === 0 ? (
+                            <div className="text-center py-2 text-red-500">満席</div>
+                          ) : (
+                            <div className="text-center py-2 text-gray-500">休漁日</div>
+                          )}
+                        </div>
+                        
+                        <div className="bg-white p-4 rounded-lg">
+                          <div className="flex justify-between items-center mb-2">
+                            <span className="font-bold">2便</span>
+                            <span className="text-sm text-gray-600">24:00〜5:30</span>
+                          </div>
+                          {selected.trip2Seats > 0 ? (
+                            <Link
+                              href={`/reservation?date=${selectedDate}&trip=2`}
+                              className="w-full bg-blue-600 hover:bg-blue-700 text-white text-center py-2 rounded-md inline-block transition-colors"
+                            >
+                              予約する（残{selected.trip2Seats}席）
+                            </Link>
+                          ) : selected.trip2Seats === 0 ? (
+                            <div className="text-center py-2 text-red-500">満席</div>
+                          ) : (
+                            <div className="text-center py-2 text-gray-500">休漁日</div>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })()}
+              </div>
+            )}
+            
             <div className="mt-8 flex justify-center">
-              <Link 
-                href="/reservation" 
+              <Link
+                href="/reservation"
                 className="bg-blue-600 hover:bg-blue-700 text-white inline-flex items-center justify-center rounded-md px-6 py-3 h-12 font-medium transition-colors"
               >
                 <Calendar className="mr-2 h-5 w-5 flex-shrink-0" />
@@ -404,7 +483,7 @@ export function ScheduleSection() {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center">
-                <Clock className="mr-2 h-5 w-5 text-primary" />
+                <Anchor className="mr-2 h-5 w-5 text-primary" />
                 2便
               </CardTitle>
             </CardHeader>
@@ -412,19 +491,13 @@ export function ScheduleSection() {
               <p className="text-2xl font-bold mb-2">24:00 〜 5:30</p>
               <p className="text-gray-600">
                 深夜から早朝にかけての出船。
-                静かな海で集中して釣りを楽しめます。
+                静かな夜の海で集中して釣りを楽しめます。
               </p>
               <p className="text-sm text-orange-600 mt-2">
-                ※24:00頃出航、5:30頃帰港
+                ※24:00頃出船、5:30頃帰港
               </p>
             </CardContent>
           </Card>
-        </div>
-        
-        <div className="mt-8 text-center">
-          <p className="text-sm text-gray-600">
-            ※季節、天候により変更になる場合がありますのでご了承下さい。
-          </p>
         </div>
       </div>
     </section>
