@@ -195,27 +195,27 @@ export function ScheduleSection() {
             </div>
             
             {/* 凡例 */}
-            <div className="bg-gray-50 rounded-lg p-3 mt-4">
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs sm:text-sm">
-                <div className="flex items-center gap-1.5">
-                  <span className="bg-green-500 text-white text-[10px] sm:text-xs px-1.5 py-0.5 rounded font-bold">◎</span>
-                  <span className="text-gray-700">空席あり</span>
+            <div className="bg-gray-50 rounded-lg p-4 mt-4">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-sm">
+                <div className="flex items-center gap-2">
+                  <span className="bg-green-500 text-white text-xs sm:text-sm px-2 py-1 rounded font-bold">◎</span>
+                  <span className="text-gray-700 font-medium">空席あり</span>
                 </div>
-                <div className="flex items-center gap-1.5">
-                  <span className="bg-orange-500 text-white text-[10px] sm:text-xs px-1.5 py-0.5 rounded font-bold">2</span>
-                  <span className="text-gray-700">残2席以下</span>
+                <div className="flex items-center gap-2">
+                  <span className="bg-orange-500 text-white text-xs sm:text-sm px-2 py-1 rounded font-bold">2</span>
+                  <span className="text-gray-700 font-medium">残2席以下</span>
                 </div>
-                <div className="flex items-center gap-1.5">
-                  <span className="bg-red-500 text-white text-[10px] sm:text-xs px-1.5 py-0.5 rounded font-bold">満</span>
-                  <span className="text-gray-700">満席</span>
+                <div className="flex items-center gap-2">
+                  <span className="bg-red-500 text-white text-xs sm:text-sm px-2 py-1 rounded font-bold">満</span>
+                  <span className="text-gray-700 font-medium">満席</span>
                 </div>
-                <div className="flex items-center gap-1.5">
-                  <span className="text-gray-400 text-xs">休漁</span>
-                  <span className="text-gray-700">休漁日</span>
+                <div className="flex items-center gap-2">
+                  <span className="text-gray-400 text-sm font-medium">休漁</span>
+                  <span className="text-gray-700 font-medium">休漁日</span>
                 </div>
               </div>
-              <div className="mt-2 pt-2 border-t border-gray-200 text-xs text-gray-600">
-                ①=1便(17:30〜) ②=2便(24:00〜)
+              <div className="mt-3 pt-3 border-t border-gray-200 text-sm text-gray-600 font-medium">
+                ①=1便(17:30〜23:30) / ②=2便(24:00〜5:30)
               </div>
             </div>
           </CardHeader>
@@ -271,7 +271,7 @@ export function ScheduleSection() {
                 {/* カレンダーグリッド */}
                 <div className="grid grid-cols-7 gap-1 sm:gap-2">
                   {calendarGrid.map((dateInfo, index) => (
-                    <div key={index} className="aspect-square">
+                    <div key={index} className="aspect-square min-h-[70px] sm:min-h-[90px] md:min-h-[120px]">
                       {dateInfo ? (
                         <button
                           onClick={() => setSelectedDate(dateInfo.dateStr)}
@@ -283,9 +283,9 @@ export function ScheduleSection() {
                               : 'border-gray-200 hover:border-gray-300 bg-white hover:bg-gray-50'
                           }`}
                         >
-                          <div className="h-full flex flex-col p-0.5 sm:p-1">
+                          <div className="h-full flex flex-col p-1 sm:p-2">
                             {/* 日付 */}
-                            <div className={`font-bold text-xs sm:text-sm md:text-base lg:text-lg text-center ${
+                            <div className={`font-bold text-sm sm:text-lg md:text-xl lg:text-2xl text-center mb-1 ${
                               dateInfo.date.getDay() === 0 ? 'text-red-600' : 
                               dateInfo.date.getDay() === 6 ? 'text-blue-600' : 
                               'text-gray-900'
@@ -293,40 +293,40 @@ export function ScheduleSection() {
                               {dateInfo.date.getDate()}
                             </div>
                             
-                            {/* 空席状況 - スマホでも見やすく */}
-                            <div className="flex-1 flex flex-col justify-center space-y-0.5 mt-1">
+                            {/* 空席状況 */}
+                            <div className="flex-1 flex flex-col justify-center space-y-1">
                               {/* 両便休漁日の場合 */}
                               {dateInfo.trip1Seats === -1 && dateInfo.trip2Seats === -1 ? (
                                 <div className="text-center">
-                                  <span className="text-gray-400 text-xs sm:text-sm font-medium">休漁</span>
+                                  <span className="text-gray-400 text-sm sm:text-base font-medium">休漁</span>
                                 </div>
                               ) : (
                                 <>
                                   {/* 1便 */}
-                                  <div className="flex items-center justify-center gap-0.5 px-0.5">
-                                    <span className="text-[10px] sm:text-xs text-gray-600 font-medium">①</span>
+                                  <div className="flex items-center justify-center gap-1">
+                                    <span className="text-xs sm:text-sm text-gray-600 font-bold">①</span>
                                     {dateInfo.trip1Seats === -1 ? (
-                                      <span className="text-gray-400 text-[10px] sm:text-xs">-</span>
+                                      <span className="text-gray-400 text-xs sm:text-sm">-</span>
                                     ) : dateInfo.trip1Seats === 0 ? (
-                                      <span className="bg-red-500 text-white text-[10px] sm:text-xs px-1 rounded font-bold">満</span>
+                                      <span className="bg-red-500 text-white text-xs sm:text-sm px-1.5 py-0.5 rounded font-bold">満</span>
                                     ) : dateInfo.trip1Seats <= 2 ? (
-                                      <span className="bg-orange-500 text-white text-[10px] sm:text-xs px-1 rounded font-bold">{dateInfo.trip1Seats}</span>
+                                      <span className="bg-orange-500 text-white text-xs sm:text-sm px-1.5 py-0.5 rounded font-bold">{dateInfo.trip1Seats}</span>
                                     ) : (
-                                      <span className="bg-green-500 text-white text-[10px] sm:text-xs px-1 rounded font-bold">◎</span>
+                                      <span className="bg-green-500 text-white text-xs sm:text-sm px-1.5 py-0.5 rounded font-bold">◎</span>
                                     )}
                                   </div>
                                   
                                   {/* 2便 */}
-                                  <div className="flex items-center justify-center gap-0.5 px-0.5">
-                                    <span className="text-[10px] sm:text-xs text-gray-600 font-medium">②</span>
+                                  <div className="flex items-center justify-center gap-1">
+                                    <span className="text-xs sm:text-sm text-gray-600 font-bold">②</span>
                                     {dateInfo.trip2Seats === -1 ? (
-                                      <span className="text-gray-400 text-[10px] sm:text-xs">-</span>
+                                      <span className="text-gray-400 text-xs sm:text-sm">-</span>
                                     ) : dateInfo.trip2Seats === 0 ? (
-                                      <span className="bg-red-500 text-white text-[10px] sm:text-xs px-1 rounded font-bold">満</span>
+                                      <span className="bg-red-500 text-white text-xs sm:text-sm px-1.5 py-0.5 rounded font-bold">満</span>
                                     ) : dateInfo.trip2Seats <= 2 ? (
-                                      <span className="bg-orange-500 text-white text-[10px] sm:text-xs px-1 rounded font-bold">{dateInfo.trip2Seats}</span>
+                                      <span className="bg-orange-500 text-white text-xs sm:text-sm px-1.5 py-0.5 rounded font-bold">{dateInfo.trip2Seats}</span>
                                     ) : (
-                                      <span className="bg-green-500 text-white text-[10px] sm:text-xs px-1 rounded font-bold">◎</span>
+                                      <span className="bg-green-500 text-white text-xs sm:text-sm px-1.5 py-0.5 rounded font-bold">◎</span>
                                     )}
                                   </div>
                                 </>
@@ -335,7 +335,7 @@ export function ScheduleSection() {
 
                             {/* 今日マーク */}
                             {dateInfo.isToday && (
-                              <div className="absolute top-0 right-0 bg-blue-500 text-white text-[8px] sm:text-[10px] px-1 py-0.5 rounded-bl font-bold">
+                              <div className="absolute top-0 right-0 bg-blue-500 text-white text-xs sm:text-sm px-2 py-1 rounded-bl font-bold">
                                 今日
                               </div>
                             )}
