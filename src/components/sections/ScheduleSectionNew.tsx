@@ -100,8 +100,8 @@ export function ScheduleSectionNew() {
   const getStatusText = (seats: number, isMobile: boolean = false) => {
     if (seats === -1) return '休';
     if (seats === 0) return '満';
-    if (seats <= 2) return isMobile ? `残${seats}` : `残${seats}席`;
-    return '◎';
+    if (seats <= 2) return `${seats}`;
+    return '○';
   };
 
   const changeMonth = (direction: 'prev' | 'next') => {
@@ -264,9 +264,16 @@ export function ScheduleSectionNew() {
                               : 'border-gray-200 hover:border-gray-400 bg-white hover:bg-gray-50'
                           }`}
                         >
-                          <div className="text-center h-full flex flex-col justify-between p-0.5 sm:p-1">
+                          <div className="text-center h-full flex flex-col justify-center items-center overflow-hidden">
+                            {/* 今日マーク */}
+                            {dateInfo.isToday && (
+                              <div className="absolute top-0 left-0 bg-red-500 text-white text-xs px-1 rounded-br">
+                                今
+                              </div>
+                            )}
+                            
                             {/* 日付 */}
-                            <div className={`font-bold text-xs sm:text-sm lg:text-base leading-none ${
+                            <div className={`font-bold text-xs leading-none mb-1 ${
                               dateInfo.date.getDay() === 0 ? 'text-red-600' : 
                               dateInfo.date.getDay() === 6 ? 'text-blue-600' : 
                               'text-gray-800'
@@ -274,36 +281,26 @@ export function ScheduleSectionNew() {
                               {dateInfo.date.getDate()}
                             </div>
                             
-                            {/* 今日マーク */}
-                            {dateInfo.isToday && (
-                              <div className="absolute -top-0.5 -right-0.5 bg-red-500 text-white text-xs px-1 py-0.5 rounded-full leading-none">
-                                今
-                              </div>
-                            )}
-                            
-                            <div className="space-y-0.5 sm:space-y-1">
+                            {/* 状況表示 - 1行に2つ */}
+                            <div className="grid grid-cols-2 gap-px w-full">
                               {/* 1便 */}
-                              <div className="flex items-center justify-center">
-                                <div className={`w-full rounded px-0.5 sm:px-1 py-0.5 text-xs font-bold leading-tight ${
-                                  dateInfo.trip1Seats === -1 ? 'bg-gray-200 text-gray-500' :
-                                  dateInfo.trip1Seats === 0 ? 'bg-red-100 text-red-600' :
-                                  dateInfo.trip1Seats <= 2 ? 'bg-orange-100 text-orange-600' :
-                                  'bg-green-100 text-green-600'
-                                }`}>
-                                  1便{getStatusText(dateInfo.trip1Seats, true)}
-                                </div>
+                              <div className={`rounded text-xs font-bold py-px ${
+                                dateInfo.trip1Seats === -1 ? 'bg-gray-200 text-gray-500' :
+                                dateInfo.trip1Seats === 0 ? 'bg-red-100 text-red-600' :
+                                dateInfo.trip1Seats <= 2 ? 'bg-orange-100 text-orange-600' :
+                                'bg-green-100 text-green-600'
+                              }`}>
+                                1{getStatusText(dateInfo.trip1Seats)}
                               </div>
                               
                               {/* 2便 */}
-                              <div className="flex items-center justify-center">
-                                <div className={`w-full rounded px-0.5 sm:px-1 py-0.5 text-xs font-bold leading-tight ${
-                                  dateInfo.trip2Seats === -1 ? 'bg-gray-200 text-gray-500' :
-                                  dateInfo.trip2Seats === 0 ? 'bg-red-100 text-red-600' :
-                                  dateInfo.trip2Seats <= 2 ? 'bg-orange-100 text-orange-600' :
-                                  'bg-green-100 text-green-600'
-                                }`}>
-                                  2便{getStatusText(dateInfo.trip2Seats, true)}
-                                </div>
+                              <div className={`rounded text-xs font-bold py-px ${
+                                dateInfo.trip2Seats === -1 ? 'bg-gray-200 text-gray-500' :
+                                dateInfo.trip2Seats === 0 ? 'bg-red-100 text-red-600' :
+                                dateInfo.trip2Seats <= 2 ? 'bg-orange-100 text-orange-600' :
+                                'bg-green-100 text-green-600'
+                              }`}>
+                                2{getStatusText(dateInfo.trip2Seats)}
                               </div>
                             </div>
                           </div>
