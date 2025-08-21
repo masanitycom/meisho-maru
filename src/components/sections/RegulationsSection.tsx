@@ -85,19 +85,17 @@ export function RegulationsSection() {
                   お客様の安全を最優先に運航しています
                 </p>
               </div>
-              <Button asChild className="w-full bg-blue-600 hover:bg-blue-700 h-12 sm:h-11 text-base sm:text-sm font-semibold touch-manipulation">
-                <a 
-                  href="/pdf/businessregulations.pdf"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center justify-center gap-2 px-4 py-3 w-full h-full"
-                  title="明勝丸 遊漁船業務規程 - 鳥取県琴浦町の白いか釣り専門船の安全運航基準・料金規定"
-                  aria-label="明勝丸の遊漁船業務規程をブラウザで直接開く"
-                >
-                  <Download className="h-5 w-5 sm:h-4 sm:w-4 flex-shrink-0" />
-                  <span>業務規程を見る</span>
-                </a>
-              </Button>
+              <a 
+                href="/pdf/businessregulations.pdf"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full bg-blue-600 hover:bg-blue-700 h-12 sm:h-11 text-base sm:text-sm font-semibold touch-manipulation flex items-center justify-center gap-2 px-4 py-3 text-white rounded-md transition-colors"
+                title="明勝丸 遊漁船業務規程 - 鳥取県琴浦町の白いか釣り専門船の安全運航基準・料金規定"
+                aria-label="明勝丸の遊漁船業務規程をブラウザで直接開く"
+              >
+                <Download className="h-5 w-5 sm:h-4 sm:w-4 flex-shrink-0" />
+                <span>業務規程を見る</span>
+              </a>
             </CardContent>
           </Card>
 
@@ -124,19 +122,17 @@ export function RegulationsSection() {
                   鳥取県知事認可の遊漁船業者です
                 </p>
               </div>
-              <Button asChild className="w-full bg-green-600 hover:bg-green-700 h-12 sm:h-11 text-base sm:text-sm font-semibold touch-manipulation">
-                <a 
-                  href="/pdf/RecreationalFishingBoatOperatorRegistrationForm.pdf"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center justify-center gap-2 px-4 py-3 w-full h-full"
-                  title="明勝丸 遊漁船業者登録票 - 鳥取県知事認可 正式登録番号記載 白いか釣り専門船"
-                  aria-label="明勝丸の遊漁船業者登録票をブラウザで直接開く（鳥取県知事認可）"
-                >
-                  <Download className="h-5 w-5 sm:h-4 sm:w-4 flex-shrink-0" />
-                  <span>登録票を見る</span>
-                </a>
-              </Button>
+              <a 
+                href="/pdf/RecreationalFishingBoatOperatorRegistrationForm.pdf"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full bg-green-600 hover:bg-green-700 h-12 sm:h-11 text-base sm:text-sm font-semibold touch-manipulation flex items-center justify-center gap-2 px-4 py-3 text-white rounded-md transition-colors"
+                title="明勝丸 遊漁船業者登録票 - 鳥取県知事認可 正式登録番号記載 白いか釣り専門船"
+                aria-label="明勝丸の遊漁船業者登録票をブラウザで直接開く（鳥取県知事認可）"
+              >
+                <Download className="h-5 w-5 sm:h-4 sm:w-4 flex-shrink-0" />
+                <span>登録票を見る</span>
+              </a>
             </CardContent>
           </Card>
         </div>
