@@ -87,6 +87,7 @@ export default function RootLayout({
   return (
     <html lang="ja">
       <head>
+        <link rel="canonical" href="https://kotourameishomaru.com/" />
         <link rel="icon" href="/favicon.ico" sizes="any" />
         <link rel="shortcut icon" href="/favicon.ico" />
         <link rel="manifest" href="/manifest.json" />

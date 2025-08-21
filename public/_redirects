@@ -1,0 +1,6 @@
+# WWWからnon-WWWへのリダイレクト
+https://www.kotourameishomaru.com/* https://kotourameishomaru.com/:splat 301!
+http://www.kotourameishomaru.com/* https://kotourameishomaru.com/:splat 301!
+
+# HTTPからHTTPSへのリダイレクト  
+http://kotourameishomaru.com/* https://kotourameishomaru.com/:splat 301!
