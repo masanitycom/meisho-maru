@@ -293,8 +293,8 @@ export function ScheduleSection() {
                               {dateInfo.date.getDate()}
                             </div>
                             
-                            {/* 空席状況 - スマホではコンパクトに */}
-                            <div className="flex-1 flex flex-col justify-center space-y-0.5 sm:space-y-1">
+                            {/* 空席状況 - ①②を縦に整列 */}
+                            <div className="flex-1 flex flex-col justify-center items-center space-y-0.5 sm:space-y-1">
                               {/* 両便休漁日の場合 */}
                               {dateInfo.trip1Seats === -1 && dateInfo.trip2Seats === -1 ? (
                                 <div className="text-center">
@@ -303,31 +303,35 @@ export function ScheduleSection() {
                               ) : (
                                 <>
                                   {/* 1便 */}
-                                  <div className="flex items-center justify-center gap-0.5 sm:gap-1">
-                                    <span className="text-[9px] sm:text-xs md:text-sm text-gray-600 font-bold">①</span>
-                                    {dateInfo.trip1Seats === -1 ? (
-                                      <span className="text-gray-400 text-[9px] sm:text-xs">-</span>
-                                    ) : dateInfo.trip1Seats === 0 ? (
-                                      <span className="bg-red-500 text-white text-[9px] sm:text-xs px-0.5 sm:px-1 py-0.5 rounded font-bold">満</span>
-                                    ) : dateInfo.trip1Seats <= 2 ? (
-                                      <span className="bg-orange-500 text-white text-[9px] sm:text-xs px-0.5 sm:px-1 py-0.5 rounded font-bold">{dateInfo.trip1Seats}</span>
-                                    ) : (
-                                      <span className="bg-green-500 text-white text-[9px] sm:text-xs px-0.5 sm:px-1 py-0.5 rounded font-bold">◎</span>
-                                    )}
+                                  <div className="flex items-center justify-center gap-0.5 sm:gap-1 w-full">
+                                    <div className="flex items-center justify-center gap-0.5 sm:gap-1">
+                                      <span className="text-[9px] sm:text-xs md:text-sm text-gray-600 font-bold w-3 text-center">①</span>
+                                      {dateInfo.trip1Seats === -1 ? (
+                                        <span className="text-gray-400 text-[9px] sm:text-xs">-</span>
+                                      ) : dateInfo.trip1Seats === 0 ? (
+                                        <span className="bg-red-500 text-white text-[9px] sm:text-xs px-0.5 sm:px-1 py-0.5 rounded font-bold">満</span>
+                                      ) : dateInfo.trip1Seats <= 2 ? (
+                                        <span className="bg-orange-500 text-white text-[9px] sm:text-xs px-0.5 sm:px-1 py-0.5 rounded font-bold">{dateInfo.trip1Seats}</span>
+                                      ) : (
+                                        <span className="bg-green-500 text-white text-[9px] sm:text-xs px-0.5 sm:px-1 py-0.5 rounded font-bold">◎</span>
+                                      )}
+                                    </div>
                                   </div>
                                   
                                   {/* 2便 */}
-                                  <div className="flex items-center justify-center gap-0.5 sm:gap-1">
-                                    <span className="text-[9px] sm:text-xs md:text-sm text-gray-600 font-bold">②</span>
-                                    {dateInfo.trip2Seats === -1 ? (
-                                      <span className="text-gray-400 text-[9px] sm:text-xs">-</span>
-                                    ) : dateInfo.trip2Seats === 0 ? (
-                                      <span className="bg-red-500 text-white text-[9px] sm:text-xs px-0.5 sm:px-1 py-0.5 rounded font-bold">湠</span>
-                                    ) : dateInfo.trip2Seats <= 2 ? (
-                                      <span className="bg-orange-500 text-white text-[9px] sm:text-xs px-0.5 sm:px-1 py-0.5 rounded font-bold">{dateInfo.trip2Seats}</span>
-                                    ) : (
-                                      <span className="bg-green-500 text-white text-[9px] sm:text-xs px-0.5 sm:px-1 py-0.5 rounded font-bold">◎</span>
-                                    )}
+                                  <div className="flex items-center justify-center gap-0.5 sm:gap-1 w-full">
+                                    <div className="flex items-center justify-center gap-0.5 sm:gap-1">
+                                      <span className="text-[9px] sm:text-xs md:text-sm text-gray-600 font-bold w-3 text-center">②</span>
+                                      {dateInfo.trip2Seats === -1 ? (
+                                        <span className="text-gray-400 text-[9px] sm:text-xs">-</span>
+                                      ) : dateInfo.trip2Seats === 0 ? (
+                                        <span className="bg-red-500 text-white text-[9px] sm:text-xs px-0.5 sm:px-1 py-0.5 rounded font-bold">湠</span>
+                                      ) : dateInfo.trip2Seats <= 2 ? (
+                                        <span className="bg-orange-500 text-white text-[9px] sm:text-xs px-0.5 sm:px-1 py-0.5 rounded font-bold">{dateInfo.trip2Seats}</span>
+                                      ) : (
+                                        <span className="bg-green-500 text-white text-[9px] sm:text-xs px-0.5 sm:px-1 py-0.5 rounded font-bold">◎</span>
+                                      )}
+                                    </div>
                                   </div>
                                 </>
                               )}
