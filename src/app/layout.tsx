@@ -37,7 +37,7 @@ export const metadata: Metadata = {
   },
   metadataBase: new URL("https://kotourameishomaru.com"),
   alternates: {
-    canonical: "https://kotourameishomaru.com",
+    canonical: "https://kotourameishomaru.com/",
   },
   openGraph: {
     title: "鳥取・琴浦町 白いか釣り船明勝丸 | 日本海遊漁船・夜釣り専門",
