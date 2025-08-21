@@ -104,6 +104,13 @@ export function ScheduleSection() {
     return '○';
   };
 
+  const getStatusEmoji = (seats: number) => {
+    if (seats === -1) return '⚫';
+    if (seats === 0) return '🔴';
+    if (seats <= 2) return '🟡';
+    return '🟢';
+  };
+
   const changeMonth = (direction: 'prev' | 'next') => {
     setCurrentMonth(prev => {
       const newMonth = new Date(prev);
@@ -181,22 +188,22 @@ export function ScheduleSection() {
             </div>
             
             {/* 凡例 */}
-            <div className="flex flex-wrap gap-3 mt-4 text-sm">
-              <span className="flex items-center gap-1">
-                <CheckCircle className="h-4 w-4 text-green-500" />
-                空席あり
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-4 text-sm">
+              <span className="flex items-center gap-2 bg-green-50 p-2 rounded-lg">
+                <span className="text-lg">🟢</span>
+                <span className="font-medium">空席あり</span>
               </span>
-              <span className="flex items-center gap-1">
-                <AlertCircle className="h-4 w-4 text-orange-500" />
-                残りわずか
+              <span className="flex items-center gap-2 bg-yellow-50 p-2 rounded-lg">
+                <span className="text-lg">🟡</span>
+                <span className="font-medium">残りわずか</span>
               </span>
-              <span className="flex items-center gap-1">
-                <XCircle className="h-4 w-4 text-red-500" />
-                満席
+              <span className="flex items-center gap-2 bg-red-50 p-2 rounded-lg">
+                <span className="text-lg">🔴</span>
+                <span className="font-medium">満席</span>
               </span>
-              <span className="flex items-center gap-1">
-                <XCircle className="h-4 w-4 text-gray-500" />
-                休漁日
+              <span className="flex items-center gap-2 bg-gray-50 p-2 rounded-lg">
+                <span className="text-lg">⚫</span>
+                <span className="font-medium">休漁日</span>
               </span>
             </div>
           </CardHeader>
@@ -264,7 +271,7 @@ export function ScheduleSection() {
                               : 'border-gray-200 hover:border-gray-400 bg-white hover:bg-gray-50'
                           }`}
                         >
-                          <div className="text-center h-full flex flex-col justify-center items-center overflow-hidden">
+                          <div className="text-center h-full flex flex-col justify-between p-1 overflow-hidden">
                             {/* 今日マーク */}
                             {dateInfo.isToday && (
                               <div className="absolute top-0 left-0 bg-red-500 text-white text-xs px-1 rounded-br">
@@ -273,7 +280,7 @@ export function ScheduleSection() {
                             )}
                             
                             {/* 日付 */}
-                            <div className={`font-bold text-xs leading-none mb-1 ${
+                            <div className={`font-bold text-sm sm:text-base leading-none ${
                               dateInfo.date.getDay() === 0 ? 'text-red-600' : 
                               dateInfo.date.getDay() === 6 ? 'text-blue-600' : 
                               'text-gray-800'
@@ -281,26 +288,32 @@ export function ScheduleSection() {
                               {dateInfo.date.getDate()}
                             </div>
                             
-                            {/* 状況表示 - 1行に2つ */}
-                            <div className="grid grid-cols-2 gap-px w-full">
+                            {/* 状況表示 - 大きくして見やすく */}
+                            <div className="flex flex-col space-y-0.5 w-full">
                               {/* 1便 */}
-                              <div className={`rounded text-xs font-bold py-px ${
-                                dateInfo.trip1Seats === -1 ? 'bg-gray-200 text-gray-500' :
-                                dateInfo.trip1Seats === 0 ? 'bg-red-100 text-red-600' :
-                                dateInfo.trip1Seats <= 2 ? 'bg-orange-100 text-orange-600' :
-                                'bg-green-100 text-green-600'
-                              }`}>
-                                1{getStatusText(dateInfo.trip1Seats)}
+                              <div className="flex items-center justify-center gap-1">
+                                <span className="text-lg" title={`1便 ${
+                                  dateInfo.trip1Seats === -1 ? '休漁日' :
+                                  dateInfo.trip1Seats === 0 ? '満席' :
+                                  dateInfo.trip1Seats <= 2 ? `残り${dateInfo.trip1Seats}席` :
+                                  '空席あり'
+                                }`}>
+                                  {getStatusEmoji(dateInfo.trip1Seats)}
+                                </span>
+                                <span className="text-xs font-bold">1</span>
                               </div>
                               
                               {/* 2便 */}
-                              <div className={`rounded text-xs font-bold py-px ${
-                                dateInfo.trip2Seats === -1 ? 'bg-gray-200 text-gray-500' :
-                                dateInfo.trip2Seats === 0 ? 'bg-red-100 text-red-600' :
-                                dateInfo.trip2Seats <= 2 ? 'bg-orange-100 text-orange-600' :
-                                'bg-green-100 text-green-600'
-                              }`}>
-                                2{getStatusText(dateInfo.trip2Seats)}
+                              <div className="flex items-center justify-center gap-1">
+                                <span className="text-lg" title={`2便 ${
+                                  dateInfo.trip2Seats === -1 ? '休漁日' :
+                                  dateInfo.trip2Seats === 0 ? '満席' :
+                                  dateInfo.trip2Seats <= 2 ? `残り${dateInfo.trip2Seats}席` :
+                                  '空席あり'
+                                }`}>
+                                  {getStatusEmoji(dateInfo.trip2Seats)}
+                                </span>
+                                <span className="text-xs font-bold">2</span>
                               </div>
                             </div>
                           </div>
