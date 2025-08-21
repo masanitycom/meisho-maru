@@ -41,17 +41,5 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: 'monthly',
       priority: 0.7,
     },
-    {
-      url: `${baseUrl}/admin`,
-      lastModified: currentDate,
-      changeFrequency: 'weekly',
-      priority: 0.3,
-    },
-    {
-      url: `${baseUrl}/admin/schedule`,
-      lastModified: currentDate,
-      changeFrequency: 'daily',
-      priority: 0.4,
-    },
   ];
 }
