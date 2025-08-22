@@ -108,10 +108,6 @@ export function InfoSection() {
                     </li>
                     <li className="flex items-start">
                       <Check className="h-4 w-4 text-green-500 mr-2 mt-0.5" />
-                      <span>エサ代</span>
-                    </li>
-                    <li className="flex items-start">
-                      <Check className="h-4 w-4 text-green-500 mr-2 mt-0.5" />
                       <span>氷</span>
                     </li>
                     <li className="flex items-start">
