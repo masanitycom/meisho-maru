@@ -218,6 +218,18 @@ export function ScheduleSection() {
                 ①=1便(17:30〜23:30) / ②=2便(24:00〜5:30)
               </div>
             </div>
+            
+            {/* 最少催行人数の注意書き */}
+            <div className="bg-orange-50 border border-orange-200 rounded-lg p-4 mt-4">
+              <div className="flex items-start gap-2">
+                <span className="text-orange-600 font-bold text-lg">※</span>
+                <div className="text-sm text-gray-700">
+                  <p className="font-medium mb-1">最少催行人数について</p>
+                  <p>出船は2名様以上からとなります。</p>
+                  <p>他のお客様のご予約がない場合、1名様のみでは出航できませんので、あらかじめご了承ください。</p>
+                </div>
+              </div>
+            </div>
           </CardHeader>
           
           <CardContent>
