@@ -20,7 +20,7 @@ export function InstagramBanner() {
 
             {/* 右側：ボタン */}
             <a
-              href="https://www.instagram.com/meisho_maru"
+              href="https://www.instagram.com/meisho_maru/"
               target="_blank"
               rel="noopener noreferrer"
               className="bg-white hover:bg-gray-100 text-pink-600 font-bold px-6 py-3 shadow-xl hover:shadow-2xl transition-all hover:scale-105 inline-flex items-center rounded-md h-12"

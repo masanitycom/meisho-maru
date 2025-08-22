@@ -284,7 +284,7 @@ export default function RootLayout({
                   "琴浦町"
                 ],
                 "sameAs": [
-                  "https://www.instagram.com/meisho_maru",
+                  "https://www.instagram.com/meisho_maru/",
                   "https://lin.ee/HQX3Ezq"
                 ],
                 "hasCredential": [
@@ -352,7 +352,7 @@ export default function RootLayout({
                   }
                 ],
                 "sameAs": [
-                  "https://www.instagram.com/meisho_maru",
+                  "https://www.instagram.com/meisho_maru/",
                   "https://lin.ee/HQX3Ezq"
                 ]
               },

@@ -199,7 +199,7 @@ function ReservationSuccessContent() {
                     シェアする
                   </Button>
                   <Button asChild variant="outline" className="w-full justify-start">
-                    <a href="https://www.instagram.com/meisho_maru" target="_blank" rel="noopener noreferrer">
+                    <a href="https://www.instagram.com/meisho_maru/" target="_blank" rel="noopener noreferrer">
                       <Instagram className="mr-2 h-4 w-4" />
                       Instagram をフォロー
                     </a>
