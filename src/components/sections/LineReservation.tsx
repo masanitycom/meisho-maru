@@ -102,6 +102,10 @@ export function LineReservation() {
             <ul className="space-y-2 text-gray-700">
               <li className="flex items-start">
                 <span className="text-orange-600 mr-2">•</span>
+                出船は2名様以上からとなります
+              </li>
+              <li className="flex items-start">
+                <span className="text-orange-600 mr-2">•</span>
                 ご予約は3日前までにお願いいたします
               </li>
               <li className="flex items-start">
