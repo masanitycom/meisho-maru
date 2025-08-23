@@ -51,7 +51,7 @@ export function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/reservation" className="text-gray-400 hover:text-white transition-colors">
+                <Link href="https://kotourameishomaru.com/booking-methods" className="text-gray-400 hover:text-white transition-colors">
                   ご予約
                 </Link>
               </li>
