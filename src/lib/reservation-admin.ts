@@ -53,6 +53,9 @@ export const deleteLastManualReservation = async (
   console.log('Normalized date for deletion:', normalizedDate);
   
   // 最新の手動予約を1件取得
+  const supabase = getSupabaseClient();
+  if (!supabase) throw new Error('Supabase client not initialized');
+  
   const { data: reservation, error: fetchError } = await supabase
     .from('reservations')
     .select('id')
