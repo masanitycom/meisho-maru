@@ -77,7 +77,7 @@ export const upsertCustomer = async (customerData: {
   return data
 }
 
-// 予約可能席数を計算（クライアントサイド用）
+// 予約可能席数を計算（クライアントサイド用、schedulesテーブルを使わない）
 export const getAvailableSeats = async (date: string, tripNumber: number) => {
   const supabase = getSupabaseClient()
   if (!supabase) {
@@ -86,24 +86,6 @@ export const getAvailableSeats = async (date: string, tripNumber: number) => {
   }
 
   try {
-    // スケジュールから定員と運航状態を取得
-    const { data: schedule, error: scheduleError } = await supabase
-      .from('schedules')
-      .select('max_capacity, is_available')
-      .eq('date', date)
-      .eq('trip_number', tripNumber)
-      .single()
-      
-    if (scheduleError) {
-      // スケジュールが存在しない場合はデフォルト値（定員8名固定）
-      return 8
-    }
-    
-    // 運航停止の場合は-1を返す（休漁日として識別）
-    if (!schedule.is_available) {
-      return -1
-    }
-    
     // 既存予約数を取得（リアルタイム）
     const { data: reservations, error: reservationError } = await supabase
       .from('reservations')
@@ -114,10 +96,12 @@ export const getAvailableSeats = async (date: string, tripNumber: number) => {
       
     if (reservationError) {
       console.error(`予約取得エラー ${date}-${tripNumber}:`, reservationError);
-      throw reservationError
+      return 8; // エラーの場合はデフォルト値
     }
     
     const bookedSeats = reservations?.reduce((sum, r) => sum + r.people_count, 0) || 0
+    console.log(`${date} ${tripNumber}便: 予約済み ${bookedSeats}席`);
+    
     // 定員は常に8名固定
     const availableSeats = 8 - bookedSeats
     
