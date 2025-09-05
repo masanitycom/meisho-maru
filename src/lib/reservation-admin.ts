@@ -1,4 +1,4 @@
-import { supabase } from './supabase';
+import { getSupabaseClient } from './supabase-client';
 import { normalizeDate } from './date-utils';
 
 // 手動予約の作成（電話・LINE予約用）
@@ -11,6 +11,9 @@ export const createManualReservation = async (
   
   const normalizedDate = normalizeDate(date);
   console.log('Normalized date:', normalizedDate);
+  
+  const supabase = getSupabaseClient();
+  if (!supabase) throw new Error('Supabase client not initialized');
   
   const { data, error } = await supabase
     .from('reservations')
@@ -87,6 +90,9 @@ export const getReservationCount = async (
   tripNumber: number
 ): Promise<number> => {
   const normalizedDate = normalizeDate(date);
+  
+  const supabase = getSupabaseClient();
+  if (!supabase) throw new Error('Supabase client not initialized');
   
   const { data, error } = await supabase
     .from('reservations')
