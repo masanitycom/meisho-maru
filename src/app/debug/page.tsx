@@ -3,8 +3,22 @@
 import { useState, useEffect } from 'react';
 import { getSupabaseClient } from '@/lib/supabase-client';
 
+interface EnvStatus {
+  hasUrl: boolean;
+  urlPrefix: string;
+  hasKey: boolean;
+  keyPrefix: string;
+  client: boolean;
+}
+
 export default function DebugPage() {
-  const [envStatus, setEnvStatus] = useState<any>({});
+  const [envStatus, setEnvStatus] = useState<EnvStatus>({
+    hasUrl: false,
+    urlPrefix: '',
+    hasKey: false,
+    keyPrefix: '',
+    client: false
+  });
   const [testResult, setTestResult] = useState<string>('');
 
   useEffect(() => {
@@ -40,8 +54,8 @@ export default function DebugPage() {
       } else {
         setTestResult(`SUCCESS: Connected to Supabase. Data: ${JSON.stringify(data)}`);
       }
-    } catch (err: any) {
-      setTestResult(`EXCEPTION: ${err.message}`);
+    } catch (err: unknown) {
+      setTestResult(`EXCEPTION: ${err instanceof Error ? err.message : String(err)}`);
     }
   };
 
@@ -83,8 +97,8 @@ export default function DebugPage() {
             .eq('id', data[0].id);
         }
       }
-    } catch (err: any) {
-      setTestResult(`INSERT EXCEPTION: ${err.message}`);
+    } catch (err: unknown) {
+      setTestResult(`INSERT EXCEPTION: ${err instanceof Error ? err.message : String(err)}`);
     }
   };
 
