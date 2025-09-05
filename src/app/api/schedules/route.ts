@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getAvailableSeats } from '@/lib/supabase';
+import { getAvailableSeatsServer } from '@/lib/supabase-server';
 import { getJSTDate } from '@/lib/date-utils';
 
 export const dynamic = 'force-dynamic';
@@ -20,8 +20,8 @@ export async function GET(request: NextRequest) {
       
       try {
         const [trip1Seats, trip2Seats] = await Promise.all([
-          getAvailableSeats(dateStr, 1),
-          getAvailableSeats(dateStr, 2)
+          getAvailableSeatsServer(dateStr, 1),
+          getAvailableSeatsServer(dateStr, 2)
         ]);
         
         return {
