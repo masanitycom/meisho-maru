@@ -69,8 +69,12 @@ export default function ScheduleManagePage() {
             getAvailableSeats(dateStr, 2)
           ]);
           
-          const trip1Schedule = schedulesFromDB?.find(s => s.trip_number === 1);
-          const trip2Schedule = schedulesFromDB?.find(s => s.trip_number === 2);
+          const trip1Schedule = Array.isArray(schedulesFromDB) 
+            ? schedulesFromDB.find(s => s.trip_number === 1)
+            : undefined;
+          const trip2Schedule = Array.isArray(schedulesFromDB)
+            ? schedulesFromDB.find(s => s.trip_number === 2)
+            : undefined;
           
           return {
             date: dateStr,
