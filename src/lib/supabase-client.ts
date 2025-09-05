@@ -9,8 +9,17 @@ export function getSupabaseClient() {
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
     const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
     
+    console.log('Initializing Supabase client:', {
+      hasUrl: !!supabaseUrl,
+      hasKey: !!supabaseAnonKey,
+      url: supabaseUrl?.substring(0, 30) + '...'
+    });
+    
     if (supabaseUrl && supabaseAnonKey) {
       supabaseClient = createClient<Database>(supabaseUrl, supabaseAnonKey)
+      console.log('Supabase client initialized successfully');
+    } else {
+      console.error('Missing Supabase environment variables');
     }
   }
   

@@ -13,7 +13,12 @@ export const createManualReservation = async (
   console.log('Normalized date:', normalizedDate);
   
   const supabase = getSupabaseClient();
-  if (!supabase) throw new Error('Supabase client not initialized');
+  if (!supabase) {
+    console.error('Failed to get Supabase client');
+    throw new Error('Supabase client not initialized');
+  }
+  
+  console.log('Supabase client ready, inserting reservation...');
   
   const { data, error } = await supabase
     .from('reservations')
