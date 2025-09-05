@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { getSchedules, updateSchedule, setBulkHoliday, getAvailableSeats } from '@/lib/supabase-admin';
+import { updateSchedule, setBulkHoliday, getAvailableSeats } from '@/lib/supabase-admin';
 import { createManualReservation, deleteLastManualReservation } from '@/lib/reservation-admin';
 import { getJSTDate, isJSTToday } from '@/lib/date-utils';
 import { 
@@ -63,23 +63,15 @@ export default function ScheduleManagePage() {
         const dateStr = date.toISOString().split('T')[0];
         
         try {
-          const [schedulesFromDB, trip1Seats, trip2Seats] = await Promise.all([
-            getSchedules(dateStr, dateStr),
+          const [trip1Seats, trip2Seats] = await Promise.all([
             getAvailableSeats(dateStr, 1),
             getAvailableSeats(dateStr, 2)
           ]);
           
-          const trip1Schedule = Array.isArray(schedulesFromDB) 
-            ? schedulesFromDB.find(s => s.trip_number === 1)
-            : undefined;
-          const trip2Schedule = Array.isArray(schedulesFromDB)
-            ? schedulesFromDB.find(s => s.trip_number === 2)
-            : undefined;
-          
           return {
             date: dateStr,
-            trip1Available: trip1Schedule?.is_available ?? true,
-            trip2Available: trip2Schedule?.is_available ?? true,
+            trip1Available: true,
+            trip2Available: true,
             trip1Capacity: FIXED_CAPACITY,
             trip2Capacity: FIXED_CAPACITY,
             trip1Seats,
