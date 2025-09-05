@@ -1,13 +1,21 @@
 import { createClient } from '@supabase/supabase-js'
 import { Database } from '@/types/database'
+import { supabaseConfig } from './supabase-config'
 
 // サーバーサイド用のSupabaseクライアント作成関数
 export function createServerSupabaseClient() {
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-  const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+  const supabaseUrl = supabaseConfig.url
+  const supabaseKey = supabaseConfig.serviceRoleKey || supabaseConfig.anonKey
+
+  console.log('Server Supabase config:', {
+    hasUrl: !!supabaseUrl,
+    hasServiceKey: !!supabaseConfig.serviceRoleKey,
+    hasAnonKey: !!supabaseConfig.anonKey,
+    usingServiceRole: !!supabaseConfig.serviceRoleKey
+  });
 
   if (!supabaseUrl || !supabaseKey) {
-    console.error('Missing Supabase environment variables')
+    console.error('Missing Supabase environment variables for server')
     // エラーを投げずにnullを返す
     return null
   }

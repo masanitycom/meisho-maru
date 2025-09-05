@@ -1,25 +1,31 @@
 import { createClient } from '@supabase/supabase-js'
 import { Database } from '@/types/database'
+import { supabaseConfig, isSupabaseConfigured } from './supabase-config'
 
 // クライアントサイド用のSupabaseクライアント（遅延初期化）
 let supabaseClient: ReturnType<typeof createClient<Database>> | null = null
 
 export function getSupabaseClient() {
   if (!supabaseClient && typeof window !== 'undefined') {
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-    const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-    
     console.log('Initializing Supabase client:', {
-      hasUrl: !!supabaseUrl,
-      hasKey: !!supabaseAnonKey,
-      url: supabaseUrl?.substring(0, 30) + '...'
+      hasUrl: !!supabaseConfig.url,
+      hasKey: !!supabaseConfig.anonKey,
+      url: supabaseConfig.url?.substring(0, 30) + '...',
+      isConfigured: isSupabaseConfigured()
     });
     
-    if (supabaseUrl && supabaseAnonKey) {
-      supabaseClient = createClient<Database>(supabaseUrl, supabaseAnonKey)
-      console.log('Supabase client initialized successfully');
+    if (isSupabaseConfigured()) {
+      try {
+        supabaseClient = createClient<Database>(supabaseConfig.url, supabaseConfig.anonKey)
+        console.log('Supabase client initialized successfully');
+      } catch (error) {
+        console.error('Failed to create Supabase client:', error);
+      }
     } else {
-      console.error('Missing Supabase environment variables');
+      console.error('Missing Supabase environment variables', {
+        url: supabaseConfig.url,
+        hasKey: !!supabaseConfig.anonKey
+      });
     }
   }
   
