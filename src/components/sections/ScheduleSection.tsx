@@ -1,8 +1,6 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { getAvailableSeats } from '@/lib/supabase';
-import { getJSTDate } from '@/lib/date-utils';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Calendar, Clock, ChevronLeft, ChevronRight, CheckCircle, AlertCircle, XCircle, Anchor } from 'lucide-react';
 import Link from 'next/link';
@@ -28,44 +26,30 @@ export function ScheduleSection() {
     setMounted(true);
   }, []);
 
-  // 月間データを生成
-  const generateMonthDates = async (year: number, month: number): Promise<DateInfo[]> => {
-    const lastDay = new Date(year, month + 1, 0);
-    const daysInMonth = lastDay.getDate();
-    const today = getJSTDate(0);
-    
-    const datePromises = Array.from({ length: daysInMonth }, async (_, i) => {
-      const date = new Date(year, month, i + 1);
-      const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(i + 1).padStart(2, '0')}`;
+  // APIからデータを取得
+  const fetchSchedules = async (year: number, month: number): Promise<DateInfo[]> => {
+    try {
+      const response = await fetch(`/api/schedules?year=${year}&month=${month}`, {
+        cache: 'no-store',
+        headers: {
+          'Cache-Control': 'no-cache',
+          'Pragma': 'no-cache'
+        }
+      });
       
-      try {
-        const [trip1Seats, trip2Seats] = await Promise.all([
-          getAvailableSeats(dateStr, 1),
-          getAvailableSeats(dateStr, 2)
-        ]);
-        
-        return {
-          date,
-          dateStr,
-          trip1Seats,
-          trip2Seats,
-          dayOfWeek: ['日', '月', '火', '水', '木', '金', '土'][date.getDay()],
-          isToday: date.toDateString() === today.toDateString(),
-        };
-      } catch (error) {
-        console.error(`Error fetching seats for ${dateStr}:`, error);
-        return {
-          date,
-          dateStr,
-          trip1Seats: -1,
-          trip2Seats: -1,
-          dayOfWeek: ['日', '月', '火', '水', '木', '金', '土'][date.getDay()],
-          isToday: date.toDateString() === today.toDateString(),
-        };
+      if (!response.ok) {
+        throw new Error('Failed to fetch schedules');
       }
-    });
-
-    return Promise.all(datePromises);
+      
+      const data = await response.json();
+      return data.schedules.map((s: any) => ({
+        ...s,
+        date: new Date(s.date)
+      }));
+    } catch (error) {
+      console.error('Schedule fetch error:', error);
+      return [];
+    }
   };
 
   useEffect(() => {
@@ -73,7 +57,7 @@ export function ScheduleSection() {
       setLoading(true);
       const year = currentMonth.getFullYear();
       const month = currentMonth.getMonth();
-      const monthDates = await generateMonthDates(year, month);
+      const monthDates = await fetchSchedules(year, month);
       setDates(monthDates);
       setLoading(false);
     };
@@ -82,6 +66,19 @@ export function ScheduleSection() {
       loadData();
     }
   }, [currentMonth, mounted]);
+
+  // ページがフォーカスされた時にデータを更新
+  useEffect(() => {
+    const handleFocus = async () => {
+      const year = currentMonth.getFullYear();
+      const month = currentMonth.getMonth();
+      const monthDates = await fetchSchedules(year, month);
+      setDates(monthDates);
+    };
+
+    window.addEventListener('focus', handleFocus);
+    return () => window.removeEventListener('focus', handleFocus);
+  }, [currentMonth]);
 
   const getStatusColor = (seats: number) => {
     if (seats === -1) return 'text-gray-400';
