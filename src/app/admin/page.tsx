@@ -1,7 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { createReservation, upsertCustomer, getReservations, getCustomers, deleteReservation, updateReservation } from '@/lib/supabase';
+import { getReservations, getCustomers, deleteReservation, updateReservation } from '@/lib/supabase-admin';
+import { createReservation, upsertCustomer } from '@/lib/supabase-client';
 import { AdminAuth } from '@/components/auth/AdminAuth';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';

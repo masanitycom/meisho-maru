@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { getSchedules, updateSchedule, setBulkHoliday, getAvailableSeats } from '@/lib/supabase';
+import { getSchedules, updateSchedule, setBulkHoliday, getAvailableSeats } from '@/lib/supabase-admin';
 import { createManualReservation, deleteLastManualReservation } from '@/lib/reservation-admin';
 import { getJSTDate, isJSTToday } from '@/lib/date-utils';
 import { 
