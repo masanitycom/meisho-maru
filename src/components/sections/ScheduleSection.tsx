@@ -42,7 +42,14 @@ export function ScheduleSection() {
       }
       
       const data = await response.json();
-      return data.schedules.map((s: any) => ({
+      return data.schedules.map((s: {
+        date: string;
+        dateStr: string;
+        trip1Seats: number;
+        trip2Seats: number;
+        dayOfWeek: string;
+        isToday: boolean;
+      }) => ({
         ...s,
         date: new Date(s.date)
       }));
