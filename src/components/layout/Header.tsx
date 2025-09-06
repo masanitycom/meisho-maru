@@ -4,7 +4,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useState, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
-import { Menu, X, Phone, Calendar, Anchor } from 'lucide-react';
+import { Menu, X, Phone, Calendar, Anchor, Settings } from 'lucide-react';
 import { SITE_CONFIG } from '@/lib/constants';
 
 export function Header() {
@@ -131,6 +131,17 @@ export function Header() {
                   {item.label}
                 </Link>
               ))}
+              
+              {/* 管理画面リンク（スマホのみ） */}
+              <Link
+                href="/admin"
+                className="inline-flex items-center space-x-2 text-gray-600 hover:text-blue-600 font-medium transition-colors py-2"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                <Settings className="h-4 w-4 flex-shrink-0" />
+                <span>管理画面</span>
+              </Link>
+              
               <div className="pt-4 border-t border-gray-200">
                 <a
                   href={`tel:${SITE_CONFIG.contact.phone}`}
