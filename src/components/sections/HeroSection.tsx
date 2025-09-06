@@ -120,6 +120,16 @@ export function HeroSection() {
         </div>
       </div>
 
+      {/* SEO用の隠しテキスト */}
+      <div className="sr-only">
+        <h2>白いか遊漁船明勝丸の特徴</h2>
+        <p>白いか遊漁専門。経験豊富な船長が案内する白いか遊漁船。鳥取県琴浦町赤碕港から白いか遊漁に出発。</p>
+        <p>白いか遊漁、白イカ遊漁、シロイカ遊漁、スルメイカ遊漁に対応。</p>
+        <p>日本海で白いか遊漁。鳥取で白いか遊漁。琴浦町で白いか遊漁。赤碕で白いか遊漁。</p>
+        <p>白いか遊漁船の運航時間：1便17:30〜23:30、2便24:00〜5:30</p>
+        <p>白いか遊漁料金：11,000円/人、竿レンタル2,000円</p>
+      </div>
+
       {/* 下部の装飾 */}
       <div className="absolute bottom-0 left-0 right-0 h-2 bg-gradient-to-r from-red-600 via-yellow-400 to-red-600"></div>
     </section>
