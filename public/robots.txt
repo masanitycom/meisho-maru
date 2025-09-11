@@ -1,11 +1,9 @@
 User-agent: *
 Allow: /
-Disallow: /faq
 Disallow: /api/
-Disallow: /admin/login
+Disallow: /admin/
 Disallow: /debug
 Disallow: /_next/
-Disallow: /favicon.ico
 Disallow: /*.json$
 Disallow: /_buildManifest.js
 Disallow: /_ssgManifest.js
