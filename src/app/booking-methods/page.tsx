@@ -63,7 +63,7 @@ export default function BookingMethodsPage() {
                   <Button asChild className="w-full bg-blue-600 hover:bg-blue-700">
                     <a href="tel:090-4695-3087" className="flex items-center justify-center">
                       <Phone className="h-4 w-4 mr-2 flex-shrink-0" />
-                      <span>090-4695-3087</span>
+                      <span>予約専用 090-4695-3087</span>
                     </a>
                   </Button>
                 </div>

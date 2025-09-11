@@ -52,6 +52,7 @@ export function LineReservation() {
                 </div>
                 <h3 className="text-xl font-bold mb-2">電話予約</h3>
                 <p className="text-gray-600 mb-4">
+                  <span className="text-sm font-bold text-blue-600">予約専用ダイヤル</span><br />
                   受付時間 9:00〜17:00<br />
                   直接お話しできます
                 </p>

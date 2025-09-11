@@ -69,7 +69,8 @@ export function Footer() {
               <li className="flex items-start space-x-3">
                 <Phone className="h-5 w-5 mt-0.5 text-accent" />
                 <div>
-                  <a href={`tel:${SITE_CONFIG.contact.phone}`} className="text-gray-400 hover:text-white transition-colors">
+                  <div className="text-xs text-gray-500 mb-1">予約専用ダイヤル</div>
+                  <a href={`tel:${SITE_CONFIG.contact.phone}`} className="text-gray-400 hover:text-white transition-colors font-bold">
                     {SITE_CONFIG.contact.phone}
                   </a>
                 </div>

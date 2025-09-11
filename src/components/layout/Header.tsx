@@ -89,7 +89,10 @@ export function Header() {
               }`}
             >
               <Phone className="h-5 w-5 flex-shrink-0" />
-              <span className="whitespace-nowrap">{SITE_CONFIG.contact.phone}</span>
+              <div className="flex flex-col">
+                <span className="text-xs">予約専用ダイヤル</span>
+                <span className="whitespace-nowrap font-bold">{SITE_CONFIG.contact.phone}</span>
+              </div>
             </a>
             <Link 
               href="/booking-methods" 
@@ -148,7 +151,10 @@ export function Header() {
                   className="inline-flex items-center space-x-2 text-blue-600 font-medium mb-4"
                 >
                   <Phone className="h-5 w-5 flex-shrink-0" />
-                  <span className="whitespace-nowrap">{SITE_CONFIG.contact.phone}</span>
+                  <div className="flex flex-col">
+                    <span className="text-xs">予約専用ダイヤル</span>
+                    <span className="whitespace-nowrap font-bold">{SITE_CONFIG.contact.phone}</span>
+                  </div>
                 </a>
                 <Link 
                   href="/booking-methods" 
