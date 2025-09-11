@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://kotourameishomaru.com/sitemap.xml
+Sitemap: https://www.kotourameishomaru.com/sitemap.xml

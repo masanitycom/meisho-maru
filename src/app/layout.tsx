@@ -87,7 +87,6 @@ export default function RootLayout({
   return (
     <html lang="ja">
       <head>
-        <link rel="canonical" href="https://kotourameishomaru.com/" />
         {/* ドメインプロパティ用（DNSレコード必要） */}
         <meta name="google-site-verification" content="izmGSn_Ehtct9dkMoaHYm9hVSBO3Dj8esXuDpgG0lJ4" />
         {/* URLプレフィックス用（www版用に新しいコードを追加予定） */}
