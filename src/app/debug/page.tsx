@@ -69,7 +69,6 @@ export default function DebugPage() {
 
       // テスト予約を作成
       const testDate = new Date().toISOString().split('T')[0];
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const { data, error } = await client
         .from('reservations')
         .insert([{
@@ -82,6 +81,7 @@ export default function DebugPage() {
           rod_rental: false,
           status: 'confirmed',
           source: 'debug'
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } as any])
         .select();
 
