@@ -81,7 +81,7 @@ export default function DebugPage() {
           rod_rental: false,
           status: 'confirmed',
           source: 'debug'
-        }])
+        } as any])
         .select();
 
       if (error) {

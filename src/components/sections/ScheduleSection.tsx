@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Calendar, Clock, ChevronLeft, ChevronRight, CheckCircle, AlertCircle, XCircle, Anchor } from 'lucide-react';
+import { Calendar, Clock, ChevronLeft, ChevronRight, Anchor } from 'lucide-react';
 import Link from 'next/link';
 
 interface DateInfo {
@@ -87,40 +87,6 @@ export function ScheduleSection() {
     return () => window.removeEventListener('focus', handleFocus);
   }, [currentMonth]);
 
-  const getStatusColor = (seats: number) => {
-    if (seats === -1) return 'text-gray-400';
-    if (seats === 0) return 'text-red-500';
-    if (seats <= 2) return 'text-orange-500';
-    return 'text-green-500';
-  };
-
-  const getStatusIcon = (seats: number) => {
-    if (seats === -1) return <XCircle className="h-4 w-4" />;
-    if (seats === 0) return <XCircle className="h-4 w-4" />;
-    if (seats <= 2) return <AlertCircle className="h-4 w-4" />;
-    return <CheckCircle className="h-4 w-4" />;
-  };
-
-  const getStatusText = (seats: number, isMobile: boolean = false) => {
-    if (seats === -1) return '休';
-    if (seats === 0) return '満';
-    if (seats <= 2) return `${seats}`;
-    return '○';
-  };
-
-  const getStatusEmoji = (seats: number) => {
-    if (seats === -1) return '⚫';
-    if (seats === 0) return '🔴';
-    if (seats <= 2) return '🟡';
-    return '🟢';
-  };
-
-  const getStatusDot = (seats: number) => {
-    if (seats === -1) return 'bg-gray-400';
-    if (seats === 0) return 'bg-red-500';
-    if (seats <= 2) return 'bg-yellow-500';
-    return 'bg-green-500';
-  };
 
   const changeMonth = (direction: 'prev' | 'next') => {
     setCurrentMonth(prev => {
