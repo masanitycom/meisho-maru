@@ -4,11 +4,20 @@ import nodemailer from 'nodemailer';
 
 // Gmail SMTPトランスポーターの作成
 const createTransporter = () => {
-  return nodemailer.createTransport({
+  // Googleアプリパスワードからスペースを削除（コピペ時にスペースが入ることがあるため）
+  const appPassword = process.env.GMAIL_APP_PASSWORD?.replace(/\s/g, '');
+  
+  console.log('Gmail設定確認:', {
+    user: process.env.GMAIL_USER,
+    passLength: appPassword?.length,
+    hasPassword: !!appPassword
+  });
+  
+  return nodemailer.createTransporter({
     service: 'gmail',
     auth: {
       user: process.env.GMAIL_USER, // ikameishomaru@gmail.com
-      pass: process.env.GMAIL_APP_PASSWORD, // Googleアプリパスワード
+      pass: appPassword, // Googleアプリパスワード（スペース削除済み）
     },
   });
 };
