@@ -65,7 +65,7 @@ export async function POST(req: NextRequest) {
       const nodemailer = require('nodemailer');
 
       // Gmailトランスポーターの作成
-      const transporter = nodemailer.createTransporter({
+      const transporter = nodemailer.createTransport({
         service: 'gmail',
         auth: {
           user: process.env.GMAIL_USER,
