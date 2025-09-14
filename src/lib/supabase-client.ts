@@ -5,6 +5,12 @@ import { supabaseConfig, isSupabaseConfigured } from './supabase-config'
 // クライアントサイド用のSupabaseクライアント（遅延初期化）
 let supabaseClient: ReturnType<typeof createClient<Database>> | null = null
 
+// Supabaseクライアントをリセット（再初期化用）
+export function resetSupabaseClient() {
+  supabaseClient = null
+  console.log('Supabase client reset')
+}
+
 export function getSupabaseClient() {
   if (!supabaseClient && typeof window !== 'undefined') {
     console.log('Initializing Supabase client:', {
@@ -13,10 +19,26 @@ export function getSupabaseClient() {
       url: supabaseConfig.url?.substring(0, 30) + '...',
       isConfigured: isSupabaseConfigured()
     });
-    
+
     if (isSupabaseConfigured()) {
       try {
-        supabaseClient = createClient<Database>(supabaseConfig.url, supabaseConfig.anonKey)
+        supabaseClient = createClient<Database>(
+          supabaseConfig.url,
+          supabaseConfig.anonKey,
+          {
+            auth: {
+              persistSession: true,
+              autoRefreshToken: true,
+            },
+            global: {
+              headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Prefer': 'return=representation'
+              }
+            }
+          }
+        )
         console.log('Supabase client initialized successfully');
       } catch (error) {
         console.error('Failed to create Supabase client:', error);
@@ -28,7 +50,7 @@ export function getSupabaseClient() {
       });
     }
   }
-  
+
   return supabaseClient
 }
 

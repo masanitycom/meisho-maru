@@ -2,7 +2,7 @@
 
 import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { createReservation, upsertCustomer, getAvailableSeats } from '@/lib/supabase-client';
+import { createReservation, upsertCustomer, getAvailableSeats, resetSupabaseClient } from '@/lib/supabase-client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -29,11 +29,17 @@ function ReservationForm() {
     notes: '',
   });
 
+  // コンポーネントマウント時にSupabaseクライアントをリセット
+  useEffect(() => {
+    resetSupabaseClient();
+    console.log('Supabase client reset for reservation page');
+  }, []);
+
   // URLパラメーターから日付と便の情報を取得
   useEffect(() => {
     const dateParam = searchParams.get('date');
     const tripParam = searchParams.get('trip');
-    
+
     if (dateParam) {
       setFormData(prev => ({ ...prev, date: dateParam }));
     }
@@ -71,9 +77,16 @@ function ReservationForm() {
         phone: formData.phone,
         email: formData.email || undefined,
       };
-      
-      await upsertCustomer(customerData);
-      
+
+      console.log('顧客データ保存開始:', customerData);
+      try {
+        const customerResult = await upsertCustomer(customerData);
+        console.log('顧客データ保存成功:', customerResult);
+      } catch (customerError) {
+        console.error('顧客データ保存エラー:', customerError);
+        throw customerError;
+      }
+
       // 予約データを作成
       const reservationData = {
         date: formData.date,
@@ -87,11 +100,20 @@ function ReservationForm() {
         rod_rental_count: parseInt(formData.rodRentalCount) || 0,
         notes: formData.notes || undefined,
         source: 'web',
+        status: 'confirmed' as const,
       };
-      
-      await createReservation(reservationData);
+
+      console.log('予約データ保存開始:', reservationData);
+      try {
+        const reservationResult = await createReservation(reservationData);
+        console.log('予約データ保存成功:', reservationResult);
+      } catch (reservationError) {
+        console.error('予約データ保存エラー:', reservationError);
+        throw reservationError;
+      }
       
       // メール送信（お客様＋管理者）
+      console.log('メール送信処理開始');
       try {
         const emailResponse = await fetch('/api/send-email', {
           method: 'POST',
@@ -109,16 +131,18 @@ function ReservationForm() {
             notes: formData.notes
           })
         });
-        
+
         const emailResult = await emailResponse.json();
-        
+
         if (emailResult.success) {
-          console.log('メール送信成功');
+          console.log('メール送信成功:', emailResult);
         } else {
-          console.error('メール送信エラー:', emailResult);
+          console.error('メール送信失敗（APIレスポンス）:', emailResult);
         }
       } catch (emailError) {
-        console.error('メール送信エラー:', emailError);
+        console.error('メール送信エラー（例外）:', emailError);
+        // メール送信失敗してもデータは保存されているので、処理を続行
+        console.log('メール送信は失敗しましたが、予約データは保存されています');
       }
       
       // 予約詳細をURLパラメータとして渡してサンクスページにリダイレクト

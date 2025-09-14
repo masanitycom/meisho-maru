@@ -10,6 +10,7 @@ import { Label } from '@/components/ui/label';
 import { updateSchedule, setBulkHoliday, getAvailableSeats } from '@/lib/supabase-admin';
 import { createManualReservation, deleteLastManualReservation } from '@/lib/reservation-admin';
 import { getJSTDate, isJSTToday } from '@/lib/date-utils';
+import { resetSupabaseClient } from '@/lib/supabase-client';
 import { 
   Calendar, 
   Plus, 
@@ -51,6 +52,12 @@ export default function ScheduleManagePage() {
   const [saving, setSaving] = useState(false);
   const [holidayStart, setHolidayStart] = useState('');
   const [holidayEnd, setHolidayEnd] = useState('');
+
+  // コンポーネントマウント時にSupabaseクライアントをリセット
+  useEffect(() => {
+    resetSupabaseClient();
+    console.log('Supabase client reset for admin schedule page');
+  }, []);
 
   // 今日から30日分のスケジュールを表示（日本時間基準）
   const loadSchedules = useCallback(async (clearLocal = false) => {
