@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createCustomerEmailHtml, createAdminEmailHtml } from '@/lib/email-simple';
+import { createCustomerEmailHtml } from '@/lib/email-simple';
 
 // SendGridやResendなど、他のメールサービスに切り替え可能
 export async function POST(req: NextRequest) {

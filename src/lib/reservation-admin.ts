@@ -20,7 +20,8 @@ export const createManualReservation = async (
   
   console.log('Supabase client ready, inserting reservation...');
   
-  const { data, error } = await supabase
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const { data, error } = await (supabase as any)
     .from('reservations')
     .insert([{
       date: normalizedDate,

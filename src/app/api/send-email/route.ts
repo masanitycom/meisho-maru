@@ -58,11 +58,73 @@ export async function POST(req: NextRequest) {
       admin: null as any
     };
 
-    // 実際のメール送信処理
-    try {
-      // nodemailerが利用可能な場合
-      // eslint-disable-next-line @typescript-eslint/no-require-imports
-      const nodemailer = require('nodemailer');
+    // Resend APIを優先使用
+    if (process.env.RESEND_API_KEY) {
+      try {
+        // お客様への確認メール
+        if (email) {
+          const customerResponse = await fetch('https://api.resend.com/emails', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${process.env.RESEND_API_KEY}`
+            },
+            body: JSON.stringify({
+              from: '明勝丸 <onboarding@resend.dev>',
+              to: email,
+              subject: `【明勝丸】予約確認 - ${formattedDate} ${tripTime}`,
+              html: createCustomerEmailHtml(emailData)
+            })
+          });
+
+          const customerResult = await customerResponse.json();
+          if (customerResponse.ok) {
+            console.log('✅ お客様メール送信成功（Resend）:', customerResult);
+            results.customer = { success: true, messageId: customerResult.id };
+          } else {
+            console.error('❌ お客様メール送信失敗（Resend）:', customerResult);
+            results.customer = { success: false, error: customerResult.message };
+          }
+        }
+
+        // 管理者への通知メール
+        const adminResponse = await fetch('https://api.resend.com/emails', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${process.env.RESEND_API_KEY}`
+          },
+          body: JSON.stringify({
+            from: '明勝丸予約システム <onboarding@resend.dev>',
+            to: process.env.ADMIN_EMAIL || 'ikameishomaru@gmail.com',
+            subject: `【新規予約】${formattedDate} ${tripTime} - ${name}様（${peopleCount}名）`,
+            html: createAdminEmailHtml(emailData),
+            reply_to: email || undefined
+          })
+        });
+
+        const adminResult = await adminResponse.json();
+        if (adminResponse.ok) {
+          console.log('✅ 管理者メール送信成功（Resend）:', adminResult);
+          results.admin = { success: true, messageId: adminResult.id };
+        } else {
+          console.error('❌ 管理者メール送信失敗（Resend）:', adminResult);
+          results.admin = { success: false, error: adminResult.message };
+        }
+
+      } catch (resendError) {
+        console.error('❌ Resend API エラー:', resendError);
+        results.customer = { success: false, error: String(resendError) };
+        results.admin = { success: false, error: String(resendError) };
+      }
+    }
+
+    // Resendが設定されていない場合、Gmail nodemailerを試行
+    else if (process.env.GMAIL_USER && process.env.GMAIL_APP_PASSWORD) {
+      try {
+        // nodemailerが利用可能な場合
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
+        const nodemailer = require('nodemailer');
 
       // Gmailトランスポーターの作成
       const transporter = nodemailer.createTransport({
