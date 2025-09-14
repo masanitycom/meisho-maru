@@ -115,7 +115,7 @@ function ReservationForm() {
       // メール送信（お客様＋管理者）
       console.log('メール送信処理開始');
       try {
-        const emailResponse = await fetch('/api/send-email', {
+        const emailResponse = await fetch('/api/send-email-fallback', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
