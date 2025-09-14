@@ -1,44 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createCustomerEmailHtml, createAdminEmailHtml } from '@/lib/email-simple';
 
-// Gmail APIを使用したメール送信（nodemailerの代替）
-async function sendGmail(to: string, subject: string, html: string) {
-  const username = process.env.GMAIL_USER;
-  const appPassword = process.env.GMAIL_APP_PASSWORD;
-
-  if (!username || !appPassword) {
-    throw new Error('Gmail credentials not configured');
-  }
-
-  // Base64エンコードされたメール内容を作成
-  const messageParts = [
-    `From: 明勝丸 <${username}>`,
-    `To: ${to}`,
-    `Subject: =?UTF-8?B?${Buffer.from(subject).toString('base64')}?=`,
-    'MIME-Version: 1.0',
-    'Content-Type: text/html; charset=utf-8',
-    '',
-    html
-  ];
-
-  const message = messageParts.join('\r\n');
-  const encodedMessage = Buffer.from(message)
-    .toString('base64')
-    .replace(/\+/g, '-')
-    .replace(/\//g, '_')
-    .replace(/=+$/, '');
-
-  // Gmail SMTP APIの代わりに、nodemailerが使えない場合の代替案
-  // 実際の送信はnodemailerがインストールされるまで保留
-  console.log('📧 メール送信準備完了:', {
-    to,
-    subject,
-    messageLength: message.length
-  });
-
-  return { success: true, messageId: `simulated-${Date.now()}` };
-}
-
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
@@ -90,13 +52,16 @@ export async function POST(req: NextRequest) {
     console.log('送信データ:', emailData);
 
     const results = {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       customer: null as any,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       admin: null as any
     };
 
     // 実際のメール送信処理
     try {
       // nodemailerが利用可能な場合
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
       const nodemailer = require('nodemailer');
 
       // Gmailトランスポーターの作成
@@ -151,7 +116,7 @@ export async function POST(req: NextRequest) {
         results.admin = { success: false, error: String(error) };
       }
 
-    } catch (moduleError) {
+    } catch {
       // nodemailerが利用できない場合の処理
       console.log('⚠️ nodemailerが利用できません。開発モードで実行中...');
 

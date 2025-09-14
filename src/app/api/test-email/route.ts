@@ -1,6 +1,6 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 
-export async function GET(req: NextRequest) {
+export async function GET() {
   try {
     console.log('=== メールテストAPI ===');
     console.log('環境変数チェック:');
@@ -10,6 +10,7 @@ export async function GET(req: NextRequest) {
 
     // nodemailerのテスト
     try {
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
       const nodemailer = require('nodemailer');
       console.log('✅ nodemailer モジュール読み込み成功');
 
