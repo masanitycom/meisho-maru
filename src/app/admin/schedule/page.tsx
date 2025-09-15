@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { updateSchedule, setBulkHoliday, getAvailableSeats } from '@/lib/supabase-admin';
+import { updateSchedule, setBulkHoliday, getAvailableSeats, getSchedules } from '@/lib/supabase-admin';
 import { createManualReservation, deleteLastManualReservation } from '@/lib/reservation-admin';
 import { getJSTDate, isJSTToday } from '@/lib/date-utils';
 import { resetSupabaseClient } from '@/lib/supabase-client';
@@ -70,21 +70,27 @@ export default function ScheduleManagePage() {
         const dateStr = date.toISOString().split('T')[0];
         
         try {
-          const [trip1Seats, trip2Seats] = await Promise.all([
+          // 運航状況とシート数を並行取得
+          const [trip1Seats, trip2Seats, scheduleData] = await Promise.all([
             getAvailableSeats(dateStr, 1),
-            getAvailableSeats(dateStr, 2)
+            getAvailableSeats(dateStr, 2),
+            getSchedules(dateStr, dateStr)
           ]);
-          
+
+          // schedulesテーブルから運航状況を取得
+          const trip1Schedule = scheduleData?.find(s => s.date === dateStr && s.trip_number === 1);
+          const trip2Schedule = scheduleData?.find(s => s.date === dateStr && s.trip_number === 2);
+
           return {
             date: dateStr,
-            trip1Available: true,
-            trip2Available: true,
+            trip1Available: trip1Schedule?.is_available ?? true,
+            trip2Available: trip2Schedule?.is_available ?? true,
             trip1Capacity: FIXED_CAPACITY,
             trip2Capacity: FIXED_CAPACITY,
-            trip1Seats,
-            trip2Seats,
-            trip1Reservations: FIXED_CAPACITY - trip1Seats,
-            trip2Reservations: FIXED_CAPACITY - trip2Seats,
+            trip1Seats: trip1Schedule?.is_available === false ? -1 : trip1Seats,
+            trip2Seats: trip2Schedule?.is_available === false ? -1 : trip2Seats,
+            trip1Reservations: trip1Schedule?.is_available === false ? 0 : FIXED_CAPACITY - trip1Seats,
+            trip2Reservations: trip2Schedule?.is_available === false ? 0 : FIXED_CAPACITY - trip2Seats,
           };
         } catch (error) {
           console.error(`Error loading schedule for ${dateStr}:`, error);
