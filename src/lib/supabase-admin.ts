@@ -1,9 +1,42 @@
 // 管理画面用のSupabase関数（クライアントサイド）
 import { getSupabaseClient } from './supabase-client'
+import { createClient } from '@supabase/supabase-js'
+
+// フォールバック用Supabaseクライアント作成
+function createSupabaseClientDirect() {
+  if (typeof window === 'undefined') return null; // サーバーサイドでは使用しない
+
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+  if (!url || !key) {
+    console.error('Supabase environment variables missing');
+    return null;
+  }
+
+  return createClient(url, key, {
+    global: {
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Prefer': 'return=representation'
+      }
+    }
+  });
+}
+
+// Supabaseクライアント取得（フォールバック付き）
+function getSupabaseClientWithFallback() {
+  const client = getSupabaseClient();
+  if (client) return client;
+
+  console.warn('Primary Supabase client failed, using fallback');
+  return createSupabaseClientDirect();
+}
 
 // 予約一覧取得
 export const getReservations = async () => {
-  const supabase = getSupabaseClient()
+  const supabase = getSupabaseClientWithFallback()
   if (!supabase) throw new Error('Supabase client not initialized')
   
   const { data, error } = await supabase
@@ -20,7 +53,7 @@ export const getReservations = async () => {
 
 // 顧客一覧取得
 export const getCustomers = async () => {
-  const supabase = getSupabaseClient()
+  const supabase = getSupabaseClientWithFallback()
   if (!supabase) throw new Error('Supabase client not initialized')
   
   const { data, error } = await supabase
@@ -34,7 +67,7 @@ export const getCustomers = async () => {
 
 // スケジュール取得
 export const getSchedules = async (startDate?: string, endDate?: string) => {
-  const supabase = getSupabaseClient()
+  const supabase = getSupabaseClientWithFallback()
   if (!supabase) throw new Error('Supabase client not initialized')
   
   let query = supabase
@@ -53,7 +86,7 @@ export const getSchedules = async (startDate?: string, endDate?: string) => {
 
 // 予約可能席数を計算（schedulesテーブルを使わずreservationsのみで計算）
 export const getAvailableSeats = async (date: string, tripNumber: number) => {
-  const supabase = getSupabaseClient()
+  const supabase = getSupabaseClientWithFallback()
   if (!supabase) {
     console.error('Supabase client not initialized')
     return 8
@@ -92,7 +125,7 @@ export const updateSchedule = async (date: string, tripNumber: number, updates: 
   max_capacity?: number;
   is_available?: boolean;
 }) => {
-  const supabase = getSupabaseClient()
+  const supabase = getSupabaseClientWithFallback()
   if (!supabase) throw new Error('Supabase client not initialized')
   
   const { data, error } = await supabase
@@ -112,7 +145,7 @@ export const updateSchedule = async (date: string, tripNumber: number, updates: 
 
 // 複数日の一括休業設定
 export const setBulkHoliday = async (startDate: string, endDate: string, tripNumbers: number[]) => {
-  const supabase = getSupabaseClient()
+  const supabase = getSupabaseClientWithFallback()
   if (!supabase) throw new Error('Supabase client not initialized')
   
   const updates = []
@@ -142,7 +175,7 @@ export const setBulkHoliday = async (startDate: string, endDate: string, tripNum
 
 // 予約を削除
 export const deleteReservation = async (reservationId: string) => {
-  const supabase = getSupabaseClient()
+  const supabase = getSupabaseClientWithFallback()
   if (!supabase) throw new Error('Supabase client not initialized')
   
   const { error } = await supabase
@@ -167,7 +200,7 @@ export const updateReservation = async (reservationId: string, updates: {
   notes?: string;
   status?: string;
 }) => {
-  const supabase = getSupabaseClient()
+  const supabase = getSupabaseClientWithFallback()
   if (!supabase) throw new Error('Supabase client not initialized')
   
   const { data, error } = await supabase
