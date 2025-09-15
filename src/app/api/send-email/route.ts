@@ -126,77 +126,78 @@ export async function POST(req: NextRequest) {
         // eslint-disable-next-line @typescript-eslint/no-require-imports
         const nodemailer = require('nodemailer');
 
-      // Gmailトランスポーターの作成
-      const transporter = nodemailer.createTransport({
-        service: 'gmail',
-        auth: {
-          user: process.env.GMAIL_USER,
-          pass: process.env.GMAIL_APP_PASSWORD?.replace(/\s/g, ''), // スペースを削除
-        },
-      });
+        // Gmailトランスポーターの作成
+        const transporter = nodemailer.createTransport({
+          service: 'gmail',
+          auth: {
+            user: process.env.GMAIL_USER,
+            pass: process.env.GMAIL_APP_PASSWORD?.replace(/\s/g, ''), // スペースを削除
+          },
+        });
 
-      // お客様への確認メール
-      if (email) {
-        const customerMailOptions = {
+        // お客様への確認メール
+        if (email) {
+          const customerMailOptions = {
+            from: {
+              name: '明勝丸',
+              address: process.env.GMAIL_USER || 'ikameishomaru@gmail.com',
+            },
+            to: email,
+            subject: `【明勝丸】予約確認 - ${formattedDate} ${tripTime}`,
+            html: createCustomerEmailHtml(emailData),
+          };
+
+          try {
+            const customerResult = await transporter.sendMail(customerMailOptions);
+            console.log('✅ お客様メール送信成功:', customerResult.messageId);
+            results.customer = { success: true, messageId: customerResult.messageId };
+          } catch (error) {
+            console.error('❌ お客様メール送信失敗:', error);
+            results.customer = { success: false, error: String(error) };
+          }
+        }
+
+        // 管理者への通知メール
+        const adminMailOptions = {
           from: {
-            name: '明勝丸',
+            name: '明勝丸 予約システム',
             address: process.env.GMAIL_USER || 'ikameishomaru@gmail.com',
           },
-          to: email,
-          subject: `【明勝丸】予約確認 - ${formattedDate} ${tripTime}`,
-          html: createCustomerEmailHtml(emailData),
+          to: process.env.ADMIN_EMAIL || 'ikameishomaru@gmail.com',
+          subject: `【新規予約】${formattedDate} ${tripTime} - ${name}様（${peopleCount}名）`,
+          html: createAdminEmailHtml(emailData),
+          replyTo: email || undefined,
         };
 
         try {
-          const customerResult = await transporter.sendMail(customerMailOptions);
-          console.log('✅ お客様メール送信成功:', customerResult.messageId);
-          results.customer = { success: true, messageId: customerResult.messageId };
+          const adminResult = await transporter.sendMail(adminMailOptions);
+          console.log('✅ 管理者メール送信成功:', adminResult.messageId);
+          results.admin = { success: true, messageId: adminResult.messageId };
         } catch (error) {
-          console.error('❌ お客様メール送信失敗:', error);
-          results.customer = { success: false, error: String(error) };
+          console.error('❌ 管理者メール送信失敗:', error);
+          results.admin = { success: false, error: String(error) };
         }
-      }
 
-      // 管理者への通知メール
-      const adminMailOptions = {
-        from: {
-          name: '明勝丸 予約システム',
-          address: process.env.GMAIL_USER || 'ikameishomaru@gmail.com',
-        },
-        to: process.env.ADMIN_EMAIL || 'ikameishomaru@gmail.com',
-        subject: `【新規予約】${formattedDate} ${tripTime} - ${name}様（${peopleCount}名）`,
-        html: createAdminEmailHtml(emailData),
-        replyTo: email || undefined,
-      };
+      } catch {
+        // nodemailerが利用できない場合の処理
+        console.log('⚠️ nodemailerが利用できません。開発モードで実行中...');
 
-      try {
-        const adminResult = await transporter.sendMail(adminMailOptions);
-        console.log('✅ 管理者メール送信成功:', adminResult.messageId);
-        results.admin = { success: true, messageId: adminResult.messageId };
-      } catch (error) {
-        console.error('❌ 管理者メール送信失敗:', error);
-        results.admin = { success: false, error: String(error) };
-      }
+        // 開発環境での代替処理
+        if (process.env.NODE_ENV === 'development') {
+          console.log('📧 開発環境: メール内容のシミュレーション');
+          console.log('--- お客様メール ---');
+          console.log('To:', email);
+          console.log('Subject:', `【明勝丸】予約確認 - ${formattedDate} ${tripTime}`);
+          console.log('--- 管理者メール ---');
+          console.log('To:', process.env.ADMIN_EMAIL || 'ikameishomaru@gmail.com');
+          console.log('Subject:', `【新規予約】${formattedDate} ${tripTime} - ${name}様（${peopleCount}名）`);
 
-    } catch {
-      // nodemailerが利用できない場合の処理
-      console.log('⚠️ nodemailerが利用できません。開発モードで実行中...');
-
-      // 開発環境での代替処理
-      if (process.env.NODE_ENV === 'development') {
-        console.log('📧 開発環境: メール内容のシミュレーション');
-        console.log('--- お客様メール ---');
-        console.log('To:', email);
-        console.log('Subject:', `【明勝丸】予約確認 - ${formattedDate} ${tripTime}`);
-        console.log('--- 管理者メール ---');
-        console.log('To:', process.env.ADMIN_EMAIL || 'ikameishomaru@gmail.com');
-        console.log('Subject:', `【新規予約】${formattedDate} ${tripTime} - ${name}様（${peopleCount}名）`);
-
-        results.customer = { success: true, messageId: 'dev-customer-' + Date.now() };
-        results.admin = { success: true, messageId: 'dev-admin-' + Date.now() };
-      } else {
-        // 本番環境でnodemailerがない場合はエラー
-        throw new Error('メールサービスが設定されていません');
+          results.customer = { success: true, messageId: 'dev-customer-' + Date.now() };
+          results.admin = { success: true, messageId: 'dev-admin-' + Date.now() };
+        } else {
+          // 本番環境でnodemailerがない場合はエラー
+          throw new Error('メールサービスが設定されていません');
+        }
       }
     }
 
