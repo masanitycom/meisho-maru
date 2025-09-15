@@ -1,17 +1,33 @@
 import { NextResponse } from 'next/server';
-import { getSupabaseClient } from '@/lib/supabase-client';
+import { createClient } from '@supabase/supabase-js';
 
 export async function GET() {
   try {
     console.log('=== Supabaseテスト ===');
+    console.log('環境変数チェック:');
+    console.log('SUPABASE_URL:', process.env.NEXT_PUBLIC_SUPABASE_URL ? '設定済み' : '未設定');
+    console.log('SUPABASE_ANON_KEY:', process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ? '設定済み' : '未設定');
 
-    const supabase = getSupabaseClient();
-    if (!supabase) {
+    if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
       return NextResponse.json({
         success: false,
-        error: 'Supabase client not initialized'
+        error: 'Supabase environment variables not configured'
       }, { status: 500 });
     }
+
+    const supabase = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+      {
+        global: {
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Prefer': 'return=representation'
+          }
+        }
+      }
+    );
 
     // schedules テーブルアクセステスト
     const { data: schedules, error: schedulesError } = await supabase
