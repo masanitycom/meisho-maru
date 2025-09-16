@@ -58,83 +58,65 @@ export async function POST(req: NextRequest) {
       admin: null as any
     };
 
-    // SendGrid APIを優先使用
-    if (process.env.SENDGRID_API_KEY) {
+    // Resend APIを優先使用
+    if (process.env.RESEND_API_KEY) {
       try {
         // お客様への確認メール
         if (email) {
-          const customerResponse = await fetch('https://api.sendgrid.com/v3/mail/send', {
+          const customerResponse = await fetch('https://api.resend.com/emails', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
-              'Authorization': `Bearer ${process.env.SENDGRID_API_KEY}`
+              'Authorization': `Bearer ${process.env.RESEND_API_KEY}`
             },
             body: JSON.stringify({
-              personalizations: [{
-                to: [{ email: email, name: name }],
-                subject: `【明勝丸】予約確認 - ${formattedDate} ${tripTime}`
-              }],
-              from: {
-                email: 'ikameishomaru@gmail.com',
-                name: '明勝丸'
-              },
-              content: [{
-                type: 'text/html',
-                value: createCustomerEmailHtml(emailData)
-              }]
+              from: '明勝丸 <onboarding@resend.dev>',
+              to: email,
+              subject: `【明勝丸】予約確認 - ${formattedDate} ${tripTime}`,
+              html: createCustomerEmailHtml(emailData),
+              reply_to: 'ikameishomaru@gmail.com'
             })
           });
 
+          const customerResult = await customerResponse.json();
           if (customerResponse.ok) {
-            console.log('✅ お客様メール送信成功（SendGrid）');
-            results.customer = { success: true, messageId: 'sendgrid-customer-' + Date.now() };
+            console.log('✅ お客様メール送信成功（Resend）:', customerResult);
+            results.customer = { success: true, messageId: customerResult.id };
           } else {
-            const errorText = await customerResponse.text();
-            console.error('❌ お客様メール送信失敗（SendGrid）:', errorText);
-            results.customer = { success: false, error: errorText };
+            console.error('❌ お客様メール送信失敗（Resend）:', customerResult);
+            results.customer = { success: false, error: customerResult.message };
           }
         }
 
         // 管理者への通知メール
-        const adminResponse = await fetch('https://api.sendgrid.com/v3/mail/send', {
+        const adminResponse = await fetch('https://api.resend.com/emails', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${process.env.SENDGRID_API_KEY}`
+            'Authorization': `Bearer ${process.env.RESEND_API_KEY}`
           },
           body: JSON.stringify({
-            personalizations: [{
-              to: [{
-                email: process.env.ADMIN_EMAIL || 'ikameishomaru@gmail.com',
-                name: '明勝丸管理者'
-              }],
-              subject: `【新規予約】${formattedDate} ${tripTime} - ${name}様（${peopleCount}名）`
-            }],
-            from: {
-              email: 'ikameishomaru@gmail.com',
-              name: '明勝丸予約システム'
-            },
-            reply_to: email ? { email: email, name: name } : undefined,
-            content: [{
-              type: 'text/html',
-              value: createAdminEmailHtml(emailData)
-            }]
+            from: '明勝丸予約システム <onboarding@resend.dev>',
+            to: process.env.ADMIN_EMAIL || 'ikameishomaru@gmail.com',
+            subject: `【新規予約】${formattedDate} ${tripTime} - ${name}様（${peopleCount}名）`,
+            html: createAdminEmailHtml(emailData),
+            reply_to: email || 'ikameishomaru@gmail.com'
           })
         });
 
+        const adminResult = await adminResponse.json();
         if (adminResponse.ok) {
-          console.log('✅ 管理者メール送信成功（SendGrid）');
-          results.admin = { success: true, messageId: 'sendgrid-admin-' + Date.now() };
+          console.log('✅ 管理者メール送信成功（Resend）:', adminResult);
+          results.admin = { success: true, messageId: adminResult.id };
         } else {
-          const errorText = await adminResponse.text();
-          console.error('❌ 管理者メール送信失敗（SendGrid）:', errorText);
-          results.admin = { success: false, error: errorText };
+          console.error('❌ 管理者メール送信失敗（Resend）:', adminResult);
+          results.admin = { success: false, error: adminResult.message };
         }
 
-      } catch (sendgridError) {
-        console.error('❌ SendGrid API エラー:', sendgridError);
-        results.customer = { success: false, error: String(sendgridError) };
-        results.admin = { success: false, error: String(sendgridError) };
+      } catch (resendError) {
+        console.error('❌ Resend API エラー:', resendError);
+        results.customer = { success: false, error: String(resendError) };
+        results.admin = { success: false, error: String(resendError) };
       }
     }
 
