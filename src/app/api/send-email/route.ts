@@ -124,7 +124,7 @@ export async function POST(req: NextRequest) {
           secure: false,
           auth: {
             user: 'meishomaru@zohomail.com',
-            pass: 'MeishoMaru2025!'
+            pass: 'Bv8E8Kta'
           }
         });
 
