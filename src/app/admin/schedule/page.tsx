@@ -78,7 +78,9 @@ export default function ScheduleManagePage() {
           ]);
 
           // schedulesテーブルから運航状況を取得
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           const trip1Schedule = scheduleData?.find((s: any) => s.date === dateStr && s.trip_number === 1);
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           const trip2Schedule = scheduleData?.find((s: any) => s.date === dateStr && s.trip_number === 2);
 
           return {
