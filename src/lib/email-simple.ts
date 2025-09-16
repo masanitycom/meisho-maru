@@ -102,10 +102,10 @@ export const createCustomerEmailHtml = (data: EmailData) => {
           ・特別割引やキャンペーン情報<br><br>
 
           <strong>👇 今すぐLINE登録！</strong><br>
-          <a href="https://line.me/R/ti/p/@meishomaru" style="display: inline-block; background-color: #00c300; color: white; padding: 12px 20px; text-decoration: none; border-radius: 25px; font-weight: bold; margin: 10px 0;">
+          <a href="https://lin.ee/mMWHmB0" style="display: inline-block; background-color: #00c300; color: white; padding: 12px 20px; text-decoration: none; border-radius: 25px; font-weight: bold; margin: 10px 0;">
             明勝丸 LINE公式アカウント
           </a><br>
-          <span style="color: #666; font-size: 14px;">または「@meishomaru」で検索</span>
+          <span style="color: #666; font-size: 14px;">または「@707ejlid」で検索</span>
         </p>
       </div>
 
@@ -115,7 +115,7 @@ export const createCustomerEmailHtml = (data: EmailData) => {
           ご不明な点がございましたら、お気軽にお問い合わせください。<br><br>
           <strong>電話：</strong> 090-7379-6106<br>
           <strong>メール：</strong> ikameishomaru@gmail.com<br>
-          <strong>LINE：</strong> @meishomaru（推奨）
+          <strong>LINE：</strong> @707ejlid（推奨）
         </p>
       </div>
     </div>
