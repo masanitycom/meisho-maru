@@ -78,8 +78,8 @@ export default function ScheduleManagePage() {
           ]);
 
           // schedulesテーブルから運航状況を取得
-          const trip1Schedule = scheduleData?.find(s => s.date === dateStr && s.trip_number === 1);
-          const trip2Schedule = scheduleData?.find(s => s.date === dateStr && s.trip_number === 2);
+          const trip1Schedule = scheduleData?.find((s: any) => s.date === dateStr && s.trip_number === 1);
+          const trip2Schedule = scheduleData?.find((s: any) => s.date === dateStr && s.trip_number === 2);
 
           return {
             date: dateStr,
