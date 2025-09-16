@@ -58,8 +58,8 @@ export async function POST(req: NextRequest) {
       admin: null as any
     };
 
-    // Resend APIを優先使用
-    if (process.env.RESEND_API_KEY) {
+    // Resend APIを優先使用（正常に動作する場合のみ）
+    if (process.env.RESEND_API_KEY && process.env.RESEND_API_KEY.startsWith('re_')) {
       try {
         // お客様への確認メール
         if (email) {
@@ -120,8 +120,9 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    // SendGridが設定されていない場合、Gmail nodemailerを試行
-    else if (process.env.GMAIL_USER && process.env.GMAIL_APP_PASSWORD) {
+    // Resendが使えない場合、Gmail nodemailerを試行
+    if (!results.customer && !results.admin && process.env.GMAIL_USER && process.env.GMAIL_APP_PASSWORD) {
+      console.log('📧 Gmail nodemailerを使用してメール送信を試行します...');
       try {
         // nodemailerが利用可能な場合
         // eslint-disable-next-line @typescript-eslint/no-require-imports
