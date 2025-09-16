@@ -160,14 +160,14 @@ function ReservationSuccessContent() {
                   ご不明な点がございましたら、お気軽にお問い合わせください。
                 </p>
                 <div className="space-y-2">
-                  <Button asChild variant="outline" className="w-full justify-start">
-                    <a href="tel:090-4695-3087">
+                  <Button asChild variant="outline" className="w-full">
+                    <a href="tel:090-4695-3087" className="flex items-center justify-center">
                       <Phone className="mr-2 h-4 w-4" />
                       電話で問い合わせ
                     </a>
                   </Button>
-                  <Button asChild variant="outline" className="w-full justify-start">
-                    <a href="https://lin.ee/mMWHmB0" target="_blank" rel="noopener noreferrer">
+                  <Button asChild variant="outline" className="w-full">
+                    <a href="https://lin.ee/mMWHmB0" target="_blank" rel="noopener noreferrer" className="flex items-center justify-center">
                       <MessageCircle className="mr-2 h-4 w-4" />
                       LINEで問い合わせ
                     </a>
@@ -183,12 +183,12 @@ function ReservationSuccessContent() {
                   ご友人やご家族に明勝丸の釣り体験をシェアしませんか？
                 </p>
                 <div className="space-y-2">
-                  <Button variant="outline" className="w-full justify-start" onClick={handleShare}>
+                  <Button variant="outline" className="w-full flex items-center justify-center" onClick={handleShare}>
                     <Share2 className="mr-2 h-4 w-4" />
                     シェアする
                   </Button>
-                  <Button asChild variant="outline" className="w-full justify-start">
-                    <a href="https://www.instagram.com/meisho_maru/" target="_blank" rel="noopener noreferrer">
+                  <Button asChild variant="outline" className="w-full">
+                    <a href="https://www.instagram.com/meisho_maru/" target="_blank" rel="noopener noreferrer" className="flex items-center justify-center">
                       <Instagram className="mr-2 h-4 w-4" />
                       Instagram をフォロー
                     </a>
@@ -201,7 +201,7 @@ function ReservationSuccessContent() {
           {/* ホームに戻る */}
           <div className="text-center">
             <Button asChild size="lg" className="bg-blue-600 hover:bg-blue-700">
-              <Link href="/">
+              <Link href="/" className="flex items-center justify-center">
                 <Calendar className="mr-2 h-5 w-5" />
                 ホームに戻る
               </Link>
