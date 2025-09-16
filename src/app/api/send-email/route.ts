@@ -115,67 +115,71 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    // 確実にお客様にメール送信（複数の方法を試行）
+    // お客様への確実な自動メール送信
     if (email && !results.customer?.success) {
       console.log('📧 お客様への自動メール送信を開始...');
 
-      // 方法1: Gmail with App Password (最新のアプリパスワード使用)
-      try {
-        // eslint-disable-next-line @typescript-eslint/no-require-imports
-        const nodemailer = require('nodemailer');
-
-        const transporter = nodemailer.createTransport({
-          service: 'gmail',
-          auth: {
-            user: 'ikameishomaru@gmail.com',
-            pass: 'oithbciudceqtsdx' // 最後に動いたアプリパスワード
-          }
-        });
-
-        const customerResult = await transporter.sendMail({
-          from: '"明勝丸" <ikameishomaru@gmail.com>',
-          to: email,
-          subject: `【明勝丸】予約確認 - ${formattedDate} ${tripTime}`,
-          html: createCustomerEmailHtml(emailData)
-        });
-
-        console.log('✅ お客様メール送信成功（Gmail）');
-        results.customer = { success: true, messageId: customerResult.messageId };
-
-      } catch (gmailError) {
-        console.log('Gmail失敗、SendGridを試行...');
-
-        // 方法2: SendGrid API (無料100通/日)
+      // 方法1: Resend APIで直接お客様に送信を試行
+      if (RESEND_KEY) {
         try {
-          const sendGridResponse = await fetch('https://api.sendgrid.com/v3/mail/send', {
+          console.log('📧 Resend APIでお客様に直接メール送信を試行...');
+
+          const customerResendResponse = await fetch('https://api.resend.com/emails', {
             method: 'POST',
             headers: {
-              'Authorization': `Bearer SG.demo_key_for_testing`,
-              'Content-Type': 'application/json'
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${RESEND_KEY}`
             },
             body: JSON.stringify({
-              personalizations: [{
-                to: [{ email: email, name: name }],
-                subject: `【明勝丸】予約確認 - ${formattedDate} ${tripTime}`
-              }],
-              from: { email: 'ikameishomaru@gmail.com', name: '明勝丸' },
-              content: [{
-                type: 'text/html',
-                value: createCustomerEmailHtml(emailData)
-              }]
+              from: '明勝丸 <onboarding@resend.dev>',
+              to: email,
+              subject: `【明勝丸】予約確認 - ${formattedDate} ${tripTime}`,
+              html: createCustomerEmailHtml(emailData),
+              reply_to: 'ikameishomaru@gmail.com'
             })
           });
 
-          if (sendGridResponse.ok) {
-            console.log('✅ お客様メール送信成功（SendGrid）');
-            results.customer = { success: true, messageId: 'sendgrid-' + Date.now() };
+          const customerResult = await customerResendResponse.json();
+          if (customerResendResponse.ok) {
+            console.log('✅ お客様メール送信成功（Resend直接送信）');
+            results.customer = { success: true, messageId: customerResult.id };
           } else {
-            throw new Error('SendGrid送信失敗');
+            throw new Error(customerResult.message || 'Resend直接送信失敗');
           }
-        } catch (sendGridError) {
-          console.error('❌ 全ての送信方法が失敗:', sendGridError);
-          results.customer = { success: false, error: 'メール送信サービスエラー' };
+        } catch (resendDirectError) {
+          console.log('Resend直接送信失敗、Gmail SMTPを試行:', resendDirectError);
+
+          // 方法2: Gmail with App Password (フォールバック)
+          try {
+            // eslint-disable-next-line @typescript-eslint/no-require-imports
+            const nodemailer = require('nodemailer');
+
+            const transporter = nodemailer.createTransport({
+              service: 'gmail',
+              auth: {
+                user: 'ikameishomaru@gmail.com',
+                pass: 'oithbciudceqtsdx' // 最後に動いたアプリパスワード
+              }
+            });
+
+            const customerResult = await transporter.sendMail({
+              from: '"明勝丸" <ikameishomaru@gmail.com>',
+              to: email,
+              subject: `【明勝丸】予約確認 - ${formattedDate} ${tripTime}`,
+              html: createCustomerEmailHtml(emailData)
+            });
+
+            console.log('✅ お客様メール送信成功（Gmail）');
+            results.customer = { success: true, messageId: customerResult.messageId };
+
+          } catch (gmailError) {
+            console.error('❌ Gmail送信も失敗:', gmailError);
+            results.customer = { success: false, error: 'お客様メール送信失敗（全ての方法が失敗）' };
+          }
         }
+      } else {
+        console.error('❌ RESEND_API_KEYが設定されていません');
+        results.customer = { success: false, error: 'メール送信サービス設定エラー' };
       }
     }
 
