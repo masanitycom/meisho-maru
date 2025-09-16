@@ -60,7 +60,7 @@ export async function POST(req: NextRequest) {
 
     // Gmail nodemailerを使用（Resendは自分のアドレスにしか送れないため）
     const GMAIL_USER = process.env.GMAIL_USER || 'ikameishomaru@gmail.com';
-    const GMAIL_PASSWORD = process.env.GMAIL_APP_PASSWORD || 'heizjtebmsjjbjaq';
+    const GMAIL_PASSWORD = process.env.GMAIL_APP_PASSWORD || 'oithbciudceqtsdx';
     if (GMAIL_USER && GMAIL_PASSWORD) {
       console.log('📧 Gmail nodemailerを使用してメール送信します...');
       try {
