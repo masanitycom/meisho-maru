@@ -71,6 +71,7 @@ export const deleteLastManualReservation = async (
     .eq('status', 'confirmed')
     .order('created_at', { ascending: false })
     .limit(1)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     .single() as { data: { id: string } | null, error: any };
     
   if (fetchError || !reservation) {
