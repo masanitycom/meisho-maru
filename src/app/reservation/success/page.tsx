@@ -141,20 +141,9 @@ function ReservationSuccessContent() {
                     2
                   </div>
                   <div>
-                    <p className="font-semibold">船長からの連絡をお待ちください</p>
-                    <p className="text-gray-600 text-sm">
-                      24時間以内に船長より詳細確認のお電話またはメールをいたします。
-                    </p>
-                  </div>
-                </div>
-                <div className="flex items-start space-x-3">
-                  <div className="flex-shrink-0 w-6 h-6 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-sm font-bold">
-                    3
-                  </div>
-                  <div>
                     <p className="font-semibold">当日の集合</p>
                     <p className="text-gray-600 text-sm">
-                      鳥取県琴浦町赤碕港にお越しください。詳細は船長からご連絡いたします。
+                      鳥取県琴浦町赤碕港にお越しください。詳細は確認メールに記載されています。
                     </p>
                   </div>
                 </div>
@@ -172,13 +161,13 @@ function ReservationSuccessContent() {
                 </p>
                 <div className="space-y-2">
                   <Button asChild variant="outline" className="w-full justify-start">
-                    <a href="tel:090-4695-3087">
+                    <a href="tel:090-7379-6106">
                       <Phone className="mr-2 h-4 w-4" />
                       電話で問い合わせ
                     </a>
                   </Button>
                   <Button asChild variant="outline" className="w-full justify-start">
-                    <a href="https://lin.ee/HQX3Ezq" target="_blank" rel="noopener noreferrer">
+                    <a href="https://lin.ee/mMWHmB0" target="_blank" rel="noopener noreferrer">
                       <MessageCircle className="mr-2 h-4 w-4" />
                       LINEで問い合わせ
                     </a>
