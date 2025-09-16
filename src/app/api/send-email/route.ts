@@ -58,13 +58,12 @@ export async function POST(req: NextRequest) {
       admin: null as any
     };
 
-    // Resend APIを使用して管理者にのみ送信（お客様への送信制限を回避）
+    // 環境変数取得
     const RESEND_KEY = process.env.RESEND_API_KEY || 're_e8pNZT3b_5jSHSEzY4VDxW6Wu5BPXTRYZ';
     const GMAIL_USER = process.env.GMAIL_USER || 'ikameishomaru@gmail.com';
-    // Gmail通常パスワード（2段階認証解除後）
     const GMAIL_PASSWORD = process.env.GMAIL_PASSWORD || 'h8nAktkV';
 
-    // まずResend APIで管理者に送信
+    // 管理者にResendで通知
     if (RESEND_KEY) {
       try {
         console.log('📧 Resend APIで管理者にメール送信...');
@@ -99,71 +98,54 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    // お客様への確実な自動メール送信
-    if (email && !results.customer?.success) {
-      console.log('📧 お客様への自動メール送信を開始...');
+    // お客様への確実なメール送信（Nodemailer SMTP直接送信）
+    if (email) {
+      try {
+        console.log('📧 SMTPでお客様にメール送信...');
 
-      // 方法1: Resend APIで直接お客様に送信を試行
-      if (RESEND_KEY) {
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
+        const nodemailer = require('nodemailer');
+
+        const transporter = nodemailer.createTransporter({
+          host: 'smtp.gmail.com',
+          port: 587,
+          secure: false,
+          auth: {
+            user: GMAIL_USER,
+            pass: GMAIL_PASSWORD
+          },
+          tls: {
+            rejectUnauthorized: false
+          }
+        });
+
+        // SMTP接続テスト
         try {
-          console.log('📧 Resend APIでお客様に直接メール送信を試行...');
-
-          const customerResendResponse = await fetch('https://api.resend.com/emails', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${RESEND_KEY}`
-            },
-            body: JSON.stringify({
-              from: '明勝丸 <onboarding@resend.dev>',
-              to: email,
-              subject: `【明勝丸】予約確認 - ${formattedDate} ${tripTime}`,
-              html: createCustomerEmailHtml(emailData),
-              reply_to: 'ikameishomaru@gmail.com'
-            })
-          });
-
-          const customerResult = await customerResendResponse.json();
-          if (customerResendResponse.ok) {
-            console.log('✅ お客様メール送信成功（Resend直接送信）');
-            results.customer = { success: true, messageId: customerResult.id };
-          } else {
-            throw new Error(customerResult.message || 'Resend直接送信失敗');
-          }
-        } catch (resendDirectError) {
-          console.log('Resend直接送信失敗、Gmail SMTPを試行:', resendDirectError);
-
-          // 方法2: Gmail with App Password (フォールバック)
-          try {
-            // eslint-disable-next-line @typescript-eslint/no-require-imports
-            const nodemailer = require('nodemailer');
-
-            const transporter = nodemailer.createTransport({
-              service: 'gmail',
-              auth: {
-                user: 'ikameishomaru@gmail.com',
-                pass: 'oithbciudceqtsdx' // 最後に動いたアプリパスワード
-              }
-            });
-
-            const customerResult = await transporter.sendMail({
-              from: '"明勝丸" <ikameishomaru@gmail.com>',
-              to: email,
-              subject: `【明勝丸】予約確認 - ${formattedDate} ${tripTime}`,
-              html: createCustomerEmailHtml(emailData)
-            });
-
-            console.log('✅ お客様メール送信成功（Gmail）');
-            results.customer = { success: true, messageId: customerResult.messageId };
-
-          } catch (gmailError) {
-            console.error('❌ Gmail送信も失敗:', gmailError);
-            results.customer = { success: false, error: 'お客様メール送信失敗（全ての方法が失敗）' };
-          }
+          await transporter.verify();
+          console.log('✅ SMTP接続確認成功');
+        } catch (verifyError) {
+          console.log('⚠️ SMTP検証スキップ:', verifyError);
         }
-      } else {
-        console.error('❌ RESEND_API_KEYが設定されていません');
-        results.customer = { success: false, error: 'メール送信サービス設定エラー' };
+
+        const customerResult = await transporter.sendMail({
+          from: {
+            name: '明勝丸',
+            address: GMAIL_USER
+          },
+          to: email,
+          subject: `【明勝丸】予約確認 - ${formattedDate} ${tripTime}`,
+          html: createCustomerEmailHtml(emailData)
+        });
+
+        console.log('✅ お客様メール送信成功（SMTP）');
+        results.customer = { success: true, messageId: customerResult.messageId };
+
+      } catch (smtpError) {
+        console.error('❌ SMTP送信失敗:', smtpError);
+        results.customer = {
+          success: false,
+          error: 'メール送信失敗: ' + (smtpError instanceof Error ? smtpError.message : String(smtpError))
+        };
       }
     }
 
