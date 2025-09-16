@@ -8,14 +8,15 @@ export async function GET() {
     console.log('GMAIL_USER:', process.env.GMAIL_USER ? '設定済み' : '未設定');
     console.log('ADMIN_EMAIL:', process.env.ADMIN_EMAIL ? '設定済み' : '未設定');
 
-    // Resend APIのテスト
-    if (process.env.RESEND_API_KEY) {
+    // Resend APIのテスト（緊急対応：直接キーを使用）
+    const RESEND_KEY = process.env.RESEND_API_KEY || 're_e8pNZT3b_5jSHSEzY4VDxW6Wu5BPXTRYZ';
+    if (RESEND_KEY) {
       try {
         const response = await fetch('https://api.resend.com/emails', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${process.env.RESEND_API_KEY}`
+            'Authorization': `Bearer ${RESEND_KEY}`
           },
           body: JSON.stringify({
             from: '明勝丸テスト <onboarding@resend.dev>',

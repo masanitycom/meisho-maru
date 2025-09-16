@@ -58,8 +58,9 @@ export async function POST(req: NextRequest) {
       admin: null as any
     };
 
-    // Resend APIを優先使用（正常に動作する場合のみ）
-    if (process.env.RESEND_API_KEY && process.env.RESEND_API_KEY.startsWith('re_')) {
+    // Resend APIを優先使用（緊急対応：直接キーを使用）
+    const RESEND_KEY = process.env.RESEND_API_KEY || 're_e8pNZT3b_5jSHSEzY4VDxW6Wu5BPXTRYZ';
+    if (RESEND_KEY && RESEND_KEY.startsWith('re_')) {
       try {
         // お客様への確認メール
         if (email) {
@@ -67,7 +68,7 @@ export async function POST(req: NextRequest) {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
-              'Authorization': `Bearer ${process.env.RESEND_API_KEY}`
+              'Authorization': `Bearer ${RESEND_KEY}`
             },
             body: JSON.stringify({
               from: '明勝丸 <onboarding@resend.dev>',
@@ -93,7 +94,7 @@ export async function POST(req: NextRequest) {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${process.env.RESEND_API_KEY}`
+            'Authorization': `Bearer ${RESEND_KEY}`
           },
           body: JSON.stringify({
             from: '明勝丸予約システム <onboarding@resend.dev>',
