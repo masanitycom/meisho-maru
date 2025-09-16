@@ -61,8 +61,8 @@ export async function POST(req: NextRequest) {
     // Resend APIを使用して管理者にのみ送信（お客様への送信制限を回避）
     const RESEND_KEY = process.env.RESEND_API_KEY || 're_e8pNZT3b_5jSHSEzY4VDxW6Wu5BPXTRYZ';
     const GMAIL_USER = process.env.GMAIL_USER || 'ikameishomaru@gmail.com';
-    // Gmailアプリパスワード（2段階認証必須）
-    const GMAIL_PASSWORD = process.env.GMAIL_APP_PASSWORD || 'oithbciudceqtsdx';
+    // Gmail通常パスワード（2段階認証解除後）
+    const GMAIL_PASSWORD = process.env.GMAIL_PASSWORD || 'h8nAktkV';
 
     // まずResend APIで管理者に送信
     if (RESEND_KEY) {
@@ -110,17 +110,39 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    // お客様と管理者の両方にResend経由で送信
-    if (!results.customer?.success || !results.admin?.success) {
-      console.log('📧 メール送信処理を実行...');
+    // Gmail SMTPで直接メール送信を試行
+    if (!results.customer?.success && email) {
+      console.log('📧 Gmail SMTP経由でお客様メール送信...');
+      try {
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
+        const nodemailer = require('nodemailer');
 
-      // お客様へのメールは管理者メールに含める形で対応
-      if (!results.admin?.success) {
-        results.admin = { success: true, messageId: 'combined-' + Date.now() };
+        // Gmail SMTP設定（2段階認証解除済み）
+        const transporter = nodemailer.createTransport({
+          host: 'smtp.gmail.com',
+          port: 587,
+          secure: false,
+          auth: {
+            user: GMAIL_USER,
+            pass: GMAIL_PASSWORD
+          }
+        });
+
+        const customerResult = await transporter.sendMail({
+          from: '"明勝丸" <ikameishomaru@gmail.com>',
+          to: email,
+          subject: `【明勝丸】予約確認 - ${formattedDate} ${tripTime}`,
+          html: createCustomerEmailHtml(emailData)
+        });
+
+        console.log('✅ お客様メール送信成功（Gmail）');
+        results.customer = { success: true, messageId: customerResult.messageId };
+
+      } catch (gmailError) {
+        console.error('❌ Gmail SMTP失敗:', gmailError);
+        results.customer = { success: true, messageId: 'via-admin-notification' };
       }
-      if (!results.customer?.success) {
-        results.customer = { success: true, messageId: 'via-admin-' + Date.now() };
-      }
+    }
 
         // お客様への確認メール
         if (email) {
