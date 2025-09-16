@@ -130,7 +130,6 @@ export const updateSchedule = async (date: string, tripNumber: number, updates: 
   const supabase = getSupabaseClientWithFallback()
   if (!supabase) throw new Error('Supabase client not initialized')
   
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { data, error } = await supabase
     .from('schedules')
     .upsert([
@@ -139,6 +138,7 @@ export const updateSchedule = async (date: string, tripNumber: number, updates: 
         trip_number: tripNumber,
         ...updates
       }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     ] as any, { onConflict: 'date,trip_number' })
     .select()
     
