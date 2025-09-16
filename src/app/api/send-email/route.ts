@@ -58,8 +58,88 @@ export async function POST(req: NextRequest) {
       admin: null as any
     };
 
-    // Gmail nodemailerを使用
-    if (process.env.GMAIL_USER && process.env.GMAIL_APP_PASSWORD) {
+    // SendGrid APIを優先使用
+    if (process.env.SENDGRID_API_KEY) {
+      try {
+        // お客様への確認メール
+        if (email) {
+          const customerResponse = await fetch('https://api.sendgrid.com/v3/mail/send', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${process.env.SENDGRID_API_KEY}`
+            },
+            body: JSON.stringify({
+              personalizations: [{
+                to: [{ email: email, name: name }],
+                subject: `【明勝丸】予約確認 - ${formattedDate} ${tripTime}`
+              }],
+              from: {
+                email: 'ikameishomaru@gmail.com',
+                name: '明勝丸'
+              },
+              content: [{
+                type: 'text/html',
+                value: createCustomerEmailHtml(emailData)
+              }]
+            })
+          });
+
+          if (customerResponse.ok) {
+            console.log('✅ お客様メール送信成功（SendGrid）');
+            results.customer = { success: true, messageId: 'sendgrid-customer-' + Date.now() };
+          } else {
+            const errorText = await customerResponse.text();
+            console.error('❌ お客様メール送信失敗（SendGrid）:', errorText);
+            results.customer = { success: false, error: errorText };
+          }
+        }
+
+        // 管理者への通知メール
+        const adminResponse = await fetch('https://api.sendgrid.com/v3/mail/send', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${process.env.SENDGRID_API_KEY}`
+          },
+          body: JSON.stringify({
+            personalizations: [{
+              to: [{
+                email: process.env.ADMIN_EMAIL || 'ikameishomaru@gmail.com',
+                name: '明勝丸管理者'
+              }],
+              subject: `【新規予約】${formattedDate} ${tripTime} - ${name}様（${peopleCount}名）`
+            }],
+            from: {
+              email: 'ikameishomaru@gmail.com',
+              name: '明勝丸予約システム'
+            },
+            reply_to: email ? { email: email, name: name } : undefined,
+            content: [{
+              type: 'text/html',
+              value: createAdminEmailHtml(emailData)
+            }]
+          })
+        });
+
+        if (adminResponse.ok) {
+          console.log('✅ 管理者メール送信成功（SendGrid）');
+          results.admin = { success: true, messageId: 'sendgrid-admin-' + Date.now() };
+        } else {
+          const errorText = await adminResponse.text();
+          console.error('❌ 管理者メール送信失敗（SendGrid）:', errorText);
+          results.admin = { success: false, error: errorText };
+        }
+
+      } catch (sendgridError) {
+        console.error('❌ SendGrid API エラー:', sendgridError);
+        results.customer = { success: false, error: String(sendgridError) };
+        results.admin = { success: false, error: String(sendgridError) };
+      }
+    }
+
+    // SendGridが設定されていない場合、Gmail nodemailerを試行
+    else if (process.env.GMAIL_USER && process.env.GMAIL_APP_PASSWORD) {
       try {
         // nodemailerが利用可能な場合
         // eslint-disable-next-line @typescript-eslint/no-require-imports
