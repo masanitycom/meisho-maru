@@ -108,7 +108,8 @@ export const getAvailableSeats = async (date: string, tripNumber: number) => {
       return 8;
     }
     
-    const bookedSeats = reservations?.reduce((sum, r) => sum + r.people_count, 0) || 0
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const bookedSeats = reservations?.reduce((sum, r: any) => sum + r.people_count, 0) || 0
     console.log(`${date} ${tripNumber}便: 予約済み ${bookedSeats}席`);
     
     // 定員は常に8名固定
