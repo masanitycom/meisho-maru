@@ -101,7 +101,7 @@ export async function POST(req: NextRequest) {
         if (response.ok) {
           console.log('✅ 管理者メール送信成功（Resend）');
           results.admin = { success: true, messageId: result.id };
-          results.customer = { success: true, messageId: 'admin-notified' };
+          // お客様メールは別途Gmail SMTPで送信するため、ここでは設定しない
         } else {
           throw new Error(result.message || 'Resend送信失敗');
         }
