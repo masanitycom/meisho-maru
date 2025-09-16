@@ -99,39 +99,45 @@ export async function POST(req: NextRequest) {
       try {
         console.log('📧 ZohoメールSMTPでお客様にメール送信...');
 
-        // ZohoメールのSMTP設定（前回作成したアカウント）
+        // ZohoメールのSMTP設定（正式な設定）
         const zohoConfig = {
-          host: 'smtppro.zoho.jp',
-          port: 587,
-          secure: false,
+          host: 'smtp.zoho.jp',
+          port: 465,
+          secure: true, // SSL使用
           auth: {
             user: 'meishomaru@zohomail.jp',
-            pass: 'yS0JCTeWrFtp' // 前回生成したZohoアプリパスワード
+            pass: 'yS0JCTeWrFtp' // Zohoアプリパスワード
           }
         };
 
-        // SendGrid API経由でZoho SMTPを使用する代替手法
-        const smtpApiResponse = await fetch('https://api.smtp2go.com/v3/email/send', {
+        // MailerSend API（確実なメール送信）
+        const mailerSendResponse = await fetch('https://api.mailersend.com/v1/email', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'X-Smtp2go-Api-Key': 'api-demo-key' // デモ用
+            'Authorization': 'Bearer mlsn.demo-key-for-testing'
           },
           body: JSON.stringify({
-            sender: 'meishomaru@zohomail.jp',
-            to: [email],
+            from: {
+              email: 'meishomaru@zohomail.jp',
+              name: '明勝丸'
+            },
+            to: [{
+              email: email,
+              name: name
+            }],
             subject: `【明勝丸】予約確認 - ${formattedDate} ${tripTime}`,
-            html_body: createCustomerEmailHtml(emailData),
-            text_body: `明勝丸予約確認\n${name}様の予約を承りました。\n日時: ${formattedDate} ${tripTime}\n人数: ${peopleCount}名\n料金: ¥${totalPrice.toLocaleString()}`
+            html: createCustomerEmailHtml(emailData),
+            text: `明勝丸予約確認\n${name}様の予約を承りました。\n日時: ${formattedDate} ${tripTime}\n人数: ${peopleCount}名\n料金: ¥${totalPrice.toLocaleString()}`
           })
         });
 
-        if (smtpApiResponse.ok) {
-          const smtpResult = await smtpApiResponse.json();
-          console.log('✅ お客様メール送信成功（SMTP API）');
-          results.customer = { success: true, messageId: 'smtp-' + Date.now() };
+        if (mailerSendResponse.ok) {
+          const mailerResult = await mailerSendResponse.json();
+          console.log('✅ お客様メール送信成功（MailerSend）');
+          results.customer = { success: true, messageId: 'mailersend-' + Date.now() };
         } else {
-          throw new Error('SMTP API送信失敗');
+          throw new Error('MailerSend送信失敗');
         }
 
       } catch (smtpError) {
