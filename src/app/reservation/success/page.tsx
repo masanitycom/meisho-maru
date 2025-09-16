@@ -161,7 +161,7 @@ function ReservationSuccessContent() {
                 </p>
                 <div className="space-y-2">
                   <Button asChild variant="outline" className="w-full justify-start">
-                    <a href="tel:090-7379-6106">
+                    <a href="tel:090-4695-3087">
                       <Phone className="mr-2 h-4 w-4" />
                       電話で問い合わせ
                     </a>
