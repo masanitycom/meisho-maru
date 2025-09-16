@@ -96,10 +96,8 @@ export const createCustomerEmailHtml = (data: EmailData) => {
       <div style="background-color: #e8f5e8; border-left: 4px solid #28a745; padding: 20px; margin: 20px 0; border-radius: 5px;">
         <h3 style="color: #28a745; margin: 0 0 15px 0; font-size: 18px;">📱 LINE公式アカウントにご登録ください！</h3>
         <p style="color: #333; line-height: 1.8; margin: 0;">
-          <strong>お得な情報をお届けします：</strong><br>
-          ・最新の釣果情報<br>
-          ・天候による運航状況の迅速な連絡<br>
-          ・特別割引やキャンペーン情報<br><br>
+          <strong>重要な連絡をお届けします：</strong><br>
+          ・当日の出航判断等<br><br>
 
           <strong>👇 今すぐLINE登録！</strong><br>
           <a href="https://lin.ee/mMWHmB0" style="display: inline-block; background-color: #00c300; color: white; padding: 12px 20px; text-decoration: none; border-radius: 25px; font-weight: bold; margin: 10px 0;">
@@ -109,13 +107,24 @@ export const createCustomerEmailHtml = (data: EmailData) => {
         </p>
       </div>
 
+      <div style="background-color: #fce4ec; border-left: 4px solid #e91e63; padding: 20px; margin: 20px 0; border-radius: 5px;">
+        <h3 style="color: #e91e63; margin: 0 0 15px 0; font-size: 18px;">📸 インスタグラムもフォロー！</h3>
+        <p style="color: #333; line-height: 1.8; margin: 0;">
+          最新の釣果写真や海の様子をチェック！<br><br>
+          <a href="https://www.instagram.com/meisho_maru/" style="display: inline-block; background-color: #e91e63; color: white; padding: 12px 20px; text-decoration: none; border-radius: 25px; font-weight: bold; margin: 10px 0;">
+            📷 明勝丸インスタグラム
+          </a>
+        </p>
+      </div>
+
       <div style="margin-top: 30px; padding-top: 20px; border-top: 2px solid #e5e5e5;">
         <h3 style="color: #1e3a8a; margin: 0 0 15px 0; font-size: 18px;">お問い合わせ</h3>
         <p style="color: #333; line-height: 1.8; margin: 0;">
           ご不明な点がございましたら、お気軽にお問い合わせください。<br><br>
           <strong>電話：</strong> 090-7379-6106<br>
           <strong>メール：</strong> ikameishomaru@gmail.com<br>
-          <strong>LINE：</strong> @707ejlid（推奨）
+          <strong>LINE：</strong> @707ejlid（推奨）<br>
+          <strong>Instagram：</strong> @meisho_maru
         </p>
       </div>
     </div>
