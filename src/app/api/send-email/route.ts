@@ -110,45 +110,38 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    // Gmail SMTPで直接メール送信を試行
+    // Zoho SMTPで直接メール送信を試行
     if (!results.customer?.success && email) {
-      console.log('📧 Gmail SMTP経由でお客様メール送信...');
+      console.log('📧 Zoho SMTP経由でお客様メール送信...');
       try {
         // eslint-disable-next-line @typescript-eslint/no-require-imports
         const nodemailer = require('nodemailer');
 
-        // Gmail SMTP設定（OAuth2不要の外部SMTP経由）
+        // Zoho Mail SMTP（無料、Gmail代替）
         const transporter = nodemailer.createTransport({
-          host: 'smtp.gmail.com',
+          host: 'smtp.zoho.com',
           port: 587,
           secure: false,
           auth: {
-            user: GMAIL_USER,
-            pass: GMAIL_PASSWORD
-          },
-          tls: {
-            rejectUnauthorized: false
-          },
-          debug: true,
-          logger: true
+            user: 'meishomaru@zohomail.com',
+            pass: 'MeishoMaru2025!'
+          }
         });
 
-        // 強制的に接続テストを実行
-        console.log('Gmail SMTP接続テストを実行...');
-        await transporter.verify();
+        console.log('Zoho SMTP経由でお客様メール送信中...');
 
         const customerResult = await transporter.sendMail({
-          from: '"明勝丸" <ikameishomaru@gmail.com>',
+          from: '"明勝丸" <meishomaru@zohomail.com>',
           to: email,
           subject: `【明勝丸】予約確認 - ${formattedDate} ${tripTime}`,
           html: createCustomerEmailHtml(emailData)
         });
 
-        console.log('✅ お客様メール送信成功（Gmail）');
+        console.log('✅ お客様メール送信成功（Zoho）');
         results.customer = { success: true, messageId: customerResult.messageId };
 
-      } catch (gmailError) {
-        console.error('❌ Gmail SMTP失敗:', gmailError);
+      } catch (zohoError) {
+        console.error('❌ Zoho SMTP失敗:', zohoError);
         results.customer = { success: true, messageId: 'via-admin-notification' };
       }
     }
