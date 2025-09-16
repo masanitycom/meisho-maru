@@ -120,12 +120,14 @@ export async function POST(req: NextRequest) {
         // Zoho Mail SMTP（無料、Gmail代替）
         const transporter = nodemailer.createTransport({
           host: 'smtp.zoho.com',
-          port: 587,
-          secure: false,
+          port: 465,
+          secure: true,
           auth: {
             user: 'meishomaru@zohomail.jp',
-            pass: 'Bv8E8Kta'
-          }
+            pass: 'yS0JCTeWrFtp'
+          },
+          debug: true,
+          logger: true
         });
 
         console.log('📧 Zoho SMTP経由でお客様メール送信中...');
