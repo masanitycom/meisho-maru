@@ -132,13 +132,14 @@ export const updateSchedule = async (date: string, tripNumber: number, updates: 
   
   const { data, error } = await supabase
     .from('schedules')
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     .upsert([
       {
         date,
         trip_number: tripNumber,
         ...updates
       }
-    ], { onConflict: 'date,trip_number' })
+    ] as any, { onConflict: 'date,trip_number' })
     .select()
     
   if (error) throw error
