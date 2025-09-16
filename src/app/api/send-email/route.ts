@@ -117,7 +117,7 @@ export async function POST(req: NextRequest) {
         // eslint-disable-next-line @typescript-eslint/no-require-imports
         const nodemailer = require('nodemailer');
 
-        // Gmail SMTP設定（2段階認証解除済み）
+        // Gmail SMTP設定（OAuth2不要の外部SMTP経由）
         const transporter = nodemailer.createTransport({
           host: 'smtp.gmail.com',
           port: 587,
@@ -125,8 +125,17 @@ export async function POST(req: NextRequest) {
           auth: {
             user: GMAIL_USER,
             pass: GMAIL_PASSWORD
-          }
+          },
+          tls: {
+            rejectUnauthorized: false
+          },
+          debug: true,
+          logger: true
         });
+
+        // 強制的に接続テストを実行
+        console.log('Gmail SMTP接続テストを実行...');
+        await transporter.verify();
 
         const customerResult = await transporter.sendMail({
           from: '"明勝丸" <ikameishomaru@gmail.com>',
