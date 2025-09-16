@@ -3,17 +3,24 @@
 // 日本時間での今日の日付を取得（YYYY-MM-DD形式）
 export const getJSTToday = (): string => {
   const now = new Date();
-  // JST = UTC+9
-  const jstOffset = 9 * 60; // 分単位
-  const jstTime = new Date(now.getTime() + (jstOffset * 60 * 1000));
-  const todayStr = jstTime.toISOString().split('T')[0];
-  
+  // 日本のタイムゾーンで日付文字列を取得
+  const formatter = new Intl.DateTimeFormat('ja-JP', {
+    timeZone: 'Asia/Tokyo',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit'
+  });
+  const parts = formatter.formatToParts(now);
+  const year = parts.find(p => p.type === 'year')?.value;
+  const month = parts.find(p => p.type === 'month')?.value;
+  const day = parts.find(p => p.type === 'day')?.value;
+  const todayStr = `${year}-${month}-${day}`;
+
   console.log('JST Today Debug:', {
     utcNow: now.toISOString(),
-    jstTime: jstTime.toISOString(),
-    todayStr: todayStr
+    jstToday: todayStr
   });
-  
+
   return todayStr;
 };
 
@@ -21,12 +28,11 @@ export const getJSTToday = (): string => {
 export const getJSTDate = (offset: number = 0): Date => {
   // JST今日の日付文字列を取得
   const todayStr = getJSTToday();
-  
-  // その日付にオフセット日数を加算
-  const baseDate = new Date(todayStr + 'T00:00:00.000Z');
-  const targetDate = new Date(baseDate);
-  targetDate.setUTCDate(baseDate.getUTCDate() + offset);
-  
+
+  // その日付にオフセット日数を加算（タイムゾーンを考慮）
+  const [year, month, day] = todayStr.split('-').map(Number);
+  const targetDate = new Date(year, month - 1, day + offset);
+
   return targetDate;
 };
 

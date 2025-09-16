@@ -38,14 +38,15 @@ function getSupabaseClientWithFallback() {
 export const getReservations = async () => {
   const supabase = getSupabaseClientWithFallback()
   if (!supabase) throw new Error('Supabase client not initialized')
-  
+
   const { data, error } = await supabase
     .from('reservations')
     .select(`
       *,
       customers (name, phone, email)
     `)
-    .order('date', { ascending: true })
+    .order('date', { ascending: false })
+    .order('trip_number', { ascending: false })
     
   if (error) throw error
   return data

@@ -65,13 +65,18 @@ export async function POST(req: NextRequest) {
         // eslint-disable-next-line @typescript-eslint/no-require-imports
         const nodemailer = require('nodemailer');
 
-        // Gmailトランスポーターの作成
+        // Gmailトランスポーターの作成（より詳細な設定）
         const transporter = nodemailer.createTransport({
-          service: 'gmail',
+          host: 'smtp.gmail.com',
+          port: 587,
+          secure: false, // true for 465, false for other ports
           auth: {
             user: process.env.GMAIL_USER,
             pass: process.env.GMAIL_APP_PASSWORD?.replace(/\s/g, ''), // スペースを削除
           },
+          tls: {
+            rejectUnauthorized: false
+          }
         });
 
         // お客様への確認メール
