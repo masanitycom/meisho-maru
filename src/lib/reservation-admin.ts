@@ -116,5 +116,6 @@ export const getReservationCount = async (
     return 0;
   }
   
-  return data?.reduce((sum, r) => sum + r.people_count, 0) || 0;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  return data?.reduce((sum, r: any) => sum + r.people_count, 0) || 0;
 };
