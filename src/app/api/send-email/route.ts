@@ -128,7 +128,7 @@ export async function POST(req: NextRequest) {
           }
         });
 
-        console.log('Zoho SMTP経由でお客様メール送信中...');
+        console.log('📧 Zoho SMTP経由でお客様メール送信中...');
 
         const customerResult = await transporter.sendMail({
           from: '"明勝丸" <meishomaru@zohomail.com>',
