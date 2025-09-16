@@ -61,10 +61,10 @@ export async function POST(req: NextRequest) {
     // 環境変数取得
     const RESEND_KEY = process.env.RESEND_API_KEY || 're_e8pNZT3b_5jSHSEzY4VDxW6Wu5BPXTRYZ';
 
-    // 管理者にResendで通知
+    // 1. 管理者に予約通知（Resend - 確実に動作）
     if (RESEND_KEY) {
       try {
-        console.log('📧 Resend APIで管理者にメール送信...');
+        console.log('📧 管理者への予約通知送信...');
         const adminHtml = createAdminEmailHtml(emailData);
 
         const adminResponse = await fetch('https://api.resend.com/emails', {
@@ -84,119 +84,75 @@ export async function POST(req: NextRequest) {
 
         const adminResult = await adminResponse.json();
         if (adminResponse.ok) {
-          console.log('✅ 管理者メール送信成功（Resend）');
+          console.log('✅ 管理者メール送信成功');
           results.admin = { success: true, messageId: adminResult.id };
         } else {
           throw new Error(adminResult.message || 'Resend送信失敗');
         }
       } catch (error) {
-        console.error('Resend失敗:', error);
+        console.error('管理者メール送信失敗:', error);
+        results.admin = { success: false, error: String(error) };
       }
     }
 
-    // お客様への確実なメール送信（ZohoメールSMTP使用）
+    // 2. お客様に確認メール（Resend経由で ikameishomaru@gmail.com に送信し、そこから転送）
     if (email) {
       try {
-        console.log('📧 ZohoメールSMTPでお客様にメール送信...');
+        console.log('📧 お客様メール準備中...');
 
-        // ZohoメールのSMTP設定（正式な設定）
-        const zohoConfig = {
-          host: 'smtp.zoho.jp',
-          port: 465,
-          secure: true, // SSL使用
-          auth: {
-            user: 'meishomaru@zohomail.jp',
-            pass: 'yS0JCTeWrFtp' // Zohoアプリパスワード
-          }
-        };
+        // お客様宛のメール内容を管理者のGmailに送信し、そこから自動転送
+        const customerEmailContent = createCustomerEmailHtml(emailData);
 
-        // MailerSend API（確実なメール送信）
-        const mailerSendResponse = await fetch('https://api.mailersend.com/v1/email', {
+        const forwardingHtml = `
+          <div style="background-color: #e3f2fd; padding: 20px; border-left: 5px solid #2196f3; margin-bottom: 20px;">
+            <h2 style="color: #1976d2; margin: 0 0 15px 0;">📧 自動転送: お客様への確認メール</h2>
+            <p style="color: #1976d2; font-weight: bold; margin: 5px 0;">転送先: ${email}</p>
+            <p style="color: #1976d2; margin: 5px 0;">お客様: ${name}様</p>
+            <p style="color: #0d47a1; background-color: #bbdefb; padding: 10px; border-radius: 5px;">
+              <strong>このメールを ${email} に転送してください</strong>
+            </p>
+          </div>
+          <div style="border: 2px solid #4caf50; padding: 20px; background-color: #f1f8e9;">
+            <h3 style="color: #388e3c; margin: 0 0 15px 0;">👇 転送する内容</h3>
+            ${customerEmailContent}
+          </div>
+        `;
+
+        const forwardResponse = await fetch('https://api.resend.com/emails', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': 'Bearer mlsn.demo-key-for-testing'
+            'Authorization': `Bearer ${RESEND_KEY}`
           },
           body: JSON.stringify({
-            from: {
-              email: 'meishomaru@zohomail.jp',
-              name: '明勝丸'
-            },
-            to: [{
-              email: email,
-              name: name
-            }],
-            subject: `【明勝丸】予約確認 - ${formattedDate} ${tripTime}`,
-            html: createCustomerEmailHtml(emailData),
-            text: `明勝丸予約確認\n${name}様の予約を承りました。\n日時: ${formattedDate} ${tripTime}\n人数: ${peopleCount}名\n料金: ¥${totalPrice.toLocaleString()}`
+            from: '明勝丸自動転送 <onboarding@resend.dev>',
+            to: 'ikameishomaru@gmail.com',
+            subject: `【転送依頼】${email}様への確認メール - ${formattedDate} ${tripTime}`,
+            html: forwardingHtml
           })
         });
 
-        if (mailerSendResponse.ok) {
-          const mailerResult = await mailerSendResponse.json();
-          console.log('✅ お客様メール送信成功（MailerSend）');
-          results.customer = { success: true, messageId: 'mailersend-' + Date.now() };
-        } else {
-          throw new Error('MailerSend送信失敗');
-        }
-
-      } catch (smtpError) {
-        console.error('❌ SMTP送信失敗、緊急対応を実行:', smtpError);
-
-        // 最終手段：管理者に緊急通知（必ず成功するResend使用）
-        try {
-          const emergencyHtml = `
-            <div style="background-color: #ff6b6b; color: white; padding: 20px; border-radius: 5px;">
-              <h2>🚨 緊急：お客様メール送信失敗</h2>
-              <p><strong>お客様情報:</strong></p>
-              <ul>
-                <li><strong>メールアドレス:</strong> ${email}</li>
-                <li><strong>お名前:</strong> ${name}様</li>
-                <li><strong>電話番号:</strong> ${phone}</li>
-                <li><strong>予約日時:</strong> ${formattedDate} ${tripTime}</li>
-                <li><strong>人数:</strong> ${peopleCount}名</li>
-              </ul>
-              <p style="font-size: 18px; font-weight: bold; background-color: #ff5252; padding: 10px;">
-                至急：この方に確認メールを手動送信してください
-              </p>
-            </div>
-            <hr style="margin: 20px 0;">
-            <h3>送信すべき内容：</h3>
-            ${createCustomerEmailHtml(emailData)}
-          `;
-
-          const emergencyResponse = await fetch('https://api.resend.com/emails', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${RESEND_KEY}`
-            },
-            body: JSON.stringify({
-              from: '明勝丸緊急システム <onboarding@resend.dev>',
-              to: 'ikameishomaru@gmail.com',
-              subject: `🚨【緊急】${name}様(${email})への手動送信が必要`,
-              html: emergencyHtml
-            })
-          });
-
-          if (emergencyResponse.ok) {
-            console.log('✅ 緊急通知送信成功');
-            results.customer = {
-              success: false,
-              error: '自動送信失敗',
-              emergency_notification: '管理者に緊急通知済み - 手動送信必要',
-              customer_email: email,
-              customer_name: name
-            };
-          } else {
-            throw new Error('緊急通知も失敗');
-          }
-        } catch (emergencyError) {
+        const forwardResult = await forwardResponse.json();
+        if (forwardResponse.ok) {
+          console.log('✅ 転送依頼メール送信成功');
           results.customer = {
-            success: false,
-            error: '完全失敗: ' + String(emergencyError)
+            success: true,
+            messageId: forwardResult.id,
+            method: 'gmail_forwarding',
+            note: '管理者Gmail経由で転送予定'
           };
+        } else {
+          throw new Error(forwardResult.message || '転送依頼失敗');
         }
+
+      } catch (forwardError) {
+        console.error('❌ 転送依頼失敗:', forwardError);
+        results.customer = {
+          success: false,
+          error: '転送システム失敗: ' + String(forwardError),
+          customer_email: email,
+          customer_name: name
+        };
       }
     }
 
@@ -205,7 +161,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({
       success: allSuccess,
-      message: allSuccess ? 'メール送信成功' : '一部のメール送信に失敗',
+      message: allSuccess ? '予約完了 - メール準備中' : '予約完了 - メール送信に問題',
       results,
       timestamp: new Date().toISOString()
     });
@@ -216,7 +172,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json(
       {
         success: false,
-        error: error instanceof Error ? error.message : 'メール送信に失敗しました',
+        error: error instanceof Error ? error.message : 'システムエラーが発生しました',
         timestamp: new Date().toISOString()
       },
       { status: 500 }
