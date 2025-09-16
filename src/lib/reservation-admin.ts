@@ -71,7 +71,7 @@ export const deleteLastManualReservation = async (
     .eq('status', 'confirmed')
     .order('created_at', { ascending: false })
     .limit(1)
-    .single();
+    .single() as { data: { id: string } | null, error: any };
     
   if (fetchError || !reservation) {
     console.log('削除する手動予約がありません:', fetchError);
