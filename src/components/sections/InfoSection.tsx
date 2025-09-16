@@ -18,7 +18,7 @@ export function InfoSection() {
             {/* 船のシルエット */}
             <g id="boat-silhouette">
               <path d="M0,8 Q10,0 30,0 Q50,0 60,8 L55,12 Q30,15 5,12 Z" fill="rgb(99 102 241 / 0.12)" />
-              <rect x="25" y="0" width="2" height="-8" fill="rgb(99 102 241 / 0.15)" />
+              <rect x="25" y="-8" width="2" height="8" fill="rgb(99 102 241 / 0.15)" />
               <path d="M20,-8 L30,-8 L25,-12 Z" fill="rgb(99 102 241 / 0.1)" />
             </g>
             
