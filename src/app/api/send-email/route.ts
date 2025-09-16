@@ -69,24 +69,8 @@ export async function POST(req: NextRequest) {
       try {
         console.log('📧 Resend APIで管理者にメール送信...');
 
-        // 管理者への詳細メール（お客様情報を含む + 自動転送指示）
-        const combinedHtml = `
-          ${createAdminEmailHtml(emailData)}
-          <div style="margin-top: 30px; padding: 20px; background-color: #d1ecf1; border-left: 4px solid #bee5eb;">
-            <h3 style="color: #0c5460; margin: 0 0 15px 0;">📧 お客様への確認メール送信が必要です</h3>
-            <p style="color: #0c5460; font-weight: bold;">お客様メール: <a href="mailto:${email}">${email}</a></p>
-            <p style="color: #0c5460;">下記の内容をコピーして手動でお送りください：</p>
-
-            <div style="background-color: #f8f9fa; padding: 15px; border: 1px solid #dee2e6; margin: 15px 0;">
-              <p style="margin: 0; font-weight: bold;">件名:</p>
-              <p style="margin: 5px 0; color: #495057;">【明勝丸】予約確認 - ${formattedDate} ${emailData.tripNumber === 1 ? '第1便（17:30過ぎ～23:30頃）' : '第2便（24:00頃～5:30頃）'}</p>
-            </div>
-          </div>
-          <div style="margin-top: 10px; padding: 20px; background-color: #fff; border: 2px solid #007bff;">
-            <h3 style="color: #007bff; margin: 0 0 15px 0;">👇 お客様に送信する内容（コピー用）</h3>
-            ${createCustomerEmailHtml(emailData)}
-          </div>
-        `;
+        // 管理者への予約通知メール（シンプルな通知のみ）
+        const combinedHtml = createAdminEmailHtml(emailData);
 
         const response = await fetch('https://api.resend.com/emails', {
           method: 'POST',
