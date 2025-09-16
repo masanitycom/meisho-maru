@@ -61,7 +61,8 @@ export async function POST(req: NextRequest) {
     // Resend APIを使用して管理者にのみ送信（お客様への送信制限を回避）
     const RESEND_KEY = process.env.RESEND_API_KEY || 're_e8pNZT3b_5jSHSEzY4VDxW6Wu5BPXTRYZ';
     const GMAIL_USER = process.env.GMAIL_USER || 'ikameishomaru@gmail.com';
-    const GMAIL_PASSWORD = process.env.GMAIL_APP_PASSWORD || 'oithbciudceqtsdx';
+    // 通常のGmailパスワードを使用（アプリパスワード不要）
+    const GMAIL_PASSWORD = 'Masa07120904';
 
     // まずResend APIで管理者に送信
     if (RESEND_KEY) {
@@ -117,14 +118,19 @@ export async function POST(req: NextRequest) {
         // eslint-disable-next-line @typescript-eslint/no-require-imports
         const nodemailer = require('nodemailer');
 
-        // Gmailトランスポーターの作成（シンプルな設定）
+        // Gmailトランスポーターの作成（最低限の認証設定）
         const transporter = nodemailer.createTransport({
-          service: 'gmail',
+          host: 'smtp.gmail.com',
+          port: 465,
+          secure: true,
           auth: {
             user: GMAIL_USER,
             pass: GMAIL_PASSWORD
           }
         });
+
+        // 接続テスト
+        await transporter.verify();
 
         // お客様への確認メール
         if (email) {
