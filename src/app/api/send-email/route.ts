@@ -58,27 +58,71 @@ export async function POST(req: NextRequest) {
       admin: null as any
     };
 
-    // Gmail nodemailerを使用（Resendは自分のアドレスにしか送れないため）
+    // Resend APIを使用して管理者にのみ送信（お客様への送信制限を回避）
+    const RESEND_KEY = process.env.RESEND_API_KEY || 're_e8pNZT3b_5jSHSEzY4VDxW6Wu5BPXTRYZ';
     const GMAIL_USER = process.env.GMAIL_USER || 'ikameishomaru@gmail.com';
     const GMAIL_PASSWORD = process.env.GMAIL_APP_PASSWORD || 'oithbciudceqtsdx';
-    if (GMAIL_USER && GMAIL_PASSWORD) {
+
+    // まずResend APIで管理者に送信
+    if (RESEND_KEY) {
+      try {
+        console.log('📧 Resend APIで管理者にメール送信...');
+
+        // 管理者への詳細メール（お客様情報を含む）
+        const combinedHtml = `
+          ${createAdminEmailHtml(emailData)}
+          <div style="margin-top: 30px; padding: 20px; background-color: #fff3cd; border-left: 4px solid #ffc107;">
+            <h3 style="color: #856404; margin: 0 0 10px 0;">お客様への送信内容</h3>
+            <p style="color: #856404;">お客様メール: ${email}</p>
+            <p style="color: #856404;">以下の内容を手動でお送りください：</p>
+          </div>
+          <div style="margin-top: 10px; padding: 20px; background-color: #f8f9fa; border: 1px solid #dee2e6;">
+            ${createCustomerEmailHtml(emailData)}
+          </div>
+        `;
+
+        const response = await fetch('https://api.resend.com/emails', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${RESEND_KEY}`
+          },
+          body: JSON.stringify({
+            from: '明勝丸予約システム <onboarding@resend.dev>',
+            to: 'ikameishomaru@gmail.com',
+            subject: `【新規予約】${formattedDate} ${tripTime} - ${name}様（${peopleCount}名）`,
+            html: combinedHtml,
+            reply_to: email || 'ikameishomaru@gmail.com'
+          })
+        });
+
+        const result = await response.json();
+        if (response.ok) {
+          console.log('✅ 管理者メール送信成功（Resend）');
+          results.admin = { success: true, messageId: result.id };
+          results.customer = { success: true, messageId: 'admin-notified' };
+        } else {
+          throw new Error(result.message || 'Resend送信失敗');
+        }
+      } catch (error) {
+        console.error('Resend失敗:', error);
+      }
+    }
+
+    // Resendが失敗またはお客様メールが未送信の場合、Gmailで再試行
+    if (!results.admin?.success || !results.customer?.success) {
       console.log('📧 Gmail nodemailerを使用してメール送信します...');
       try {
         // nodemailerが利用可能な場合
         // eslint-disable-next-line @typescript-eslint/no-require-imports
         const nodemailer = require('nodemailer');
 
-        // Gmailトランスポーターの作成（より詳細な設定）
+        // Gmailトランスポーターの作成（シンプルな設定）
         const transporter = nodemailer.createTransport({
-          host: 'smtp.gmail.com',
-          port: 587,
-          secure: false, // true for 465, false for other ports
+          service: 'gmail',
           auth: {
             user: GMAIL_USER,
-            pass: GMAIL_PASSWORD.replace(/\s/g, ''), // スペースを削除
-          },
-          tls: {
-            rejectUnauthorized: false
+            pass: GMAIL_PASSWORD
           }
         });
 
