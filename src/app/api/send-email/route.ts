@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createCustomerEmailHtml, createAdminEmailHtml } from '@/lib/email-simple';
 
+// Vercel Edge Runtime用の設定
+export const runtime = 'nodejs';
+
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
@@ -48,7 +51,7 @@ export async function POST(req: NextRequest) {
       notes,
     };
 
-    console.log('=== 自動メール送信開始 ===');
+    console.log('=== 完全自動メール送信開始 ===');
 
     const results = {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -59,7 +62,7 @@ export async function POST(req: NextRequest) {
 
     const RESEND_KEY = process.env.RESEND_API_KEY || 're_e8pNZT3b_5jSHSEzY4VDxW6Wu5BPXTRYZ';
 
-    // 1. 管理者通知（確実に動作するResend）
+    // 管理者通知（Resend - 確実に動作）
     try {
       const adminResponse = await fetch('https://api.resend.com/emails', {
         method: 'POST',
@@ -80,93 +83,120 @@ export async function POST(req: NextRequest) {
         ? { success: true, messageId: adminResult.id }
         : { success: false, error: adminResult.message };
 
-      console.log(adminResponse.ok ? '✅ 管理者通知成功' : '❌ 管理者通知失敗:', adminResult);
+      console.log(adminResponse.ok ? '✅ 管理者通知成功' : '❌ 管理者通知失敗');
     } catch (adminError) {
       results.admin = { success: false, error: String(adminError) };
-      console.error('❌ 管理者通知エラー:', adminError);
     }
 
-    // 2. お客様自動返信（現実的な解決策）
+    // お客様自動返信（Vercel Functions + nodemailer）
     if (email) {
-      // お客様には必ずメールが届くように、管理者経由で確実に送信
       try {
-        const customerContent = createCustomerEmailHtml(emailData);
+        console.log('🚀 お客様自動返信開始（Zoho SMTP + nodemailer）...');
 
-        // 管理者に「至急転送」メールを送信（転送専用メール）
-        const forwardingInstruction = `
-          <div style="background-color: #f8d7da; border: 1px solid #f5c6cb; color: #721c24; padding: 15px; margin-bottom: 20px; border-radius: 5px;">
-            <h2>🚨 即座に転送が必要です</h2>
-            <p><strong>転送先メールアドレス:</strong> ${email}</p>
-            <p><strong>お客様名:</strong> ${name}様</p>
-            <p><strong>件名:</strong> 【明勝丸】予約確認 - ${formattedDate} ${tripTime}</p>
-            <p style="font-size: 16px; font-weight: bold; background-color: #ffffff; padding: 10px; border-radius: 3px;">
-              このメールを受信したら、すぐに上記のメールアドレスに下記の内容を転送してください
-            </p>
-          </div>
-          <hr style="margin: 20px 0; border: 2px solid #007bff;">
-          <div style="background-color: #e7f3ff; padding: 15px; border-radius: 5px;">
-            <h3 style="color: #0056b3;">👇 転送する内容（そのまま転送してください）</h3>
-            ${customerContent}
-          </div>
-        `;
+        // Vercel Functions環境でnodemailerを使用
+        const { default: nodemailer } = await import('nodemailer');
 
-        const forwardResponse = await fetch('https://api.resend.com/emails', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${RESEND_KEY}`
+        // Zoho SMTP設定（正式な設定）
+        const transporter = nodemailer.createTransport({
+          host: 'smtp.zoho.jp',
+          port: 465,
+          secure: true, // SSL使用
+          auth: {
+            user: 'meishomaru@zohomail.jp',
+            pass: 'yS0JCTeWrFtp' // Zohoアプリパスワード
           },
-          body: JSON.stringify({
-            from: '明勝丸自動システム <onboarding@resend.dev>',
-            to: 'ikameishomaru@gmail.com',
-            subject: `🚨【至急転送】${email} - ${name}様への予約確認メール`,
-            html: forwardingInstruction
-          })
+          tls: {
+            rejectUnauthorized: false
+          }
         });
 
-        const forwardResult = await forwardResponse.json();
+        // SMTP接続確認
+        await transporter.verify();
+        console.log('✅ Zoho SMTP接続成功');
 
-        if (forwardResponse.ok) {
-          console.log('✅ 転送指示メール送信成功');
+        // お客様にメール送信
+        const customerResult = await transporter.sendMail({
+          from: {
+            name: '明勝丸',
+            address: 'meishomaru@zohomail.jp'
+          },
+          to: email,
+          subject: `【明勝丸】予約確認 - ${formattedDate} ${tripTime}`,
+          html: createCustomerEmailHtml(emailData),
+          replyTo: 'ikameishomaru@gmail.com'
+        });
+
+        console.log('✅ お客様自動返信成功（Zoho SMTP）');
+        results.customer = {
+          success: true,
+          messageId: customerResult.messageId,
+          service: 'Zoho SMTP via nodemailer'
+        };
+
+      } catch (zohoError) {
+        console.error('❌ Zoho SMTP失敗:', zohoError);
+
+        // フォールバック: Gmail SMTP
+        try {
+          console.log('🔄 Gmail SMTPにフォールバック...');
+
+          const { default: nodemailer } = await import('nodemailer');
+
+          const gmailTransporter = nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+              user: 'ikameishomaru@gmail.com',
+              pass: process.env.GMAIL_APP_PASSWORD || 'oithbciudceqtsdx'
+            }
+          });
+
+          const gmailResult = await gmailTransporter.sendMail({
+            from: {
+              name: '明勝丸',
+              address: 'ikameishomaru@gmail.com'
+            },
+            to: email,
+            subject: `【明勝丸】予約確認 - ${formattedDate} ${tripTime}`,
+            html: createCustomerEmailHtml(emailData)
+          });
+
+          console.log('✅ お客様自動返信成功（Gmail SMTP）');
           results.customer = {
             success: true,
-            messageId: forwardResult.id,
-            method: 'manual_forward_required',
-            note: `管理者による${email}への転送が必要`
+            messageId: gmailResult.messageId,
+            service: 'Gmail SMTP via nodemailer'
           };
-        } else {
-          throw new Error('転送指示メール送信失敗');
-        }
 
-      } catch (forwardError) {
-        console.error('❌ 転送システム失敗:', forwardError);
-        results.customer = {
-          success: false,
-          error: '転送システム障害',
-          customer_info: { email, name }
-        };
+        } catch (gmailError) {
+          console.error('❌ 全てのSMTP送信が失敗:', gmailError);
+          results.customer = {
+            success: false,
+            error: 'SMTP送信完全失敗: ' + String(gmailError)
+          };
+        }
       }
     }
 
     // 結果判定
-    const customerHandled = !email || results.customer?.success;
-    const systemWorking = results.admin?.success && customerHandled;
+    const customerSuccess = !email || results.customer?.success;
+    const allSuccess = customerSuccess && results.admin?.success;
 
     return NextResponse.json({
-      success: systemWorking,
-      message: systemWorking
-        ? 'システム正常動作 - メール処理完了'
-        : 'システム障害発生',
+      success: allSuccess,
+      message: allSuccess
+        ? '🎉 完全自動メール送信成功！'
+        : customerSuccess
+          ? '管理者通知失敗'
+          : 'お客様自動返信失敗',
       results,
-      timestamp: new Date().toISOString(),
-      next_action: email ? '管理者による転送作業が必要' : '管理者通知のみ'
+      timestamp: new Date().toISOString()
     });
 
   } catch (error) {
-    console.error('❌ システム完全障害:', error);
+    console.error('❌ システムエラー:', error);
     return NextResponse.json({
       success: false,
-      error: 'システム完全障害: ' + String(error),
+      error: 'システムエラー: ' + String(error),
       timestamp: new Date().toISOString()
     }, { status: 500 });
   }
