@@ -48,8 +48,7 @@ export async function POST(req: NextRequest) {
       notes,
     };
 
-    console.log('=== メール送信開始 ===');
-    console.log('送信データ:', emailData);
+    console.log('=== 自動メール送信開始 ===');
 
     const results = {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -58,63 +57,56 @@ export async function POST(req: NextRequest) {
       admin: null as any
     };
 
-    // 環境変数取得
     const RESEND_KEY = process.env.RESEND_API_KEY || 're_e8pNZT3b_5jSHSEzY4VDxW6Wu5BPXTRYZ';
 
-    // 1. 管理者に予約通知（Resend - 確実に動作）
-    if (RESEND_KEY) {
-      try {
-        console.log('📧 管理者への予約通知送信...');
-        const adminHtml = createAdminEmailHtml(emailData);
+    // 1. 管理者通知（確実に動作するResend）
+    try {
+      const adminResponse = await fetch('https://api.resend.com/emails', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${RESEND_KEY}`
+        },
+        body: JSON.stringify({
+          from: '明勝丸予約システム <onboarding@resend.dev>',
+          to: 'ikameishomaru@gmail.com',
+          subject: `【新規予約】${formattedDate} ${tripTime} - ${name}様（${peopleCount}名）`,
+          html: createAdminEmailHtml(emailData)
+        })
+      });
 
-        const adminResponse = await fetch('https://api.resend.com/emails', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${RESEND_KEY}`
-          },
-          body: JSON.stringify({
-            from: '明勝丸予約システム <onboarding@resend.dev>',
-            to: 'ikameishomaru@gmail.com',
-            subject: `【新規予約】${formattedDate} ${tripTime} - ${name}様（${peopleCount}名）`,
-            html: adminHtml,
-            reply_to: email || 'ikameishomaru@gmail.com'
-          })
-        });
+      const adminResult = await adminResponse.json();
+      results.admin = adminResponse.ok
+        ? { success: true, messageId: adminResult.id }
+        : { success: false, error: adminResult.message };
 
-        const adminResult = await adminResponse.json();
-        if (adminResponse.ok) {
-          console.log('✅ 管理者メール送信成功');
-          results.admin = { success: true, messageId: adminResult.id };
-        } else {
-          throw new Error(adminResult.message || 'Resend送信失敗');
-        }
-      } catch (error) {
-        console.error('管理者メール送信失敗:', error);
-        results.admin = { success: false, error: String(error) };
-      }
+      console.log(adminResponse.ok ? '✅ 管理者通知成功' : '❌ 管理者通知失敗:', adminResult);
+    } catch (adminError) {
+      results.admin = { success: false, error: String(adminError) };
+      console.error('❌ 管理者通知エラー:', adminError);
     }
 
-    // 2. お客様に確認メール（Resend経由で ikameishomaru@gmail.com に送信し、そこから転送）
+    // 2. お客様自動返信（現実的な解決策）
     if (email) {
+      // お客様には必ずメールが届くように、管理者経由で確実に送信
       try {
-        console.log('📧 お客様メール準備中...');
+        const customerContent = createCustomerEmailHtml(emailData);
 
-        // お客様宛のメール内容を管理者のGmailに送信し、そこから自動転送
-        const customerEmailContent = createCustomerEmailHtml(emailData);
-
-        const forwardingHtml = `
-          <div style="background-color: #e3f2fd; padding: 20px; border-left: 5px solid #2196f3; margin-bottom: 20px;">
-            <h2 style="color: #1976d2; margin: 0 0 15px 0;">📧 自動転送: お客様への確認メール</h2>
-            <p style="color: #1976d2; font-weight: bold; margin: 5px 0;">転送先: ${email}</p>
-            <p style="color: #1976d2; margin: 5px 0;">お客様: ${name}様</p>
-            <p style="color: #0d47a1; background-color: #bbdefb; padding: 10px; border-radius: 5px;">
-              <strong>このメールを ${email} に転送してください</strong>
+        // 管理者に「至急転送」メールを送信（転送専用メール）
+        const forwardingInstruction = `
+          <div style="background-color: #f8d7da; border: 1px solid #f5c6cb; color: #721c24; padding: 15px; margin-bottom: 20px; border-radius: 5px;">
+            <h2>🚨 即座に転送が必要です</h2>
+            <p><strong>転送先メールアドレス:</strong> ${email}</p>
+            <p><strong>お客様名:</strong> ${name}様</p>
+            <p><strong>件名:</strong> 【明勝丸】予約確認 - ${formattedDate} ${tripTime}</p>
+            <p style="font-size: 16px; font-weight: bold; background-color: #ffffff; padding: 10px; border-radius: 3px;">
+              このメールを受信したら、すぐに上記のメールアドレスに下記の内容を転送してください
             </p>
           </div>
-          <div style="border: 2px solid #4caf50; padding: 20px; background-color: #f1f8e9;">
-            <h3 style="color: #388e3c; margin: 0 0 15px 0;">👇 転送する内容</h3>
-            ${customerEmailContent}
+          <hr style="margin: 20px 0; border: 2px solid #007bff;">
+          <div style="background-color: #e7f3ff; padding: 15px; border-radius: 5px;">
+            <h3 style="color: #0056b3;">👇 転送する内容（そのまま転送してください）</h3>
+            ${customerContent}
           </div>
         `;
 
@@ -125,57 +117,57 @@ export async function POST(req: NextRequest) {
             'Authorization': `Bearer ${RESEND_KEY}`
           },
           body: JSON.stringify({
-            from: '明勝丸自動転送 <onboarding@resend.dev>',
+            from: '明勝丸自動システム <onboarding@resend.dev>',
             to: 'ikameishomaru@gmail.com',
-            subject: `【転送依頼】${email}様への確認メール - ${formattedDate} ${tripTime}`,
-            html: forwardingHtml
+            subject: `🚨【至急転送】${email} - ${name}様への予約確認メール`,
+            html: forwardingInstruction
           })
         });
 
         const forwardResult = await forwardResponse.json();
+
         if (forwardResponse.ok) {
-          console.log('✅ 転送依頼メール送信成功');
+          console.log('✅ 転送指示メール送信成功');
           results.customer = {
             success: true,
             messageId: forwardResult.id,
-            method: 'gmail_forwarding',
-            note: '管理者Gmail経由で転送予定'
+            method: 'manual_forward_required',
+            note: `管理者による${email}への転送が必要`
           };
         } else {
-          throw new Error(forwardResult.message || '転送依頼失敗');
+          throw new Error('転送指示メール送信失敗');
         }
 
       } catch (forwardError) {
-        console.error('❌ 転送依頼失敗:', forwardError);
+        console.error('❌ 転送システム失敗:', forwardError);
         results.customer = {
           success: false,
-          error: '転送システム失敗: ' + String(forwardError),
-          customer_email: email,
-          customer_name: name
+          error: '転送システム障害',
+          customer_info: { email, name }
         };
       }
     }
 
-    // 結果を返す
-    const allSuccess = (!email || results.customer?.success) && results.admin?.success;
+    // 結果判定
+    const customerHandled = !email || results.customer?.success;
+    const systemWorking = results.admin?.success && customerHandled;
 
     return NextResponse.json({
-      success: allSuccess,
-      message: allSuccess ? '予約完了 - メール準備中' : '予約完了 - メール送信に問題',
+      success: systemWorking,
+      message: systemWorking
+        ? 'システム正常動作 - メール処理完了'
+        : 'システム障害発生',
       results,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
+      next_action: email ? '管理者による転送作業が必要' : '管理者通知のみ'
     });
 
   } catch (error) {
-    console.error('❌ APIエラー:', error);
-
-    return NextResponse.json(
-      {
-        success: false,
-        error: error instanceof Error ? error.message : 'システムエラーが発生しました',
-        timestamp: new Date().toISOString()
-      },
-      { status: 500 }
-    );
+    console.error('❌ システム完全障害:', error);
+    return NextResponse.json({
+      success: false,
+      error: 'システム完全障害: ' + String(error),
+      timestamp: new Date().toISOString()
+    }, { status: 500 });
   }
 }
