@@ -14,13 +14,20 @@ export async function GET() {
       const nodemailer = require('nodemailer');
       console.log('✅ nodemailer モジュール読み込み成功');
 
-      // テストトランスポーター作成
+      // テストトランスポーター作成（詳細設定）
       const transporter = nodemailer.createTransport({
-        service: 'gmail',
+        host: 'smtp.gmail.com',
+        port: 587,
+        secure: false,
         auth: {
           user: process.env.GMAIL_USER,
           pass: process.env.GMAIL_APP_PASSWORD?.replace(/\s/g, ''),
         },
+        tls: {
+          rejectUnauthorized: false
+        },
+        debug: true,
+        logger: true
       });
 
       // 設定の検証

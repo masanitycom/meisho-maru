@@ -112,10 +112,10 @@ function ReservationForm() {
         throw reservationError;
       }
       
-      // メール送信（お客様＋管理者）
+      // メール送信（お客様＋管理者）- エラーが発生しても予約処理は継続
       console.log('メール送信処理開始');
       try {
-        const emailResponse = await fetch('/api/send-email-fallback', {
+        const emailResponse = await fetch('/api/send-email', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -138,11 +138,12 @@ function ReservationForm() {
           console.log('メール送信成功:', emailResult);
         } else {
           console.error('メール送信失敗（APIレスポンス）:', emailResult);
+          console.log('注意: メール送信に失敗しましたが、予約は正常に登録されています。');
         }
       } catch (emailError) {
         console.error('メール送信エラー（例外）:', emailError);
         // メール送信失敗してもデータは保存されているので、処理を続行
-        console.log('メール送信は失敗しましたが、予約データは保存されています');
+        console.log('注意: メール送信に失敗しましたが、予約は正常に登録されています。');
       }
       
       // 予約詳細をURLパラメータとして渡してサンクスページにリダイレクト
