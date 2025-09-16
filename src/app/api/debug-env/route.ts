@@ -6,6 +6,7 @@ export async function GET() {
       environment: process.env.NODE_ENV,
       hasResendKey: !!process.env.RESEND_API_KEY,
       resendKeyPrefix: process.env.RESEND_API_KEY?.substring(0, 8) + "...",
+      resendKeyRaw: process.env.RESEND_API_KEY ? 'SET' : 'NOT_SET',
       hasGmailUser: !!process.env.GMAIL_USER,
       hasGmailPassword: !!process.env.GMAIL_APP_PASSWORD,
       hasAdminEmail: !!process.env.ADMIN_EMAIL,
