@@ -59,8 +59,9 @@ export async function POST(req: NextRequest) {
     };
 
     // Gmail nodemailerを使用（Resendは自分のアドレスにしか送れないため）
+    const GMAIL_USER = process.env.GMAIL_USER || 'ikameishomaru@gmail.com';
     const GMAIL_PASSWORD = process.env.GMAIL_APP_PASSWORD || 'heizjtebmsjjbjaq';
-    if (process.env.GMAIL_USER && GMAIL_PASSWORD) {
+    if (GMAIL_USER && GMAIL_PASSWORD) {
       console.log('📧 Gmail nodemailerを使用してメール送信します...');
       try {
         // nodemailerが利用可能な場合
@@ -73,7 +74,7 @@ export async function POST(req: NextRequest) {
           port: 587,
           secure: false, // true for 465, false for other ports
           auth: {
-            user: process.env.GMAIL_USER,
+            user: GMAIL_USER,
             pass: GMAIL_PASSWORD.replace(/\s/g, ''), // スペースを削除
           },
           tls: {
@@ -86,7 +87,7 @@ export async function POST(req: NextRequest) {
           const customerMailOptions = {
             from: {
               name: '明勝丸',
-              address: process.env.GMAIL_USER || 'ikameishomaru@gmail.com',
+              address: GMAIL_USER,
             },
             to: email,
             subject: `【明勝丸】予約確認 - ${formattedDate} ${tripTime}`,
@@ -107,7 +108,7 @@ export async function POST(req: NextRequest) {
         const adminMailOptions = {
           from: {
             name: '明勝丸 予約システム',
-            address: process.env.GMAIL_USER || 'ikameishomaru@gmail.com',
+            address: GMAIL_USER,
           },
           to: process.env.ADMIN_EMAIL || 'ikameishomaru@gmail.com',
           subject: `【新規予約】${formattedDate} ${tripTime} - ${name}様（${peopleCount}名）`,
