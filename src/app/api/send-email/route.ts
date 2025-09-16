@@ -123,7 +123,7 @@ export async function POST(req: NextRequest) {
           port: 587,
           secure: false,
           auth: {
-            user: 'meishomaru@zohomail.com',
+            user: 'meishomaru@zohomail.jp',
             pass: 'Bv8E8Kta'
           }
         });
@@ -131,7 +131,7 @@ export async function POST(req: NextRequest) {
         console.log('📧 Zoho SMTP経由でお客様メール送信中...');
 
         const customerResult = await transporter.sendMail({
-          from: '"明勝丸" <meishomaru@zohomail.com>',
+          from: '"明勝丸" <meishomaru@zohomail.jp>',
           to: email,
           subject: `【明勝丸】予約確認 - ${formattedDate} ${tripTime}`,
           html: createCustomerEmailHtml(emailData)
