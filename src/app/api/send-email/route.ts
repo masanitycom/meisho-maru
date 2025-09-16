@@ -107,7 +107,6 @@ export async function POST(req: NextRequest) {
         if (response.ok) {
           console.log('✅ 管理者メール送信成功（Resend）');
           results.admin = { success: true, messageId: result.id };
-          results.customer = { success: true, messageId: 'manual-forwarding-required', note: '管理者による手動転送が必要' };
         } else {
           throw new Error(result.message || 'Resend送信失敗');
         }
@@ -117,7 +116,7 @@ export async function POST(req: NextRequest) {
     }
 
     // 確実にお客様にメール送信（複数の方法を試行）
-    if (!results.customer?.success && email) {
+    if (email && !results.customer?.success) {
       console.log('📧 お客様への自動メール送信を開始...');
 
       // 方法1: Gmail with App Password (最新のアプリパスワード使用)
