@@ -2,6 +2,11 @@ import { NextRequest, NextResponse } from 'next/server';
 
 export const runtime = 'nodejs';
 
+// グローバル変数でUser IDを保存
+global.lastLineUserId = global.lastLineUserId || null;
+global.lastLineMessage = global.lastLineMessage || null;
+global.lastLineTimestamp = global.lastLineTimestamp || null;
+
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
@@ -11,25 +16,38 @@ export async function POST(req: NextRequest) {
 
     for (const event of events) {
       if (event.type === 'message') {
-        const userId = event.source.userId;
-        const messageText = event.message.text;
+        // グローバル変数に保存
+        global.lastLineUserId = event.source.userId;
+        global.lastLineMessage = event.message.text;
+        global.lastLineTimestamp = new Date().toISOString();
 
-        // User IDをレスポンスで返す（ブラウザで確認可能）
-        return NextResponse.json({
-          success: true,
-          userId: userId,
-          message: messageText,
-          note: 'このUser IDをコピーしてください'
-        });
+        console.log('=== LINE User ID 受信 ===');
+        console.log('User ID:', global.lastLineUserId);
+        console.log('Message:', global.lastLineMessage);
       }
     }
 
-    return NextResponse.json({ success: true, message: 'No message events' });
+    return NextResponse.json({ success: true });
   } catch (error) {
     return NextResponse.json({ error: 'Failed: ' + String(error) }, { status: 500 });
   }
 }
 
 export async function GET() {
-  return NextResponse.json({ message: 'LINE Webhook endpoint is ready' });
+  if (global.lastLineUserId) {
+    return NextResponse.json({
+      success: true,
+      userId: global.lastLineUserId,
+      lastMessage: global.lastLineMessage,
+      receivedAt: global.lastLineTimestamp,
+      instruction: '↑ このUser IDをコピーして使用してください'
+    });
+  } else {
+    return NextResponse.json({
+      message: 'User IDを取得するには：',
+      step1: '1. LINEアプリから明勝丸公式アカウント（@707ejlid）にメッセージを送信',
+      step2: '2. このページをリロード（F5キー）',
+      step3: '3. User IDが表示されます'
+    });
+  }
 }
