@@ -4,6 +4,10 @@ import { createCustomerEmailHtml, createAdminEmailHtml } from '@/lib/email-simpl
 // Vercel Edge Runtime用の設定
 export const runtime = 'nodejs';
 
+// LINE Messaging API設定
+const LINE_CHANNEL_ACCESS_TOKEN = 'QgiCLwYjcXm7B+t6Z3B+8jxyex+umhnQ43KfA9UUOpW+FDTVrqf1GilejUBMb682jd6ypToxr377W6vFbFc657/OWTxz04TYlSGO7brQOhudAJ4jyptODCK9+i+ZBTj+cSKUbYatQi3gQKFTEtYOOAdB04t89/1O/w1cDnyilFU=';
+const ADMIN_LINE_USER_ID = 'U4d6b2ccd9b6fe15ede0317390347844a';
+
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
@@ -57,7 +61,9 @@ export async function POST(req: NextRequest) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       customer: null as any,
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      admin: null as any
+      admin: null as any,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      line: null as any
     };
 
     const RESEND_KEY = process.env.RESEND_API_KEY || 're_e8pNZT3b_5jSHSEzY4VDxW6Wu5BPXTRYZ';
@@ -177,17 +183,65 @@ export async function POST(req: NextRequest) {
       }
     }
 
+    // LINE通知送信（管理者向け）
+    try {
+      console.log('📱 LINE通知送信開始...');
+
+      // LINE通知メッセージの作成
+      const lineMessage = `🎣【新規予約】Web予約が入りました！
+
+📅 ${formattedDate}
+⏰ ${tripTime}
+👤 ${name}様（${nameKana}）
+👥 ${peopleCount}名
+📞 ${phone}
+${email ? `📧 ${email}` : ''}
+🎣 竿レンタル: ${rodRentalCount > 0 ? `${rodRentalCount}本` : 'なし'}
+💰 合計: ¥${totalPrice.toLocaleString()}
+${notes ? `📝 備考: ${notes}` : ''}
+
+--
+※この通知はWeb予約システムから自動送信されています`;
+
+      const lineResponse = await fetch('https://api.line.me/v2/bot/message/push', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${LINE_CHANNEL_ACCESS_TOKEN}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          to: ADMIN_LINE_USER_ID,
+          messages: [{
+            type: 'text',
+            text: lineMessage
+          }]
+        })
+      });
+
+      const lineResult = await lineResponse.json();
+      results.line = lineResponse.ok
+        ? { success: true, messageId: lineResult }
+        : { success: false, error: lineResult.message || 'LINE送信失敗' };
+
+      console.log(lineResponse.ok ? '✅ LINE通知成功' : '❌ LINE通知失敗');
+    } catch (lineError) {
+      console.error('❌ LINE通知エラー:', lineError);
+      results.line = { success: false, error: String(lineError) };
+    }
+
     // 結果判定
     const customerSuccess = !email || results.customer?.success;
-    const allSuccess = customerSuccess && results.admin?.success;
+    const allSuccess = customerSuccess && results.admin?.success && results.line?.success;
 
     return NextResponse.json({
       success: allSuccess,
       message: allSuccess
-        ? '🎉 完全自動メール送信成功！'
-        : customerSuccess
-          ? '管理者通知失敗'
-          : 'お客様自動返信失敗',
+        ? '🎉 完全自動メール送信・LINE通知成功！'
+        : customerSuccess && results.admin?.success
+          ? 'LINE通知失敗'
+          : customerSuccess
+            ? '管理者通知失敗'
+            : 'お客様自動返信失敗',
       results,
       timestamp: new Date().toISOString()
     });
