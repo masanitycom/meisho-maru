@@ -2,10 +2,20 @@ import { NextRequest, NextResponse } from 'next/server';
 
 export const runtime = 'nodejs';
 
-// グローバル変数でUser IDを保存
-global.lastLineUserId = global.lastLineUserId || null;
-global.lastLineMessage = global.lastLineMessage || null;
-global.lastLineTimestamp = global.lastLineTimestamp || null;
+// グローバル変数の型定義
+declare global {
+  // eslint-disable-next-line no-var
+  var lastLineUserId: string | undefined;
+  // eslint-disable-next-line no-var
+  var lastLineMessage: string | undefined;
+  // eslint-disable-next-line no-var
+  var lastLineTimestamp: string | undefined;
+}
+
+// グローバル変数の初期化
+global.lastLineUserId = global.lastLineUserId || undefined;
+global.lastLineMessage = global.lastLineMessage || undefined;
+global.lastLineTimestamp = global.lastLineTimestamp || undefined;
 
 export async function POST(req: NextRequest) {
   try {
@@ -28,8 +38,8 @@ export async function POST(req: NextRequest) {
     }
 
     return NextResponse.json({ success: true });
-  } catch (error) {
-    return NextResponse.json({ error: 'Failed: ' + String(error) }, { status: 500 });
+  } catch {
+    return NextResponse.json({ error: 'Failed' }, { status: 500 });
   }
 }
 
