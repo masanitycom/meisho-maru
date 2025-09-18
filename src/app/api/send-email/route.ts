@@ -6,7 +6,7 @@ export const runtime = 'nodejs';
 
 // LINE Messaging API設定
 const LINE_CHANNEL_ACCESS_TOKEN = 'QgiCLwYjcXm7B+t6Z3B+8jxyex+umhnQ43KfA9UUOpW+FDTVrqf1GilejUBMb682jd6ypToxr377W6vFbFc657/OWTxz04TYlSGO7brQOhudAJ4jyptODCK9+i+ZBTj+cSKUbYatQi3gQKFTEtYOOAdB04t89/1O/w1cDnyilFU=';
-const ADMIN_LINE_USER_ID = 'U4d6b2ccd9b6fe15ede0317390347844a';
+const ADMIN_LINE_USER_ID = 'Ue5b7bc75174c297db9ffd798efad4864'; // 船長のUser ID
 
 export async function POST(req: NextRequest) {
   try {
