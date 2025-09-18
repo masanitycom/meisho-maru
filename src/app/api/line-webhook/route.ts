@@ -5,26 +5,28 @@ export const runtime = 'nodejs';
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    console.log('=== LINE Webhook受信 ===');
-    console.log('Full body:', JSON.stringify(body, null, 2));
 
     // イベント情報を取得
     const events = body.events || [];
 
     for (const event of events) {
       if (event.type === 'message') {
-        console.log('=== ユーザー情報 ===');
-        console.log('User ID:', event.source.userId);
-        console.log('Message:', event.message.text);
-        console.log('Timestamp:', new Date(event.timestamp));
-        console.log('====================');
+        const userId = event.source.userId;
+        const messageText = event.message.text;
+
+        // User IDをレスポンスで返す（ブラウザで確認可能）
+        return NextResponse.json({
+          success: true,
+          userId: userId,
+          message: messageText,
+          note: 'このUser IDをコピーしてください'
+        });
       }
     }
 
-    return NextResponse.json({ success: true });
+    return NextResponse.json({ success: true, message: 'No message events' });
   } catch (error) {
-    console.error('Webhook error:', error);
-    return NextResponse.json({ error: 'Failed' }, { status: 500 });
+    return NextResponse.json({ error: 'Failed: ' + String(error) }, { status: 500 });
   }
 }
 
