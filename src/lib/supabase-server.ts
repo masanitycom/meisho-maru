@@ -33,35 +33,35 @@ export const getAvailableSeatsServer = async (date: string, tripNumber: number) 
   }
 
   try {
-    // 並行して運航状況と予約数を取得
-    const [scheduleResult, reservationResult] = await Promise.all([
-      supabase
-        .from('schedules')
-        .select('is_available')
-        .eq('date', date)
-        .eq('trip_number', tripNumber)
-        .single(),
-      supabase
-        .from('reservations')
-        .select('people_count')
-        .eq('date', date)
-        .eq('trip_number', tripNumber)
-        .eq('status', 'confirmed')
-    ]);
+    // 運航状況を取得
+    const { data: scheduleData } = await supabase
+      .from('schedules')
+      .select('is_available')
+      .eq('date', date)
+      .eq('trip_number', tripNumber)
+      .single()
 
     // 休業チェック
-    if (scheduleResult.data && scheduleResult.data.is_available === false) {
+    const schedule = scheduleData as { is_available: boolean } | null
+    if (schedule && schedule.is_available === false) {
       console.log(`サーバー: ${date} ${tripNumber}便: 休業日`);
       return -1; // 休業日は-1を返す
     }
 
-    // 予約数計算
-    if (reservationResult.error) {
-      console.error(`予約取得エラー ${date}-${tripNumber}:`, reservationResult.error);
+    // 予約数を取得
+    const { data: reservations, error: reservationError } = await supabase
+      .from('reservations')
+      .select('people_count')
+      .eq('date', date)
+      .eq('trip_number', tripNumber)
+      .eq('status', 'confirmed')
+
+    if (reservationError) {
+      console.error(`予約取得エラー ${date}-${tripNumber}:`, reservationError);
       return 8; // エラーの場合はデフォルト値
     }
 
-    const bookedSeats = (reservationResult.data as { people_count: number }[] | null)?.reduce((sum, r) => sum + r.people_count, 0) || 0
+    const bookedSeats = (reservations as { people_count: number }[] | null)?.reduce((sum, r) => sum + r.people_count, 0) || 0
     console.log(`サーバー: ${date} ${tripNumber}便: 予約済み ${bookedSeats}席`);
 
     // 定員は常に8名固定
