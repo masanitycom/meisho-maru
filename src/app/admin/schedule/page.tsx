@@ -24,8 +24,10 @@ import {
   Users,
   Save,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  ArrowLeft
 } from 'lucide-react';
+import Link from 'next/link';
 
 interface ScheduleData {
   date: string;
@@ -398,7 +400,16 @@ export default function ScheduleManagePage() {
       <div className="min-h-screen bg-gray-50 pt-20 pb-20">
         <div className="container mx-auto px-4 py-4">
           {/* ヘッダー */}
-          <div className="sticky top-20 bg-white z-10 pb-4 mb-4 border-b">
+          <div className="sticky top-20 bg-white z-10 pb-4 mb-4 border-b px-2">
+            {/* 戻るボタン */}
+            <Link
+              href="/admin"
+              className="inline-flex items-center text-blue-600 hover:text-blue-800 mb-3"
+            >
+              <ArrowLeft className="h-4 w-4 mr-1" />
+              <span className="text-sm">管理画面に戻る</span>
+            </Link>
+
             <div className="flex flex-col gap-3 md:flex-row md:justify-between md:items-center">
               <h1 className="text-lg md:text-xl font-bold flex items-center">
                 <Users className="mr-2 h-5 w-5" />
