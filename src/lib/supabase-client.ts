@@ -93,6 +93,7 @@ export const upsertCustomer = async (customerData: {
   
   const { data, error } = await supabase
     .from('customers')
+    // @ts-expect-error - Supabase型定義の制限を回避
     .upsert([customerData], { onConflict: 'phone' })
     .select()
     

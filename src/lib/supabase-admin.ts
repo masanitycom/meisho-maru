@@ -132,14 +132,14 @@ export const updateSchedule = async (date: string, tripNumber: number, updates: 
   
   const { data, error } = await supabase
     .from('schedules')
+    // @ts-expect-error - Supabase型定義の制限を回避
     .upsert([
       {
         date,
         trip_number: tripNumber,
         ...updates
       }
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    ] as any, { onConflict: 'date,trip_number' })
+    ], { onConflict: 'date,trip_number' })
     .select()
     
   if (error) throw error
@@ -169,10 +169,10 @@ export const setBulkHoliday = async (startDate: string, endDate: string, tripNum
   
   const { data, error } = await supabase
     .from('schedules')
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    .upsert(updates as any, { onConflict: 'date,trip_number' })
+    // @ts-expect-error - Supabase型定義の制限を回避
+    .upsert(updates, { onConflict: 'date,trip_number' })
     .select()
-    
+
   if (error) throw error
   return data
 }
