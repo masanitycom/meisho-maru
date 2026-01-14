@@ -92,20 +92,21 @@ export const getSchedules = async (startDate?: string, endDate?: string) => {
 export const getAvailableSeats = async (date: string, tripNumber: number) => {
   try {
     // スケジュールから定員と運航状態を取得
-    const { data: schedule, error: scheduleError } = await supabase
+    const { data: scheduleData, error: scheduleError } = await supabase
       .from('schedules')
       .select('max_capacity, is_available')
       .eq('date', date)
       .eq('trip_number', tripNumber)
       .single()
-      
+
     if (scheduleError) {
       // スケジュールが存在しない場合はデフォルト値（定員8名固定）
       return 8
     }
-    
+
+    const schedule = scheduleData as { max_capacity: number; is_available: boolean } | null
     // 運航停止の場合は-1を返す（休漁日として識別）
-    if (!schedule.is_available) {
+    if (schedule && !schedule.is_available) {
       return -1
     }
     
