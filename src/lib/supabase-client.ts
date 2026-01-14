@@ -73,6 +73,7 @@ export const createReservation = async (reservationData: {
   
   const { data, error } = await supabase
     .from('reservations')
+    // @ts-expect-error - Supabase型定義の制限を回避
     .insert([reservationData])
     .select()
     
