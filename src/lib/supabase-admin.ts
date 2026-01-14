@@ -207,10 +207,10 @@ export const updateReservation = async (reservationId: string, updates: {
   const supabase = getSupabaseClientWithFallback()
   if (!supabase) throw new Error('Supabase client not initialized')
   
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { data, error } = await supabase
     .from('reservations')
-    .update(updates as any)
+    // @ts-expect-error - Supabase型定義の制限を回避
+    .update(updates)
     .eq('id', reservationId)
     .select()
     
