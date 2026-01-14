@@ -45,11 +45,11 @@ interface LocalChanges {
 
 const FIXED_CAPACITY = 8; // 船の定員は8名固定
 
-// 6ヶ月分の月リストを生成
+// 12ヶ月分の月リストを生成
 const generateMonthOptions = () => {
   const options = [];
   const today = new Date();
-  for (let i = 0; i < 6; i++) {
+  for (let i = 0; i < 12; i++) {
     const date = new Date(today.getFullYear(), today.getMonth() + i, 1);
     options.push({
       value: `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`,
@@ -477,7 +477,7 @@ export default function ScheduleManagePage() {
                 <ChevronRight className="h-5 w-5 text-blue-600" />
               </button>
             </div>
-            <p className="text-xs text-center text-gray-500 mt-1">6ヶ月先まで設定可能</p>
+            <p className="text-xs text-center text-gray-500 mt-1">1年先まで設定可能</p>
 
             <p className="text-xs md:text-sm text-gray-600 mt-2">定員8名 - 電話・LINE予約の人数を調整してください</p>
             {hasChanges && (
