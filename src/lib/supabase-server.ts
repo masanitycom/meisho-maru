@@ -61,7 +61,7 @@ export const getAvailableSeatsServer = async (date: string, tripNumber: number) 
       return 8; // エラーの場合はデフォルト値
     }
 
-    const bookedSeats = reservationResult.data?.reduce((sum, r) => sum + r.people_count, 0) || 0
+    const bookedSeats = (reservationResult.data as { people_count: number }[] | null)?.reduce((sum, r) => sum + r.people_count, 0) || 0
     console.log(`サーバー: ${date} ${tripNumber}便: 予約済み ${bookedSeats}席`);
 
     // 定員は常に8名固定

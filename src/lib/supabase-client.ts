@@ -117,13 +117,13 @@ export const getAvailableSeats = async (date: string, tripNumber: number) => {
       .eq('date', date)
       .eq('trip_number', tripNumber)
       .eq('status', 'confirmed')
-      
+
     if (reservationError) {
       console.error(`予約取得エラー ${date}-${tripNumber}:`, reservationError);
       return 8; // エラーの場合はデフォルト値
     }
-    
-    const bookedSeats = reservations?.reduce((sum, r) => sum + r.people_count, 0) || 0
+
+    const bookedSeats = (reservations as { people_count: number }[] | null)?.reduce((sum, r) => sum + r.people_count, 0) || 0
     console.log(`${date} ${tripNumber}便: 予約済み ${bookedSeats}席`);
     
     // 定員は常に8名固定

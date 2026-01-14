@@ -122,7 +122,7 @@ export const getAvailableSeats = async (date: string, tripNumber: number) => {
       throw reservationError
     }
     
-    const bookedSeats = reservations?.reduce((sum, r) => sum + r.people_count, 0) || 0
+    const bookedSeats = (reservations as { people_count: number }[] | null)?.reduce((sum, r) => sum + r.people_count, 0) || 0
     // 定員は常に8名固定
     const availableSeats = 8 - bookedSeats
     
