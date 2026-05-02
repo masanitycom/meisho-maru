@@ -9,7 +9,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { updateSchedule, setBulkHoliday, getAvailableSeats, getSchedules } from '@/lib/supabase-admin';
 import { createManualReservation, deleteLastManualReservation } from '@/lib/reservation-admin';
-import { getJSTDate, isJSTToday } from '@/lib/date-utils';
+import { getJSTToday, isJSTToday } from '@/lib/date-utils';
 import { resetSupabaseClient } from '@/lib/supabase-client';
 import {
   Calendar,
@@ -119,12 +119,10 @@ export default function ScheduleManagePage() {
 
       // 選択月の日数を取得
       const daysInMonth = new Date(year, month, 0).getDate();
-      const today = getJSTDate(0);
-      const todayStr = today.toISOString().split('T')[0];
+      const todayStr = getJSTToday();
 
       const schedulePromises = Array.from({ length: daysInMonth }, async (_, i) => {
-        const date = new Date(year, month - 1, i + 1);
-        const dateStr = date.toISOString().split('T')[0];
+        const dateStr = `${year}-${String(month).padStart(2, '0')}-${String(i + 1).padStart(2, '0')}`;
 
         // 過去の日付はスキップ（今日より前）
         if (dateStr < todayStr) {
