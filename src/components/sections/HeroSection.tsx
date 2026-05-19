@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { Calendar, Phone, Anchor, Fish, MapPin, Clock } from 'lucide-react';
+import { Calendar, Phone, Anchor, MapPin, Clock, Toilet } from 'lucide-react';
 import { SITE_CONFIG } from '@/lib/constants';
 
 export function HeroSection() {
@@ -94,27 +94,27 @@ export function HeroSection() {
           {/* 特徴カード */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4 max-w-5xl mx-auto animate-fade-in mb-12 md:mb-16" role="region" aria-label="明勝丸の主な特徴">
             <div className="bg-white/10 backdrop-blur-md rounded-xl p-6 transform hover:scale-105 transition-all duration-300 border border-white/20" role="article" aria-labelledby="feature-1">
-              <Fish className="h-10 w-10 mb-3 text-yellow-300 mx-auto" aria-hidden="true" />
-              <h3 id="feature-1" className="text-xl font-bold mb-2">豊富な漁獲量</h3>
-              <p className="text-sm text-blue-100">日本海屈指の好漁場</p>
-            </div>
-
-            <div className="bg-white/10 backdrop-blur-md rounded-xl p-6 transform hover:scale-105 transition-all duration-300 border border-white/20" role="article" aria-labelledby="feature-2">
               <Anchor className="h-10 w-10 mb-3 text-yellow-300 mx-auto" aria-hidden="true" />
-              <h3 id="feature-2" className="text-xl font-bold mb-2">最新設備</h3>
+              <h3 id="feature-1" className="text-xl font-bold mb-2">最新設備</h3>
               <p className="text-sm text-blue-100">GPS魚群探知機完備</p>
             </div>
 
-            <div className="bg-white/10 backdrop-blur-md rounded-xl p-6 transform hover:scale-105 transition-all duration-300 border border-white/20" role="article" aria-labelledby="feature-3">
+            <div className="bg-white/10 backdrop-blur-md rounded-xl p-6 transform hover:scale-105 transition-all duration-300 border border-white/20" role="article" aria-labelledby="feature-2">
               <MapPin className="h-10 w-10 mb-3 text-yellow-300 mx-auto" aria-hidden="true" />
-              <h3 id="feature-3" className="text-xl font-bold mb-2">赤碕港出港</h3>
+              <h3 id="feature-2" className="text-xl font-bold mb-2">赤碕港出港</h3>
               <p className="text-sm text-blue-100">琴浦町から日本海へ</p>
             </div>
 
-            <div className="bg-white/10 backdrop-blur-md rounded-xl p-6 transform hover:scale-105 transition-all duration-300 border border-white/20" role="article" aria-labelledby="feature-4">
+            <div className="bg-white/10 backdrop-blur-md rounded-xl p-6 transform hover:scale-105 transition-all duration-300 border border-white/20" role="article" aria-labelledby="feature-3">
               <Clock className="h-10 w-10 mb-3 text-yellow-300 mx-auto" aria-hidden="true" />
-              <h3 id="feature-4" className="text-xl font-bold mb-2">1日2便運航</h3>
+              <h3 id="feature-3" className="text-xl font-bold mb-2">1日2便運航</h3>
               <p className="text-sm text-blue-100">夕方便・深夜便</p>
+            </div>
+
+            <div className="bg-white/10 backdrop-blur-md rounded-xl p-6 transform hover:scale-105 transition-all duration-300 border border-white/20" role="article" aria-labelledby="feature-4">
+              <Toilet className="h-10 w-10 mb-3 text-yellow-300 mx-auto" aria-hidden="true" />
+              <h3 id="feature-4" className="text-xl font-bold mb-2">船内トイレなし</h3>
+              <p className="text-sm text-blue-100">乗船前にお済ませください</p>
             </div>
           </div>
         </div>
