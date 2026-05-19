@@ -48,49 +48,85 @@ export const createManualReservation = async (
   return data;
 };
 
-// 手動予約の削除（最後に追加した予約から削除）
+// 予約の削除（手動予約を優先、無ければウェブ予約等を含む最新の確定予約を削除）
 export const deleteLastManualReservation = async (
   date: string,
   tripNumber: number
 ) => {
-  console.log('Deleting manual reservation:', { date, tripNumber });
-  
+  console.log('Deleting reservation:', { date, tripNumber });
+
   const normalizedDate = normalizeDate(date);
   console.log('Normalized date for deletion:', normalizedDate);
-  
-  // 最新の手動予約を1件取得
+
   const supabase = getSupabaseClient();
   if (!supabase) throw new Error('Supabase client not initialized');
-  
-  const { data: reservation, error: fetchError } = await supabase
-    .from('reservations')
-    .select('id')
-    .eq('date', normalizedDate)
-    .eq('trip_number', tripNumber)
-    .eq('source', 'manual')
-    .eq('status', 'confirmed')
-    .order('created_at', { ascending: false })
-    .limit(1)
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    .single() as { data: { id: string } | null, error: any };
-    
-  if (fetchError || !reservation) {
-    console.log('削除する手動予約がありません:', fetchError);
-    return null;
+
+  // 手動予約を優先（実顧客データを保全するため）、無ければ任意のsource
+  const findLatest = async (manualOnly: boolean) => {
+    let query = supabase
+      .from('reservations')
+      .select('id, source')
+      .eq('date', normalizedDate)
+      .eq('trip_number', tripNumber)
+      .eq('status', 'confirmed');
+
+    if (manualOnly) query = query.eq('source', 'manual');
+
+    const { data, error } = await query
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .maybeSingle() as { data: { id: string; source: string } | null, error: unknown };
+
+    return { data, error };
+  };
+
+  const manualResult = await findLatest(true);
+  if (manualResult.error) {
+    console.error('予約取得エラー:', manualResult.error);
+    throw manualResult.error;
   }
-  
-  // 該当予約を削除
-  const { error: deleteError } = await supabase
-    .from('reservations')
-    .delete()
-    .eq('id', reservation.id);
-    
-  if (deleteError) {
-    console.error('Manual reservation deletion error:', deleteError);
-    throw deleteError;
+
+  const fallbackResult = manualResult.data ? null : await findLatest(false);
+  if (fallbackResult?.error) {
+    console.error('予約取得エラー:', fallbackResult.error);
+    throw fallbackResult.error;
   }
-  
-  console.log('Manual reservation deleted:', reservation.id);
+
+  const reservation = manualResult.data ?? fallbackResult?.data ?? null;
+
+  if (!reservation) {
+    throw new Error(`${normalizedDate} ${tripNumber}便: 削除可能な予約がありません`);
+  }
+
+  // manualソースのダミー予約のみ物理削除。実顧客の予約はキャンセル扱い（論理削除）
+  if (reservation.source === 'manual') {
+    const { error: deleteError } = await supabase
+      .from('reservations')
+      .delete()
+      .eq('id', reservation.id);
+
+    if (deleteError) {
+      console.error('Reservation deletion error:', deleteError);
+      throw deleteError;
+    }
+
+    console.log('Manual reservation deleted:', reservation.id);
+  } else {
+    const { error: cancelError } = await supabase
+      .from('reservations')
+      // @ts-expect-error - Supabase型定義の制限を回避
+      .update({ status: 'cancelled' })
+      .eq('id', reservation.id)
+      .eq('status', 'confirmed'); // 二重キャンセル防止＆対象保証
+
+    if (cancelError) {
+      console.error('Reservation cancellation error:', cancelError);
+      throw cancelError;
+    }
+
+    console.log('Reservation cancelled (soft delete):', reservation.id, 'source:', reservation.source);
+  }
+
   return reservation.id;
 };
 
