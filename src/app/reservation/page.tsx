@@ -7,9 +7,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Calendar, Clock, Users, Phone, Mail, User, AlertCircle } from 'lucide-react';
+import { Calendar, Clock, Users, Phone, Mail, User, AlertCircle, MessageCircle } from 'lucide-react';
 
 function ReservationForm() {
   const router = useRouter();
@@ -347,17 +346,34 @@ function ReservationForm() {
                   </Select>
                 </div>
 
-                {/* 備考 */}
+                {/* ご要望・ご質問はLINEへ誘導 */}
                 <div className="space-y-2">
-                  <Label htmlFor="notes">
-                    備考・ご要望
-                  </Label>
-                  <Textarea
-                    id="notes"
-                    placeholder="ご要望やご質問があればご記入ください"
-                    value={formData.notes}
-                    onChange={(e) => setFormData({...formData, notes: e.target.value})}
-                  />
+                  <Label>ご要望・ご質問</Label>
+                  <div className="bg-green-50 border border-green-200 p-4 rounded-lg">
+                    <div className="flex items-start gap-2">
+                      <MessageCircle className="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" />
+                      <div className="text-sm text-gray-700 w-full">
+                        <p className="mb-3">
+                          お迎え場所のご相談、お子様連れ・アレルギー等のご要望、その他ご質問は、
+                          <strong>LINE公式アカウント</strong>へお気軽にお送りください。個別にご返信いたします。
+                        </p>
+                        <Button
+                          asChild
+                          className="bg-[#06C755] hover:bg-[#05b34c] text-white w-full sm:w-auto"
+                        >
+                          <a
+                            href="https://lin.ee/mMWHmB0"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center justify-center"
+                          >
+                            <MessageCircle className="mr-2 h-4 w-4" />
+                            LINEで問い合わせ
+                          </a>
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
                 </div>
 
                 {/* 料金表示 */}
