@@ -159,8 +159,11 @@ function ReservationSuccessContent() {
                 <MessageCircle className="h-6 w-6 flex-shrink-0 text-green-600 mt-0.5" />
                 <div className="w-full">
                   <h3 className="font-semibold text-gray-900 mb-1">ご要望・ご質問はLINEへ</h3>
-                  <p className="text-gray-600 text-sm mb-4">
+                  <p className="text-gray-600 text-sm mb-2">
                     お迎え場所のご相談、お子様連れでのご乗船など、ご要望・ご質問は、LINE公式アカウントへお気軽にお送りください。個別にご返信いたします。
+                  </p>
+                  <p className="text-red-600 text-sm font-semibold mb-4">
+                    ※メールでの返信は一切しておりません。お問い合わせはLINEまたはお電話にてお願いいたします。
                   </p>
                   <Button asChild className="bg-[#06C755] hover:bg-[#05b34c] text-white w-full sm:w-auto">
                     <a href="https://lin.ee/mMWHmB0" target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center">
