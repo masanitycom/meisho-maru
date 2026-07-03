@@ -72,6 +72,13 @@ export const createCustomerEmailHtml = (data: EmailData) => {
       <p style="color: #666; margin: 10px 0 0 0;">予約確認メール</p>
     </div>
 
+    <div style="background-color: #fff8e1; border: 1px solid #ffe082; border-radius: 5px; padding: 12px 16px; margin-bottom: 24px;">
+      <p style="color: #8a6d3b; font-size: 13px; line-height: 1.7; margin: 0;">
+        ※このメールは予約システムからの<strong>自動送信（送信専用）</strong>です。<br>
+        ご返信いただいてもお答えできません。ご質問・ご要望はLINEまたはお電話にてお願いいたします。
+      </p>
+    </div>
+
     <div style="border-top: 2px solid #e5e5e5; padding-top: 20px;">
       <h2 style="color: #1e3a8a; font-size: 20px; margin-bottom: 20px;">ご予約ありがとうございます</h2>
 
