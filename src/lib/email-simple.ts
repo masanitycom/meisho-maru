@@ -1,4 +1,5 @@
 // シンプルなメール送信実装（nodemailerなし）
+import { ACCESS_VIDEOS, youtubeWatchUrl, youtubeThumbnailUrl } from './constants';
 
 interface EmailData {
   name: string;
@@ -13,6 +14,38 @@ interface EmailData {
   email?: string;
   notes?: string;
 }
+
+// 乗り場・乗船位置の案内動画セクション（メール用）
+// ※メールでは動画を直接再生できないため、サムネイル＋リンクで表示します
+const createVideoSectionHtml = () => {
+  const videos = ACCESS_VIDEOS.filter((v) => v.youtubeId);
+  if (videos.length === 0) return '';
+
+  const videoBlocks = videos
+    .map(
+      (video) => `
+        <div style="margin-bottom: 20px;">
+          <a href="${youtubeWatchUrl(video.youtubeId)}" style="text-decoration: none; color: inherit;">
+            <img src="${youtubeThumbnailUrl(video.youtubeId)}" alt="${video.title}" width="100%" style="width: 100%; max-width: 520px; border-radius: 8px; display: block;">
+          </a>
+          <p style="color: #333; font-weight: bold; margin: 10px 0 4px 0;">${video.title}</p>
+          <p style="color: #666; font-size: 14px; margin: 0 0 10px 0;">${video.description}</p>
+          <a href="${youtubeWatchUrl(video.youtubeId)}" style="display: inline-block; background-color: #1e3a8a; color: white; padding: 10px 20px; text-decoration: none; border-radius: 25px; font-weight: bold;">
+            ▶ 動画を見る
+          </a>
+        </div>`
+    )
+    .join('');
+
+  return `
+      <div style="background-color: #eef6ff; border-left: 4px solid #1e3a8a; padding: 20px; margin: 20px 0; border-radius: 5px;">
+        <h3 style="color: #1e3a8a; margin: 0 0 8px 0; font-size: 18px;">🚗 乗り場までの行き方・乗船位置</h3>
+        <p style="color: #333; line-height: 1.6; margin: 0 0 15px 0;">
+          当日スムーズにお越しいただけるよう、動画でご案内します。<br>下の画像またはボタンをタップするとご覧いただけます。
+        </p>
+        ${videoBlocks}
+      </div>`;
+};
 
 // 予約確認メール（お客様向け）のHTML生成
 export const createCustomerEmailHtml = (data: EmailData) => {
@@ -92,6 +125,7 @@ export const createCustomerEmailHtml = (data: EmailData) => {
           赤碕港（鳥取林養魚場の建物裏手）
         </p>
       </div>
+${createVideoSectionHtml()}
 
       <div style="background-color: #e8f5e8; border-left: 4px solid #28a745; padding: 20px; margin: 20px 0; border-radius: 5px;">
         <h3 style="color: #28a745; margin: 0 0 15px 0; font-size: 18px;">📱 LINE公式アカウントにご登録ください！</h3>

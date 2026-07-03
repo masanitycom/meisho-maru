@@ -5,7 +5,8 @@ import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { CheckCircle, Calendar, Phone, MessageCircle, Share2, Instagram } from 'lucide-react';
+import { CheckCircle, Calendar, Phone, MessageCircle, Share2, Instagram, MapPin, Video } from 'lucide-react';
+import { ACCESS_VIDEOS, ACCESS_VIDEOS_ARE_VERTICAL, youtubeEmbedUrl } from '@/lib/constants';
 
 function ReservationSuccessContent() {
   const searchParams = useSearchParams();
@@ -147,6 +148,48 @@ function ReservationSuccessContent() {
                     </p>
                   </div>
                 </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* 乗り場・乗船位置の案内動画 */}
+          <Card className="mb-8">
+            <CardHeader>
+              <CardTitle className="flex items-center">
+                <MapPin className="mr-2 h-5 w-5" />
+                乗り場までの行き方・乗船位置
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-gray-600 text-sm mb-6">
+                当日スムーズにお越しいただけるよう、乗り場までの行き方と乗船位置を動画でご案内します。ぜひ事前にご覧ください。
+              </p>
+              <div className="grid md:grid-cols-2 gap-6">
+                {ACCESS_VIDEOS.map((video, index) => (
+                  <div key={index}>
+                    {/* 縦型(Shorts)は 9:16、横型は 16:9 */}
+                    {video.youtubeId ? (
+                      <div className="relative mx-auto w-full max-w-[320px] overflow-hidden rounded-lg bg-black" style={{ paddingTop: ACCESS_VIDEOS_ARE_VERTICAL ? '177.78%' : '56.25%' }}>
+                        <iframe
+                          className="absolute inset-0 h-full w-full"
+                          src={youtubeEmbedUrl(video.youtubeId)}
+                          title={video.title}
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                          allowFullScreen
+                        />
+                      </div>
+                    ) : (
+                      <div className="relative mx-auto w-full max-w-[320px] rounded-lg bg-gray-100 text-gray-400" style={{ paddingTop: ACCESS_VIDEOS_ARE_VERTICAL ? '177.78%' : '56.25%' }}>
+                        <div className="absolute inset-0 flex flex-col items-center justify-center">
+                          <Video className="mb-2 h-8 w-8" />
+                          <span className="text-sm">動画準備中</span>
+                        </div>
+                      </div>
+                    )}
+                    <p className="mt-3 text-center font-semibold text-gray-900">{video.title}</p>
+                    <p className="text-center text-sm text-gray-600">{video.description}</p>
+                  </div>
+                ))}
               </div>
             </CardContent>
           </Card>

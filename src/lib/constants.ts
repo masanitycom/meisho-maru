@@ -30,6 +30,34 @@ export const PRICES = {
   rodRental: 2000,
 } as const;
 
+// 乗り場までの行き方・乗船位置のご案内動画
+// ★動画をYouTubeにアップロードしたら、下の youtubeId を差し替えてください
+//   例: https://www.youtube.com/watch?v=Abc123XYZ  →  youtubeId: 'Abc123XYZ'
+//   （URLの v= の後ろ、または youtu.be/ の後ろの文字列がIDです）
+export const ACCESS_VIDEOS = [
+  {
+    youtubeId: 'W9tTPiUD4kg',
+    title: '赤碕港 遊漁船乗り場のご案内',
+    description: '赤碕港の駐車場から乗り場までのルートを動画でご案内します。',
+  },
+  {
+    youtubeId: '5SCG5W1QUYw',
+    title: '明勝丸の乗船場所と駐車スペース',
+    description: '当日、明勝丸が停まっている乗船位置と駐車スペースを動画でご案内します。',
+  },
+] as const;
+
+// 動画が縦型（YouTube Shorts）かどうか。埋め込みの縦横比に使用
+export const ACCESS_VIDEOS_ARE_VERTICAL = true;
+
+// YouTube ID から各種URLを生成するヘルパー
+export const youtubeEmbedUrl = (id: string) =>
+  `https://www.youtube.com/embed/${id}`;
+export const youtubeWatchUrl = (id: string) =>
+  `https://www.youtube.com/watch?v=${id}`;
+export const youtubeThumbnailUrl = (id: string) =>
+  `https://img.youtube.com/vi/${id}/hqdefault.jpg`;
+
 export const RESERVATION_STATUS = {
   confirmed: '確定',
   cancelled: 'キャンセル',
