@@ -38,7 +38,7 @@ export const ACCESS_VIDEOS = [
   {
     youtubeId: 'W9tTPiUD4kg',
     title: '赤碕港 遊漁船乗り場のご案内',
-    description: '赤碕港の駐車場から乗り場までのルートを動画でご案内します。',
+    description: '赤碕港遊漁船乗り場までのルートを動画でご案内します。',
   },
   {
     youtubeId: '5SCG5W1QUYw',
