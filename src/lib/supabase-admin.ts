@@ -132,7 +132,7 @@ export const updateSchedule = async (date: string, tripNumber: number, updates: 
   
   const { data, error } = await supabase
     .from('schedules')
-    // @ts-expect-error - Supabase型定義の制限を回避
+    // @ts-ignore - Supabase型定義の制限を回避（環境により型エラーの有無が変わるため ts-ignore を使用）
     .upsert([
       {
         date,
