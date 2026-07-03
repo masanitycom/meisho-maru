@@ -163,7 +163,6 @@ ${createVideoSectionHtml()}
         <p style="color: #333; line-height: 1.8; margin: 0;">
           ご不明な点がございましたら、お気軽にお問い合わせください。<br><br>
           <strong>電話：</strong> 090-4695-3087<br>
-          <strong>メール：</strong> ikameishomaru@gmail.com<br>
           <strong>LINE：</strong> @707ejlid（推奨）<br>
           <strong>Instagram：</strong> @meisho_maru
         </p>
