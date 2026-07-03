@@ -141,8 +141,8 @@ export const updateSchedule = async (date: string, tripNumber: number, updates: 
 }) => {
   const { data, error } = await supabase
     .from('schedules')
-    // @ts-expect-error - Supabase型定義の制限を回避
     .upsert([
+      // @ts-expect-error - Supabase型定義の制限を回避（insert型がneverになる問題）
       {
         date,
         trip_number: tripNumber,
