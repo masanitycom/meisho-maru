@@ -152,6 +152,27 @@ function ReservationSuccessContent() {
             </CardContent>
           </Card>
 
+          {/* ご要望・ご質問はLINEへ */}
+          <Card className="mb-8 border-green-200 bg-green-50">
+            <CardContent className="p-6">
+              <div className="flex items-start gap-3">
+                <MessageCircle className="h-6 w-6 flex-shrink-0 text-green-600 mt-0.5" />
+                <div className="w-full">
+                  <h3 className="font-semibold text-gray-900 mb-1">ご要望・ご質問はLINEへ</h3>
+                  <p className="text-gray-600 text-sm mb-4">
+                    お迎え場所のご相談、お子様連れ・アレルギー等のご要望、その他ご質問は、LINE公式アカウントへお気軽にお送りください。個別にご返信いたします。
+                  </p>
+                  <Button asChild className="bg-[#06C755] hover:bg-[#05b34c] text-white w-full sm:w-auto">
+                    <a href="https://lin.ee/mMWHmB0" target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center">
+                      <MessageCircle className="mr-2 h-4 w-4" />
+                      LINEで問い合わせ
+                    </a>
+                  </Button>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
           {/* 乗り場・乗船位置の案内動画 */}
           <Card className="mb-8">
             <CardHeader>
